@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configQuotationTemplateProcess.mapper.ConfigQuotationTemplateProcessMapper">
+    
+    <resultMap type="ConfigQuotationTemplateProcess" id="ConfigQuotationTemplateProcessResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="quotationTemplateId"    column="quotation_template_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="formulaId"    column="formula_id"    />
+        <result property="times"    column="times"    />
+        <result property="price"    column="price"    />
+        <result property="equipmentId"    column="equipment_id"    />
+        <result property="lossRate"    column="loss_rate"    />
+        <result property="lossQty"    column="loss_qty"    />
+        <result property="processOrder"    column="process_order"    />
+
+        <result property="processName"    column="process_name"    />
+        <result property="formulaName"    column="formula_name"    />
+        <result property="equipmentName"    column="equipment_name"    />
+        <result property="quotationTemplateName"    column="quotation_template_name"    />
+        <result property="isTimeCount"    column="is_time_count"    />
+    </resultMap>
+
+    <sql id="selectConfigQuotationTemplateProcessVo">
+        select
+            cp.process_name,cf.formula_name,ce.equipment_name,cqtp.process_order,qt.template_name quotation_template_name,cqtp.is_time_count,
+            cqtp.id, cqtp.remark, cqtp.quotation_template_id, cqtp.process_id, cqtp.formula_id, cqtp.times, cqtp.price, cqtp.equipment_id, cqtp.loss_rate, cqtp.loss_qty
+        from config_quotation_template_process cqtp
+            left join config_process cp on cp.id = cqtp.process_id
+            left join config_formula cf on cf.id = cqtp.formula_id
+            left join config_equipment ce on ce.id = cqtp.equipment_id
+            left join config_quotation_template qt on qt.id = cqtp.quotation_template_id
+    </sql>
+
+    <select id="selectConfigQuotationTemplateProcessList" parameterType="ConfigQuotationTemplateProcess" resultMap="ConfigQuotationTemplateProcessResult">
+        <include refid="selectConfigQuotationTemplateProcessVo"/>
+        <where>  
+            <if test="quotationTemplateId != null "> and cqtp.quotation_template_id = #{quotationTemplateId}</if>
+            <if test="processId != null "> and cqtp.process_id = #{processId}</if>
+            <if test="formulaId != null "> and cqtp.formula_id = #{formulaId}</if>
+            <if test="ids != null "> and cqtp.quotation_template_id in (${ids})</if>
+            <if test="isTimeCount != null "> and cqtp.is_time_count = #{isTimeCount}</if>
+        </where>
+        order by cqtp.process_order, cqtp.id desc
+    </select>
+    
+    <select id="selectConfigQuotationTemplateProcessById" parameterType="Long" resultMap="ConfigQuotationTemplateProcessResult">
+        <include refid="selectConfigQuotationTemplateProcessVo"/>
+        where cqtp.id = #{id}
+    </select>
+        
+    <insert id="insertConfigQuotationTemplateProcess" parameterType="ConfigQuotationTemplateProcess" useGeneratedKeys="true" keyProperty="id">
+        insert into config_quotation_template_process
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="quotationTemplateId != null">quotation_template_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="formulaId != null">formula_id,</if>
+            <if test="times != null">times,</if>
+            <if test="price != null">price,</if>
+            <if test="equipmentId != null">equipment_id,</if>
+            <if test="lossRate != null">loss_rate,</if>
+            <if test="lossQty != null">loss_qty,</if>
+            <if test="processOrder != null">process_order,</if>
+            <if test="isTimeCount != null">is_time_count,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="quotationTemplateId != null">#{quotationTemplateId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="formulaId != null">#{formulaId},</if>
+            <if test="times != null">#{times},</if>
+            <if test="price != null">#{price},</if>
+            <if test="equipmentId != null">#{equipmentId},</if>
+            <if test="lossRate != null">#{lossRate},</if>
+            <if test="lossQty != null">#{lossQty},</if>
+            <if test="processOrder != null">#{processOrder},</if>
+            <if test="isTimeCount != null">#{isTimeCount},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigQuotationTemplateProcess" parameterType="ConfigQuotationTemplateProcess">
+        update config_quotation_template_process
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="quotationTemplateId != null">quotation_template_id = #{quotationTemplateId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="formulaId != null">formula_id = #{formulaId},</if>
+            <if test="times != null">times = #{times},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="equipmentId != null">equipment_id = #{equipmentId},</if>
+            <if test="lossRate != null">loss_rate = #{lossRate},</if>
+            <if test="lossQty != null">loss_qty = #{lossQty},</if>
+            <if test="processOrder != null">process_order = #{processOrder},</if>
+            <if test="processOrder != null">is_time_count = #{isTimeCount},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigQuotationTemplateProcessById" parameterType="Long">
+        delete from config_quotation_template_process where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigQuotationTemplateProcessByIds" parameterType="String">
+        delete from config_quotation_template_process where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

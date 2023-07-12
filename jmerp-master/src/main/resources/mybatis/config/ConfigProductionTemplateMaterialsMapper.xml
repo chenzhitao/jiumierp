@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configProductionTemplateMaterials.mapper.ConfigProductionTemplateMaterialsMapper">
+    
+    <resultMap type="ConfigProductionTemplateMaterials" id="ConfigProductionTemplateMaterialsResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="productionTemplateId"    column="production_template_id"    />
+        <result property="materialsId"    column="materials_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="cutterDieId"    column="cutter_die_id"    />
+        <result property="boardId"    column="board_id"    />
+        <result property="isGetProcessQty"    column="is_get_process_qty"    />
+        <result property="baseRate"    column="base_rate"    />
+        <result property="lossRate"    column="loss_rate"    />
+        <result property="lossQty"    column="loss_qty"    />
+
+        <result property="materialsName"    column="materials_name"    />
+        <result property="processName"    column="process_name"    />
+        <result property="cutterDieName"    column="cutter_die_name"    />
+        <result property="boardName"    column="board_name"    />
+        <result property="productionTemplateName"    column="production_template_name"    />
+    </resultMap>
+
+    <sql id="selectConfigProductionTemplateMaterialsVo">
+        select
+            m.materials_name,cp.process_name,b.board_name,cd.cutter_die_name,qt.template_name production_template_name,
+            ptm.id, ptm.remark, ptm.production_template_id, ptm.materials_id, ptm.process_id, ptm.cutter_die_id,
+            ptm.board_id, ptm.is_get_process_qty, ptm.base_rate, ptm.loss_rate, ptm.loss_qty
+        from config_production_template_materials ptm
+            left join config_materials m on m.id = ptm.materials_id
+            left join config_process cp on cp.id = ptm.process_id
+            left join config_cutter_die cd on cd.id = ptm.cutter_die_id
+            left join config_board b on b.id = ptm.board_id
+            left join config_production_template qt on qt.id = ptm.production_template_id
+    </sql>
+
+    <select id="selectConfigProductionTemplateMaterialsList" parameterType="ConfigProductionTemplateMaterials" resultMap="ConfigProductionTemplateMaterialsResult">
+        <include refid="selectConfigProductionTemplateMaterialsVo"/>
+        <where>  
+            <if test="productionTemplateId != null "> and ptm.production_template_id = #{productionTemplateId}</if>
+            <if test="materialsId != null "> and ptm.materials_id = #{materialsId}</if>
+            <if test="processId != null "> and ptm.process_id = #{processId}</if>
+            <if test="cutterDieId != null "> and ptm.cutter_die_id = #{cutterDieId}</if>
+            <if test="boardId != null "> and ptm.board_id = #{boardId}</if>
+            <if test="ids != null "> and ptm.production_template_id in (${ids})</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigProductionTemplateMaterialsById" parameterType="Long" resultMap="ConfigProductionTemplateMaterialsResult">
+        <include refid="selectConfigProductionTemplateMaterialsVo"/>
+        where ptm.id = #{id}
+    </select>
+        
+    <insert id="insertConfigProductionTemplateMaterials" parameterType="ConfigProductionTemplateMaterials" useGeneratedKeys="true" keyProperty="id">
+        insert into config_production_template_materials
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="productionTemplateId != null">production_template_id,</if>
+            <if test="materialsId != null">materials_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="cutterDieId != null">cutter_die_id,</if>
+            <if test="boardId != null">board_id,</if>
+            <if test="isGetProcessQty != null">is_get_process_qty,</if>
+            <if test="baseRate != null">base_rate,</if>
+            <if test="lossRate != null">loss_rate,</if>
+            <if test="lossQty != null">loss_qty,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="productionTemplateId != null">#{productionTemplateId},</if>
+            <if test="materialsId != null">#{materialsId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="cutterDieId != null">#{cutterDieId},</if>
+            <if test="boardId != null">#{boardId},</if>
+            <if test="isGetProcessQty != null">#{isGetProcessQty},</if>
+            <if test="baseRate != null">#{baseRate},</if>
+            <if test="lossRate != null">#{lossRate},</if>
+            <if test="lossQty != null">#{lossQty},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigProductionTemplateMaterials" parameterType="ConfigProductionTemplateMaterials">
+        update config_production_template_materials
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="productionTemplateId != null">production_template_id = #{productionTemplateId},</if>
+            <if test="materialsId != null">materials_id = #{materialsId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="cutterDieId != null">cutter_die_id = #{cutterDieId},</if>
+            <if test="boardId != null">board_id = #{boardId},</if>
+            <if test="isGetProcessQty != null">is_get_process_qty = #{isGetProcessQty},</if>
+            <if test="baseRate != null">base_rate = #{baseRate},</if>
+            <if test="lossRate != null">loss_rate = #{lossRate},</if>
+            <if test="lossQty != null">loss_qty = #{lossQty},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigProductionTemplateMaterialsById" parameterType="Long">
+        delete from config_production_template_materials where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigProductionTemplateMaterialsByIds" parameterType="String">
+        delete from config_production_template_materials where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

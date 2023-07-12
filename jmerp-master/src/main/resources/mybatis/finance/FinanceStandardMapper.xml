@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.finance.financeStandard.mapper.FinanceStandardMapper">
+    
+    <resultMap type="FinanceStandard" id="FinanceStandardResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="jobContent"    column="job_content"    />
+        <result property="valuationType"    column="valuation_type"    />
+        <result property="calculateType"    column="calculate_type"    />
+        <result property="allocationType"    column="allocation_type"    />
+        <result property="equalQty"    column="equal_qty"    />
+        <result property="convertQty"    column="convert_qty"    />
+        <result property="equalPrice"    column="equal_price"    />
+        <result property="abovePrice"    column="above_price"    />
+        <result property="belowPrice"    column="below_price"    />
+        <result property="scaleTeam"    column="scale_team"    />
+        <result property="priceTeam"    column="price_team"    />
+        <result property="processName"    column="process_name"    />
+        <result property="productName"    column="product_name"    />
+    </resultMap>
+
+    <sql id="selectFinanceStandardVo">
+        select
+            p.product_name,cp.process_name,
+            fs.id, fs.create_by, fs.create_time, fs.update_by, fs.update_time, fs.remark, fs.status, fs.product_id, fs.process_id, fs.job_content, fs.valuation_type, fs.calculate_type, fs.allocation_type, fs.equal_qty, fs.convert_qty, fs.equal_price, fs.above_price, fs.below_price, fs.scale_team, fs.price_team
+        from finance_standard fs
+            left join config_product p on p.id = fs.product_id
+            left join config_process cp on cp.id = fs.process_id
+    </sql>
+
+    <select id="selectFinanceStandardList" parameterType="FinanceStandard" resultMap="FinanceStandardResult">
+        <include refid="selectFinanceStandardVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and fs.status = #{status}</if>
+            <if test="productId != null "> and fs.product_id = #{productId}</if>
+            <if test="processId != null "> and fs.process_id = #{processId}</if>
+            <if test="jobContent != null  and jobContent != ''"> and fs.job_content like concat('%', #{jobContent}, '%')</if>
+            <if test="valuationType != null  and valuationType != ''"> and fs.valuation_type = #{valuationType}</if>
+            <if test="calculateType != null  and calculateType != ''"> and fs.calculate_type = #{calculateType}</if>
+            <if test="allocationType != null  and allocationType != ''"> and fs.allocation_type = #{allocationType}</if>
+            <if test="equalQty != null "> and fs.equal_qty = #{equalQty}</if>
+            <if test="convertQty != null "> and fs.convert_qty = #{convertQty}</if>
+            <if test="equalPrice != null "> and fs.equal_price = #{equalPrice}</if>
+            <if test="abovePrice != null "> and fs.above_price = #{abovePrice}</if>
+            <if test="belowPrice != null "> and fs.below_price = #{belowPrice}</if>
+            <if test="scaleTeam != null  and scaleTeam != ''"> and fs.scale_team = #{scaleTeam}</if>
+            <if test="priceTeam != null  and priceTeam != ''"> and fs.price_team = #{priceTeam}</if>
+        </where>
+    </select>
+    
+    <select id="selectFinanceStandardById" parameterType="Long" resultMap="FinanceStandardResult">
+        <include refid="selectFinanceStandardVo"/>
+        where fs.id = #{id}
+    </select>
+        
+    <insert id="insertFinanceStandard" parameterType="FinanceStandard" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into finance_standard
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="jobContent != null">job_content,</if>
+            <if test="valuationType != null">valuation_type,</if>
+            <if test="calculateType != null">calculate_type,</if>
+            <if test="allocationType != null">allocation_type,</if>
+            <if test="equalQty != null">equal_qty,</if>
+            <if test="convertQty != null">convert_qty,</if>
+            <if test="equalPrice != null">equal_price,</if>
+            <if test="abovePrice != null">above_price,</if>
+            <if test="belowPrice != null">below_price,</if>
+            <if test="scaleTeam != null">scale_team,</if>
+            <if test="priceTeam != null">price_team,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="jobContent != null">#{jobContent},</if>
+            <if test="valuationType != null">#{valuationType},</if>
+            <if test="calculateType != null">#{calculateType},</if>
+            <if test="allocationType != null">#{allocationType},</if>
+            <if test="equalQty != null">#{equalQty},</if>
+            <if test="convertQty != null">#{convertQty},</if>
+            <if test="equalPrice != null">#{equalPrice},</if>
+            <if test="abovePrice != null">#{abovePrice},</if>
+            <if test="belowPrice != null">#{belowPrice},</if>
+            <if test="scaleTeam != null">#{scaleTeam},</if>
+            <if test="priceTeam != null">#{priceTeam},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFinanceStandard" parameterType="FinanceStandard">
+        update finance_standard
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="jobContent != null">job_content = #{jobContent},</if>
+            <if test="valuationType != null">valuation_type = #{valuationType},</if>
+            <if test="calculateType != null">calculate_type = #{calculateType},</if>
+            <if test="allocationType != null">allocation_type = #{allocationType},</if>
+            <if test="equalQty != null">equal_qty = #{equalQty},</if>
+            <if test="convertQty != null">convert_qty = #{convertQty},</if>
+            <if test="equalPrice != null">equal_price = #{equalPrice},</if>
+            <if test="abovePrice != null">above_price = #{abovePrice},</if>
+            <if test="belowPrice != null">below_price = #{belowPrice},</if>
+            <if test="scaleTeam != null">scale_team = #{scaleTeam},</if>
+            <if test="priceTeam != null">price_team = #{priceTeam},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFinanceStandardById" parameterType="Long">
+        delete from finance_standard where id = #{id}
+    </delete>
+
+    <delete id="deleteFinanceStandardByIds" parameterType="String">
+        delete from finance_standard where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

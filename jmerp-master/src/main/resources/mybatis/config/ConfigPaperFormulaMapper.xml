@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configPaperFormula.mapper.ConfigPaperFormulaMapper">
+    
+    <resultMap type="ConfigPaperFormula" id="ConfigPaperFormulaResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="paperFormulaName"    column="paper_formula_name"    />
+        <result property="customerMaterial"    column="customer_material"    />
+        <result property="corrugatedId"    column="corrugated_id"    />
+        <result property="surfacePaper"    column="surface_paper"    />
+        <result property="bottomPaper"    column="bottom_paper"    />
+        <result property="corePaper"    column="core_paper"    />
+        <result property="corrugatedPaper"    column="corrugated_paper"    />
+        <result property="orgPaperPrice"    column="org_paper_price"    />
+        <result property="cartonPrice"    column="carton_price"    />
+        <result property="cardboardPrice"    column="cardboard_price"    />
+        <result property="squareWeight"    column="square_weight"    />
+        <result property="edgeStrength"    column="edge_strength"    />
+        <result property="burstStrength"    column="burst_strength"    />
+        <result property="waterRate"    column="water_rate"    />
+        <result property="stiffness"    column="stiffness"    />
+        <result property="corrugatedName"    column="corrugated_name"    />
+    </resultMap>
+
+    <sql id="selectConfigPaperFormulaVo">
+        select
+            co.corrugated_name,
+            pf.id, pf.create_by, pf.create_time, pf.update_by, pf.update_time, pf.remark, pf.status,
+            pf.paper_formula_name, pf.customer_material, pf.corrugated_id, pf.surface_paper, pf.bottom_paper, pf.core_paper, pf.corrugated_paper,
+            pf.org_paper_price, pf.carton_price, pf.cardboard_price, pf.square_weight, pf.edge_strength, pf.burst_strength, pf.water_rate, pf.stiffness
+        from config_paper_formula pf
+            left join config_corrugated co on co.id = pf.corrugated_id
+    </sql>
+
+    <select id="selectConfigPaperFormulaList" parameterType="ConfigPaperFormula" resultMap="ConfigPaperFormulaResult">
+        <include refid="selectConfigPaperFormulaVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and pf.status = #{status}</if>
+            <if test="paperFormulaName != null  and paperFormulaName != ''"> and pf.paper_formula_name like concat('%', #{paperFormulaName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigPaperFormulaById" parameterType="Long" resultMap="ConfigPaperFormulaResult">
+        <include refid="selectConfigPaperFormulaVo"/>
+        where pf.id = #{id}
+    </select>
+        
+    <insert id="insertConfigPaperFormula" parameterType="ConfigPaperFormula" useGeneratedKeys="true" keyProperty="id">
+        insert into config_paper_formula
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="paperFormulaName != null and paperFormulaName != ''">paper_formula_name,</if>
+            <if test="customerMaterial != null">customer_material,</if>
+            <if test="corrugatedId != null">corrugated_id,</if>
+            <if test="surfacePaper != null">surface_paper,</if>
+            <if test="bottomPaper != null">bottom_paper,</if>
+            <if test="corePaper != null">core_paper,</if>
+            <if test="corrugatedPaper != null">corrugated_paper,</if>
+            <if test="orgPaperPrice != null">org_paper_price,</if>
+            <if test="cartonPrice != null">carton_price,</if>
+            <if test="cardboardPrice != null">cardboard_price,</if>
+            <if test="squareWeight != null">square_weight,</if>
+            <if test="edgeStrength != null">edge_strength,</if>
+            <if test="burstStrength != null">burst_strength,</if>
+            <if test="waterRate != null">water_rate,</if>
+            <if test="stiffness != null">stiffness,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="paperFormulaName != null and paperFormulaName != ''">#{paperFormulaName},</if>
+            <if test="customerMaterial != null">#{customerMaterial},</if>
+            <if test="corrugatedId != null">#{corrugatedId},</if>
+            <if test="surfacePaper != null">#{surfacePaper},</if>
+            <if test="bottomPaper != null">#{bottomPaper},</if>
+            <if test="corePaper != null">#{corePaper},</if>
+            <if test="corrugatedPaper != null">#{corrugatedPaper},</if>
+            <if test="orgPaperPrice != null">#{orgPaperPrice},</if>
+            <if test="cartonPrice != null">#{cartonPrice},</if>
+            <if test="cardboardPrice != null">#{cardboardPrice},</if>
+            <if test="squareWeight != null">#{squareWeight},</if>
+            <if test="edgeStrength != null">#{edgeStrength},</if>
+            <if test="burstStrength != null">#{burstStrength},</if>
+            <if test="waterRate != null">#{waterRate},</if>
+            <if test="stiffness != null">#{stiffness},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigPaperFormula" parameterType="ConfigPaperFormula">
+        update config_paper_formula
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="paperFormulaName != null and paperFormulaName != ''">paper_formula_name = #{paperFormulaName},</if>
+            <if test="customerMaterial != null">customer_material = #{customerMaterial},</if>
+            <if test="corrugatedId != null">corrugated_id = #{corrugatedId},</if>
+            <if test="surfacePaper != null">surface_paper = #{surfacePaper},</if>
+            <if test="bottomPaper != null">bottom_paper = #{bottomPaper},</if>
+            <if test="corePaper != null">core_paper = #{corePaper},</if>
+            <if test="corrugatedPaper != null">corrugated_paper = #{corrugatedPaper},</if>
+            <if test="orgPaperPrice != null">org_paper_price = #{orgPaperPrice},</if>
+            <if test="cartonPrice != null">carton_price = #{cartonPrice},</if>
+            <if test="cardboardPrice != null">cardboard_price = #{cardboardPrice},</if>
+            <if test="squareWeight != null">square_weight = #{squareWeight},</if>
+            <if test="edgeStrength != null">edge_strength = #{edgeStrength},</if>
+            <if test="burstStrength != null">burst_strength = #{burstStrength},</if>
+            <if test="waterRate != null">water_rate = #{waterRate},</if>
+            <if test="stiffness != null">stiffness = #{stiffness},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigPaperFormulaById" parameterType="Long">
+        delete from config_paper_formula where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigPaperFormulaByIds" parameterType="String">
+        delete from config_paper_formula where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

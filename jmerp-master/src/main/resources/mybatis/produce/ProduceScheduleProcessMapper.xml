@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.produce.produceScheduleProcess.mapper.ProduceScheduleProcessMapper">
+    
+    <resultMap type="ProduceScheduleProcess" id="ProduceScheduleProcessResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="produceScheduleId"    column="produce_schedule_id"    />
+        <result property="produceOrderProcessId"    column="produce_order_process_id"    />
+        <result property="produceOrderProductId"    column="produce_order_product_id"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="productionTemplateId"    column="production_template_id"    />
+        <result property="productionTemplateProcessId"    column="production_template_process_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="produceStatus"    column="produce_status"    />
+        <result property="produceQty"    column="produce_qty"    />
+        <result property="qty"    column="qty"    />
+        <result property="productName"    column="product_name"    />
+        <result property="processName"    column="process_name"    />
+        <result property="produceOrderSN"    column="produce_order_sn"    />
+        <result property="sizeLong"    column="size_long"    />
+        <result property="sizeWidth"    column="size_width"    />
+        <result property="sizeHeight"    column="size_height"    />
+        <result property="produceScheduleSN"    column="produce_schedule_sn"    />
+        <result property="produceDate"    column="produce_date"    />
+        <result property="rzyValue2"    column="rzy_value2"    />
+        <result property="workCenter"    column="work_center"    />
+        <result property="teamName"    column="team_name"    />
+
+        <result property="saleOrderSN"    column="sale_order_sn"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="customerName"    column="customer_name"    />
+
+        <result property="colorRequire"    column="color_require"    />
+        <result property="frontSpot"    column="front_spot"    />
+        <result property="backSpot"    column="back_spot"    />
+        <result property="frontColor"    column="front_color"    />
+        <result property="backColor"    column="back_color"    />
+        <result property="materialsInfo"    column="materials_info"    />
+    </resultMap>
+
+    <sql id="selectProduceScheduleProcessVo">
+        select
+            (select GROUP_CONCAT(cm1.materials_name,'_',cm1.size_long,'*',cm1.size_width,'_',pom1.qty SEPARATOR '|') from produce_order_materials pom1 LEFT JOIN config_materials cm1 on cm1.id = pom1.materials_id where pom1.produce_order_id = po.id and pom1.process_id = psp.process_id) materials_info,
+            po.color_require,po.front_spot,po.back_spot,po.front_color,po.back_color,
+            cp.product_name,co.process_name,po.serial_number produce_order_sn,cp.size_long,cp.size_width,cp.size_height,ps.serial_number produce_schedule_sn,
+            ps.work_center,t.team_name,so.serial_number sale_order_sn,cc.customer_name,
+            psp.id, psp.remark, psp.produce_schedule_id, psp.produce_order_process_id, psp.produce_order_product_id, psp.produce_order_id, psp.sale_order_product_id, psp.sale_order_id, psp.production_template_id, psp.production_template_process_id, psp.product_id, psp.process_id, psp.produce_status, psp.produce_qty, psp.qty
+        from produce_schedule_process psp
+            left join config_product cp on cp.id = psp.product_id
+            left join config_process co on co.id = psp.process_id
+            left join produce_order po on po.id = psp.produce_order_id
+            left join produce_schedule ps on ps.id = psp.produce_schedule_id
+            left join config_team t on t.id = ps.team_id
+            left join sale_order so on so.id = psp.sale_order_id
+            left join config_customer cc on cc.id = so.customer_id
+    </sql>
+
+    <select id="selectProduceScheduleProcessList" parameterType="ProduceScheduleProcess" resultMap="ProduceScheduleProcessResult">
+        <include refid="selectProduceScheduleProcessVo"/>
+        <where>  
+            <if test="produceScheduleId != null "> and psp.produce_schedule_id = #{produceScheduleId}</if>
+            <if test="produceOrderProcessId != null "> and psp.produce_order_process_id = #{produceOrderProcessId}</if>
+            <if test="produceOrderProductId != null "> and psp.produce_order_product_id = #{produceOrderProductId}</if>
+            <if test="produceOrderId != null "> and psp.produce_order_id = #{produceOrderId}</if>
+            <if test="saleOrderProductId != null "> and psp.sale_order_product_id = #{saleOrderProductId}</if>
+            <if test="saleOrderId != null "> and psp.sale_order_id = #{saleOrderId}</if>
+            <if test="productionTemplateId != null "> and psp.production_template_id = #{productionTemplateId}</if>
+            <if test="productionTemplateProcessId != null "> and psp.production_template_process_id = #{productionTemplateProcessId}</if>
+            <if test="productId != null "> and psp.product_id = #{productId}</if>
+            <if test="processId != null "> and psp.process_id = #{processId}</if>
+            <if test="produceStatus != null  and produceStatus != ''"> and psp.produce_status = #{produceStatus}</if>
+            <if test="produceQty != null "> and psp.produce_qty = #{produceQty}</if>
+            <if test="qty != null "> and psp.qty = #{qty}</if>
+            <if test="rzyValue1 != null and rzyValue1 == 'report' ">
+                and psp.produce_schedule_id in (select ps2.id from produce_schedule ps2 where ps2.status = 'normal')
+            </if>
+            <if test="rzyValue1 != null and rzyValue1 == 'board' ">
+                and ps.status = 'normal'
+                and to_days(ps.produce_date) = to_days(now())
+            </if>
+            <if test="productName != null  and productName != ''">
+                and cp.product_name like concat('%', #{productName}, '%')
+            </if>
+            <if test="produceOrderSN != null  and produceOrderSN != ''">
+                and po.serial_number like concat('%', #{produceOrderSN}, '%')
+            </if>
+            <if test="produceScheduleSN != null  and produceScheduleSN != ''">
+                and ps.serial_number like concat('%', #{produceScheduleSN}, '%')
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectProduceScheduleProcessById" parameterType="Long" resultMap="ProduceScheduleProcessResult">
+        <include refid="selectProduceScheduleProcessVo"/>
+        where psp.id = #{id}
+    </select>
+        
+    <insert id="insertProduceScheduleProcess" parameterType="ProduceScheduleProcess" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into produce_schedule_process
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="produceScheduleId != null">produce_schedule_id,</if>
+            <if test="produceOrderProcessId != null">produce_order_process_id,</if>
+            <if test="produceOrderProductId != null">produce_order_product_id,</if>
+            <if test="produceOrderId != null">produce_order_id,</if>
+            <if test="saleOrderProductId != null">sale_order_product_id,</if>
+            <if test="saleOrderId != null">sale_order_id,</if>
+            <if test="productionTemplateId != null">production_template_id,</if>
+            <if test="productionTemplateProcessId != null">production_template_process_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="produceStatus != null">produce_status,</if>
+            <if test="produceQty != null">produce_qty,</if>
+            <if test="qty != null">qty,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="produceScheduleId != null">#{produceScheduleId},</if>
+            <if test="produceOrderProcessId != null">#{produceOrderProcessId},</if>
+            <if test="produceOrderProductId != null">#{produceOrderProductId},</if>
+            <if test="produceOrderId != null">#{produceOrderId},</if>
+            <if test="saleOrderProductId != null">#{saleOrderProductId},</if>
+            <if test="saleOrderId != null">#{saleOrderId},</if>
+            <if test="productionTemplateId != null">#{productionTemplateId},</if>
+            <if test="productionTemplateProcessId != null">#{productionTemplateProcessId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="produceStatus != null">#{produceStatus},</if>
+            <if test="produceQty != null">#{produceQty},</if>
+            <if test="qty != null">#{qty},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProduceScheduleProcess" parameterType="ProduceScheduleProcess">
+        update produce_schedule_process
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="produceScheduleId != null">produce_schedule_id = #{produceScheduleId},</if>
+            <if test="produceOrderProcessId != null">produce_order_process_id = #{produceOrderProcessId},</if>
+            <if test="produceOrderProductId != null">produce_order_product_id = #{produceOrderProductId},</if>
+            <if test="produceOrderId != null">produce_order_id = #{produceOrderId},</if>
+            <if test="saleOrderProductId != null">sale_order_product_id = #{saleOrderProductId},</if>
+            <if test="saleOrderId != null">sale_order_id = #{saleOrderId},</if>
+            <if test="productionTemplateId != null">production_template_id = #{productionTemplateId},</if>
+            <if test="productionTemplateProcessId != null">production_template_process_id = #{productionTemplateProcessId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="produceStatus != null">produce_status = #{produceStatus},</if>
+            <if test="produceQty != null">produce_qty = #{produceQty},</if>
+            <if test="qty != null">qty = #{qty},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProduceScheduleProcessById" parameterType="Long">
+        delete from produce_schedule_process where id = #{id}
+    </delete>
+
+    <delete id="deleteProduceScheduleProcessByIds" parameterType="String">
+        delete from produce_schedule_process where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectProduceQtyList" parameterType="ProduceScheduleProcess" resultMap="ProduceScheduleProcessResult">
+        select
+            s.produce_date,date_format(s.produce_date,'%Y-%m-%d') rzy_value2,sum(p.produce_qty) produce_qty,sum(p.qty) qty
+        from produce_schedule_process p
+            left join produce_schedule s on p.produce_schedule_id = s.id
+        where s.status = 'normal'
+            group by s.produce_date
+            having s.produce_date > date_sub(curdate(), interval #{rzyValue1} day)
+    </select>
+
+
+</mapper>

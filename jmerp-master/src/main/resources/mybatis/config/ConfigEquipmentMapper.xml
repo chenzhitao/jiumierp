@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configEquipment.mapper.ConfigEquipmentMapper">
+    
+    <resultMap type="ConfigEquipment" id="ConfigEquipmentResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="equipmentName"    column="equipment_name"    />
+        <result property="equipmentModel"    column="equipment_model"    />
+        <result property="vendor"    column="vendor"    />
+        <result property="equipmentType"    column="equipment_type"    />
+        <result property="equipmentPurpose"    column="equipment_purpose"    />
+        <result property="purchaseDate"    column="purchase_date"    />
+        <result property="price"    column="price"    />
+        <result property="depreciationType"    column="depreciation_type"    />
+        <result property="depreciationLimit"    column="depreciation_limit"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="batchQty"    column="batch_qty"    />
+        <result property="setupHours"    column="setup_hours"    />
+        <result property="maxWorkLong"    column="max_work_long"    />
+        <result property="maxWorkWidth"    column="max_work_width"    />
+        <result property="minWorkLong"    column="min_work_long"    />
+        <result property="minWorkWidth"    column="min_work_width"    />
+        <result property="maxPrintColor"    column="max_print_color"    />
+        <result property="productionReportType"    column="production_report_type"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="equipmentOpen"    column="equipment_open"    />
+        <result property="rzyValue1"    column="rzy_value1"    />
+    </resultMap>
+
+    <sql id="selectConfigEquipmentVo">
+        select
+            d.dept_name dept_name,concat(e.equipment_name,'-',e.max_work_long, '*', e.max_work_width) rzy_value1,
+            e.id, e.create_by, e.create_time, e.update_by, e.update_time, e.remark, e.status,
+            e.equipment_name, e.equipment_model, e.vendor, e.equipment_type, e.equipment_purpose,
+            e.purchase_date, e.price, e.depreciation_type, e.depreciation_limit, e.dept_id, e.batch_qty,
+            e.setup_hours, e.max_work_long, e.max_work_width, e.min_work_long, e.min_work_width,
+            e.max_print_color, e.production_report_type,equipment_open
+        from config_equipment e
+            left join sys_dept d on d.dept_id = e.dept_id
+    </sql>
+
+    <select id="selectConfigEquipmentList" parameterType="ConfigEquipment" resultMap="ConfigEquipmentResult">
+        <include refid="selectConfigEquipmentVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and e.status = #{status}</if>
+            <if test="equipmentName != null  and equipmentName != ''"> and e.equipment_name like concat('%', #{equipmentName}, '%')</if>
+            <if test="equipmentModel != null  and equipmentModel != ''"> and e.equipment_model like concat('%', #{equipmentModel}, '%')</if>
+            <if test="vendor != null  and vendor != ''"> and e.vendor like concat('%', #{vendor}, '%')</if>
+            <if test="equipmentType != null  and equipmentType != ''"> and e.equipment_type = #{equipmentType}</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigEquipmentById" parameterType="Long" resultMap="ConfigEquipmentResult">
+        <include refid="selectConfigEquipmentVo"/>
+        where e.id = #{id}
+    </select>
+        
+    <insert id="insertConfigEquipment" parameterType="ConfigEquipment" useGeneratedKeys="true" keyProperty="id">
+        insert into config_equipment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="equipmentName != null and equipmentName != ''">equipment_name,</if>
+            <if test="equipmentModel != null">equipment_model,</if>
+            <if test="vendor != null">vendor,</if>
+            <if test="equipmentType != null">equipment_type,</if>
+            <if test="equipmentPurpose != null">equipment_purpose,</if>
+            <if test="purchaseDate != null">purchase_date,</if>
+            <if test="price != null">price,</if>
+            <if test="depreciationType != null">depreciation_type,</if>
+            <if test="depreciationLimit != null">depreciation_limit,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="batchQty != null">batch_qty,</if>
+            <if test="setupHours != null">setup_hours,</if>
+            <if test="maxWorkLong != null">max_work_long,</if>
+            <if test="maxWorkWidth != null">max_work_width,</if>
+            <if test="minWorkLong != null">min_work_long,</if>
+            <if test="minWorkWidth != null">min_work_width,</if>
+            <if test="maxPrintColor != null">max_print_color,</if>
+            <if test="productionReportType != null">production_report_type,</if>
+            <if test="equipmentOpen != null">equipment_open,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="equipmentName != null and equipmentName != ''">#{equipmentName},</if>
+            <if test="equipmentModel != null">#{equipmentModel},</if>
+            <if test="vendor != null">#{vendor},</if>
+            <if test="equipmentType != null">#{equipmentType},</if>
+            <if test="equipmentPurpose != null">#{equipmentPurpose},</if>
+            <if test="purchaseDate != null">#{purchaseDate},</if>
+            <if test="price != null">#{price},</if>
+            <if test="depreciationType != null">#{depreciationType},</if>
+            <if test="depreciationLimit != null">#{depreciationLimit},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="batchQty != null">#{batchQty},</if>
+            <if test="setupHours != null">#{setupHours},</if>
+            <if test="maxWorkLong != null">#{maxWorkLong},</if>
+            <if test="maxWorkWidth != null">#{maxWorkWidth},</if>
+            <if test="minWorkLong != null">#{minWorkLong},</if>
+            <if test="minWorkWidth != null">#{minWorkWidth},</if>
+            <if test="maxPrintColor != null">#{maxPrintColor},</if>
+            <if test="productionReportType != null">#{productionReportType},</if>
+            <if test="equipmentOpen != null">#{equipmentOpen},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigEquipment" parameterType="ConfigEquipment">
+        update config_equipment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="equipmentName != null and equipmentName != ''">equipment_name = #{equipmentName},</if>
+            <if test="equipmentModel != null">equipment_model = #{equipmentModel},</if>
+            <if test="vendor != null">vendor = #{vendor},</if>
+            <if test="equipmentType != null">equipment_type = #{equipmentType},</if>
+            <if test="equipmentPurpose != null">equipment_purpose = #{equipmentPurpose},</if>
+            <if test="purchaseDate != null">purchase_date = #{purchaseDate},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="depreciationType != null">depreciation_type = #{depreciationType},</if>
+            <if test="depreciationLimit != null">depreciation_limit = #{depreciationLimit},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="batchQty != null">batch_qty = #{batchQty},</if>
+            <if test="setupHours != null">setup_hours = #{setupHours},</if>
+            <if test="maxWorkLong != null">max_work_long = #{maxWorkLong},</if>
+            <if test="maxWorkWidth != null">max_work_width = #{maxWorkWidth},</if>
+            <if test="minWorkLong != null">min_work_long = #{minWorkLong},</if>
+            <if test="minWorkWidth != null">min_work_width = #{minWorkWidth},</if>
+            <if test="maxPrintColor != null">max_print_color = #{maxPrintColor},</if>
+            <if test="productionReportType != null">production_report_type = #{productionReportType},</if>
+            <if test="equipmentOpen != null">equipment_open = #{equipmentOpen},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigEquipmentById" parameterType="Long">
+        delete from config_equipment where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigEquipmentByIds" parameterType="String">
+        delete from config_equipment where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectConfigEquipmentsByProduceOrderId" parameterType="ConfigEquipment" resultMap="ConfigEquipmentResult">
+        select
+            e.id, e.create_by, e.create_time, e.update_by, e.update_time, e.remark, e.status,
+            e.equipment_name, e.equipment_model, e.vendor, e.equipment_type, e.equipment_purpose,
+            e.purchase_date, e.price, e.depreciation_type, e.depreciation_limit, e.dept_id, e.batch_qty,
+            e.setup_hours, e.max_work_long, e.max_work_width, e.min_work_long, e.min_work_width,
+            e.max_print_color, e.production_report_type,equipment_open
+        from
+            produce_order_process pop
+        left join  config_process cp ON pop.process_id = cp.id
+        left join  config_equipment e ON pop.equipment_id = e.id
+        WHERE
+            pop.produce_order_id = #{id}
+        AND cp.process_type = 'ys'
+        AND pop.equipment_id IS NOT NULL
+        AND pop.is_print = 'Y'
+        AND e.equipment_purpose = 'print'
+        order by pop.process_order
+    </select>
+
+
+</mapper>

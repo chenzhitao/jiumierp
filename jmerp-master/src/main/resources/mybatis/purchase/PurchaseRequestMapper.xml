@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.purchase.purchaseRequest.mapper.PurchaseRequestMapper">
+    
+    <resultMap type="PurchaseRequest" id="PurchaseRequestResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="produceOrderMaterialsId"    column="produce_order_materials_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="contact"    column="contact"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="materialsId"    column="materials_id"    />
+        <result property="sizeLong"    column="size_long"    />
+        <result property="sizeWidth"    column="size_width"    />
+        <result property="qty"    column="qty"    />
+        <result property="requirements"    column="requirements"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+
+        <result property="produceOrderSN"    column="produce_order_sn"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="materialsName"    column="materials_name"    />
+        <result property="materialsSize"    column="materials_size"    />
+    </resultMap>
+
+    <sql id="selectPurchaseRequestVo">
+        select
+            po.serial_number produce_order_sn,s.supplier_name,m.materials_name,
+            concat(pr.size_long,'*',pr.size_width) materials_size,
+            pr.id, pr.create_by, pr.create_time, pr.update_by, pr.update_time, pr.remark, pr.status, pr.approver, pr.approval_time, pr.approval_type, pr.serial_number, pr.sale_order_id,
+            pr.sale_order_product_id, pr.produce_order_id, pr.produce_order_materials_id, pr.product_id, pr.process_id, pr.supplier_id, pr.contact, pr.cell_phone,
+            pr.materials_id, pr.size_long, pr.size_width, pr.qty, pr.requirements, pr.delivery_date
+        from purchase_request pr
+            left join config_materials m on m.id = pr.materials_id
+            left join config_supplier s on s.id = pr.supplier_id
+            left join produce_order po on po.id = pr.produce_order_id
+    </sql>
+
+    <select id="selectPurchaseRequestList" parameterType="PurchaseRequest" resultMap="PurchaseRequestResult">
+        <include refid="selectPurchaseRequestVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and pr.status = #{status}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and pr.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="produceOrderId != null "> and pr.produce_order_id like concat('%', #{produceOrderId}, '%')</if>
+            <if test="supplierId != null "> and pr.supplier_id = #{supplierId}</if>
+            <if test="materialsId != null "> and pr.materials_id = #{materialsId}</if>
+            <if test="params.beginDeliveryDate != null and params.beginDeliveryDate != '' ">
+                and date_sub(pr.delivery_date,interval -1 day) <![CDATA[ > ]]> #{params.beginDeliveryDate}
+            </if>
+            <if test="params.endDeliveryDate != null and params.endDeliveryDate != ''">
+                and date_sub(pr.delivery_date,interval 1 day) <![CDATA[ < ]]> #{params.endDeliveryDate}
+            </if>
+            <if test="produceOrderSN != null  and produceOrderSN != ''"> and po.serial_number like concat('%', #{produceOrderSN}, '%')</if>
+            <if test="rzyValue1 != null and rzyValue1 == 'purchase' ">
+                and pr.id not in (select pom.purchase_request_id from purchase_order_materials pom where pom.purchase_request_id is not null)
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectPurchaseRequestById" parameterType="Long" resultMap="PurchaseRequestResult">
+        <include refid="selectPurchaseRequestVo"/>
+        where pr.id = #{id}
+    </select>
+        
+    <insert id="insertPurchaseRequest" parameterType="PurchaseRequest" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into purchase_request
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            serial_number,
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="approver != null">approver,</if>
+            <if test="approvalTime != null">approval_time,</if>
+            <if test="approvalType != null">approval_type,</if>
+            <if test="saleOrderId != null">sale_order_id,</if>
+            <if test="saleOrderProductId != null">sale_order_product_id,</if>
+            <if test="produceOrderId != null">produce_order_id,</if>
+            <if test="produceOrderMaterialsId != null">produce_order_materials_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="contact != null">contact,</if>
+            <if test="cellPhone != null">cell_phone,</if>
+            <if test="materialsId != null">materials_id,</if>
+            <if test="sizeLong != null">size_long,</if>
+            <if test="sizeWidth != null">size_width,</if>
+            <if test="qty != null">qty,</if>
+            <if test="requirements != null">requirements,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            seq_nextval('CSQ'),
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="approvalTime != null">#{approvalTime},</if>
+            <if test="approvalType != null">#{approvalType},</if>
+            <if test="saleOrderId != null">#{saleOrderId},</if>
+            <if test="saleOrderProductId != null">#{saleOrderProductId},</if>
+            <if test="produceOrderId != null">#{produceOrderId},</if>
+            <if test="produceOrderMaterialsId != null">#{produceOrderMaterialsId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="contact != null">#{contact},</if>
+            <if test="cellPhone != null">#{cellPhone},</if>
+            <if test="materialsId != null">#{materialsId},</if>
+            <if test="sizeLong != null">#{sizeLong},</if>
+            <if test="sizeWidth != null">#{sizeWidth},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="requirements != null">#{requirements},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePurchaseRequest" parameterType="PurchaseRequest">
+        update purchase_request
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="approvalTime != null">approval_time = #{approvalTime},</if>
+            <if test="approvalType != null">approval_type = #{approvalType},</if>
+            <if test="serialNumber != null and serialNumber != ''">serial_number = #{serialNumber},</if>
+            <if test="saleOrderId != null">sale_order_id = #{saleOrderId},</if>
+            <if test="saleOrderProductId != null">sale_order_product_id = #{saleOrderProductId},</if>
+            <if test="produceOrderId != null">produce_order_id = #{produceOrderId},</if>
+            <if test="produceOrderMaterialsId != null">produce_order_materials_id = #{produceOrderMaterialsId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="cellPhone != null">cell_phone = #{cellPhone},</if>
+            <if test="materialsId != null">materials_id = #{materialsId},</if>
+            <if test="sizeLong != null">size_long = #{sizeLong},</if>
+            <if test="sizeWidth != null">size_width = #{sizeWidth},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="requirements != null">requirements = #{requirements},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePurchaseRequestById" parameterType="Long">
+        delete from purchase_request where id = #{id}
+    </delete>
+
+    <delete id="deletePurchaseRequestByIds" parameterType="String">
+        delete from purchase_request where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

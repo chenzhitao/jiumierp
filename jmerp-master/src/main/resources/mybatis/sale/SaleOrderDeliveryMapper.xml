@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.sale.saleOrderDelivery.mapper.SaleOrderDeliveryMapper">
+    
+    <resultMap type="SaleOrderDelivery" id="SaleOrderDeliveryResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="qty"    column="qty"    />
+        <result property="deliveryQty"    column="delivery_qty"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="address"    column="address"    />
+
+        <result property="productName"    column="product_name"    />
+        <result property="sendQty"    column="send_qty"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="saleOrderSN"    column="sale_order_sn"    />
+    </resultMap>
+
+    <sql id="selectSaleOrderDeliveryVo">
+        select
+            p.product_name,c.customer_name,so.serial_number sale_order_sn,
+            (select ifnull(sum(sdp1.qty),0) from sale_delivery_product sdp1 where sdp1.sale_order_delivery_id = od.id) send_qty,
+            od.id, od.remark, od.sale_order_id, od.sale_order_product_id, od.customer_id, od.product_id, od.qty, od.delivery_qty, od.delivery_date, od.address
+        from sale_order_delivery od
+            left join config_product p on p.id = od.product_id
+            left join config_customer c on c.id = od.customer_id
+            left join sale_order so on so.id = od.sale_order_id
+    </sql>
+
+    <select id="selectSaleOrderDeliveryList" parameterType="SaleOrderDelivery" resultMap="SaleOrderDeliveryResult">
+        <include refid="selectSaleOrderDeliveryVo"/>
+        <where>  
+            <if test="saleOrderId != null "> and od.sale_order_id = #{saleOrderId}</if>
+            <if test="saleOrderProductId != null "> and od.sale_order_product_id = #{saleOrderProductId}</if>
+            <if test="customerId != null "> and od.customer_id = #{customerId}</if>
+            <if test="productId != null "> and od.product_id = #{productId}</if>
+            <if test="qty != null "> and od.qty = #{qty}</if>
+            <if test="deliveryQty != null "> and od.delivery_qty = #{deliveryQty}</if>
+            <if test="deliveryDate != null "> and od.delivery_date = #{deliveryDate}</if>
+            <if test="address != null  and address != ''"> and od.address = #{address}</if>
+            <if test="rzyValue1 != null and rzyValue1 == 'sale' ">
+                and od.sale_order_id in (select ps2.id from sale_order ps2 where ps2.status = 'normal')
+                and od.qty <![CDATA[ > ]]> (select ifnull(sum(sdp1.qty),0) from sale_delivery_product sdp1 where sdp1.sale_order_delivery_id = od.id)
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSendQty" parameterType="SaleOrderDelivery" resultType="Integer">
+        select ifnull(sum(qty),0) send_qty from sale_order_delivery od where od.sale_order_product_id = #{saleOrderProductId}
+    </select>
+    
+    <select id="selectSaleOrderDeliveryById" parameterType="Long" resultMap="SaleOrderDeliveryResult">
+        <include refid="selectSaleOrderDeliveryVo"/>
+        where od.id = #{id}
+    </select>
+        
+    <insert id="insertSaleOrderDelivery" parameterType="SaleOrderDelivery" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sale_order_delivery
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="saleOrderId != null">sale_order_id,</if>
+            <if test="saleOrderProductId != null">sale_order_product_id,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="qty != null">qty,</if>
+            <if test="deliveryQty != null">delivery_qty,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+            <if test="address != null">address,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="saleOrderId != null">#{saleOrderId},</if>
+            <if test="saleOrderProductId != null">#{saleOrderProductId},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="deliveryQty != null">#{deliveryQty},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+            <if test="address != null">#{address},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleOrderDelivery" parameterType="SaleOrderDelivery">
+        update sale_order_delivery
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="saleOrderId != null">sale_order_id = #{saleOrderId},</if>
+            <if test="saleOrderProductId != null">sale_order_product_id = #{saleOrderProductId},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="deliveryQty != null">delivery_qty = #{deliveryQty},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="address != null">address = #{address},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSaleOrderDeliveryById" parameterType="Long">
+        delete from sale_order_delivery where id = #{id}
+    </delete>
+
+    <delete id="deleteSaleOrderDeliveryByIds" parameterType="String">
+        delete from sale_order_delivery where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

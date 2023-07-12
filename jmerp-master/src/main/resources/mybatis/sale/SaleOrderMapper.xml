@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.sale.saleOrder.mapper.SaleOrderMapper">
+    
+    <resultMap type="SaleOrder" id="SaleOrderResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="salesmanId"    column="salesman_id"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="settlementType"    column="settlement_type"    />
+        <result property="deliveryType"    column="delivery_type"    />
+        <result property="contact"    column="contact"    />
+        <result property="contactPhone"    column="contact_phone"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="deposit"    column="deposit"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="address"    column="address"    />
+
+        <result property="customerName"    column="customer_name"    />
+        <result property="salesmanName"    column="salesman_name"    />
+    </resultMap>
+
+    <resultMap type="SaleOrderExport" id="SaleOrderExportResult">
+        <result property="id"    column="id"    />
+        <result property="status"    column="status"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="salesmanId"    column="salesman_id"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="settlementType"    column="settlement_type"    />
+        <result property="deliveryType"    column="delivery_type"    />
+        <result property="contact"    column="contact"    />
+        <result property="contactPhone"    column="contact_phone"    />
+        <result property="deposit"    column="deposit"    />
+        <result property="price"    column="price"    />
+        <result property="qty"    column="qty"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="address"    column="address"    />
+        <result property="requirements"    column="requirements"    />
+        <result property="productName"    column="product_name"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="sendQty"    column="send_qty"    />
+        <result property="productSize"    column="product_size"    />
+        <result property="salesmanName"    column="salesman_name"    />
+    </resultMap>
+
+    <sql id="selectSaleOrderVo">
+        select
+            c.customer_name,e.employee_name salesman_name,
+            so.id, so.create_by, so.create_time, so.update_by, so.update_time, so.remark, so.status, so.approver, so.approval_time, so.approval_type, so.serial_number,
+            so.customer_id, so.salesman_id, so.payment_type, so.settlement_type, so.delivery_type, so.contact, so.contact_phone, so.tax_rate, so.amount, so.deposit, so.delivery_date, so.address
+        from sale_order so
+            left join config_customer c on c.id = so.customer_id
+            left join config_employee e on e.id = so.salesman_id
+    </sql>
+
+    <select id="selectSaleOrderList" parameterType="SaleOrder" resultMap="SaleOrderResult">
+        <include refid="selectSaleOrderVo"/>
+        <where>
+            customer_permission(#{rzyUserId},so.customer_id) = 'Y'
+            <if test="status != null  and status != ''"> and so.status = #{status}</if>
+            <if test="status == null  or status == ''"> and so.status <![CDATA[ <> ]]> 'delete' </if>
+            <if test="serialNumber != null  and serialNumber != ''"> and so.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="customerId != null "> and so.customer_id = #{customerId}</if>
+            <if test="salesmanId != null "> and so.salesman_id = #{salesmanId}</if>
+            <if test="paymentType != null  and paymentType != ''"> and so.payment_type = #{paymentType}</if>
+            <if test="settlementType != null  and settlementType != ''"> and so.settlement_type = #{settlementType}</if>
+            <if test="deliveryType != null  and deliveryType != ''"> and so.delivery_type = #{deliveryType}</if>
+            <if test="contact != null  and contact != ''"> and so.contact like concat('%', #{contact}, '%')</if>
+            <if test="params.beginDeliveryDate != null and params.beginDeliveryDate != '' ">
+                and date_sub(so.delivery_date,interval -1 day) <![CDATA[ > ]]> #{params.beginDeliveryDate}
+            </if>
+            <if test="params.endDeliveryDate != null and params.endDeliveryDate != ''">
+                and date_sub(so.delivery_date,interval 1 day) <![CDATA[ < ]]> #{params.endDeliveryDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSaleOrderExportList" parameterType="SaleOrder" resultMap="SaleOrderExportResult">
+        select
+            so.serial_number,so.status,concat(p.size_long,'*',p.size_width,'*',p.size_height) product_size,
+            so.customer_id, so.salesman_id, so.payment_type, so.settlement_type, so.delivery_type, so.contact, so.contact_phone, so.deposit,
+            p.product_name,c.customer_name,e.employee_name salesman_name,
+            (select ifnull(sum(qty),0) send_qty from sale_order_delivery od where od.sale_order_product_id = op.id) send_qty,
+            op.id, op.remark, op.sale_order_id, op.product_id, op.price, op.qty, op.tax_rate, op.amount, op.delivery_date, op.address, op.requirements,
+            op.sale_quotation_product_id
+        from sale_order_product op
+            left join sale_order so on so.id = op.sale_order_id
+            left join config_product p on p.id = op.product_id
+            left join config_customer c on c.id = op.customer_id
+            left join config_employee e on e.id = so.salesman_id
+        <where>
+            customer_permission(#{rzyUserId},so.customer_id) = 'Y'
+            <if test="status != null  and status != ''"> and so.status = #{status}</if>
+            <if test="status == null  or status == ''"> and so.status <![CDATA[ <> ]]> 'delete' </if>
+            <if test="serialNumber != null  and serialNumber != ''"> and so.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="customerId != null "> and so.customer_id = #{customerId}</if>
+            <if test="salesmanId != null "> and so.salesman_id = #{salesmanId}</if>
+            <if test="paymentType != null  and paymentType != ''"> and so.payment_type = #{paymentType}</if>
+            <if test="settlementType != null  and settlementType != ''"> and so.settlement_type = #{settlementType}</if>
+            <if test="deliveryType != null  and deliveryType != ''"> and so.delivery_type = #{deliveryType}</if>
+            <if test="contact != null  and contact != ''"> and so.contact like concat('%', #{contact}, '%')</if>
+            <if test="params.beginDeliveryDate != null and params.beginDeliveryDate != '' ">
+                and date_sub(so.delivery_date,interval -1 day) <![CDATA[ > ]]> #{params.beginDeliveryDate}
+            </if>
+            <if test="params.endDeliveryDate != null and params.endDeliveryDate != ''">
+                and date_sub(so.delivery_date,interval 1 day) <![CDATA[ < ]]> #{params.endDeliveryDate}
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectSaleOrderById" parameterType="Long" resultMap="SaleOrderResult">
+        <include refid="selectSaleOrderVo"/>
+        where so.id = #{id}
+    </select>
+        
+    <insert id="insertSaleOrder" parameterType="SaleOrder" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sale_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            serial_number,
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="approver != null">approver,</if>
+            <if test="approvalTime != null">approval_time,</if>
+            <if test="approvalType != null">approval_type,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="salesmanId != null">salesman_id,</if>
+            <if test="paymentType != null">payment_type,</if>
+            <if test="settlementType != null">settlement_type,</if>
+            <if test="deliveryType != null">delivery_type,</if>
+            <if test="contact != null">contact,</if>
+            <if test="contactPhone != null">contact_phone,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="amount != null">amount,</if>
+            <if test="deposit != null">deposit,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+            <if test="address != null">address,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            seq_nextval('XDD'),
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="approvalTime != null">#{approvalTime},</if>
+            <if test="approvalType != null">#{approvalType},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="salesmanId != null">#{salesmanId},</if>
+            <if test="paymentType != null">#{paymentType},</if>
+            <if test="settlementType != null">#{settlementType},</if>
+            <if test="deliveryType != null">#{deliveryType},</if>
+            <if test="contact != null">#{contact},</if>
+            <if test="contactPhone != null">#{contactPhone},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="deposit != null">#{deposit},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+            <if test="address != null">#{address},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleOrder" parameterType="SaleOrder">
+        update sale_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="approvalTime != null">approval_time = #{approvalTime},</if>
+            <if test="approvalType != null">approval_type = #{approvalType},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="salesmanId != null">salesman_id = #{salesmanId},</if>
+            <if test="paymentType != null">payment_type = #{paymentType},</if>
+            <if test="settlementType != null">settlement_type = #{settlementType},</if>
+            <if test="deliveryType != null">delivery_type = #{deliveryType},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="contactPhone != null">contact_phone = #{contactPhone},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="deposit != null">deposit = #{deposit},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="address != null">address = #{address},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSaleOrderById" parameterType="Long">
+        delete from sale_order where id = #{id}
+    </delete>
+
+    <delete id="deleteProduceOrderDeliveryById" parameterType="Long">
+        delete from sale_order_delivery where sale_order_id = #{id}
+    </delete>
+
+    <delete id="deleteProduceOrderMaterialsById" parameterType="Long">
+        delete from sale_order_materials where sale_order_id = #{id}
+    </delete>
+
+    <delete id="deleteSaleOrderByIds" parameterType="String">
+        delete from sale_order where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

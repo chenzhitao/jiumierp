@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.outsource.outsourceOrderMaterials.mapper.OutsourceOrderMaterialsMapper">
+    
+    <resultMap type="OutsourceOrderMaterials" id="OutsourceOrderMaterialsResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="outsourceOrderId"    column="outsource_order_id"    />
+        <result property="materialsId"    column="materials_id"    />
+        <result property="qty"    column="qty"    />
+        <result property="returnQty"    column="return_qty"    />
+        <result property="price"    column="price"    />
+        <result property="sizeLong"    column="size_long"    />
+        <result property="sizeWidth"    column="size_width"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="materialsName"    column="materials_name"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+    </resultMap>
+
+    <sql id="selectOutsourceOrderMaterialsVo">
+        select
+            w.warehouse_name,m.materials_name,
+            oom.id, oom.remark, oom.outsource_order_id, oom.materials_id, oom.qty, oom.return_qty, oom.price, oom.size_long, oom.size_width, oom.warehouse_id, oom.delivery_date
+        from outsource_order_materials oom
+            left join config_materials m on m.id = oom.materials_id
+            left join config_warehouse w on w.id = oom.warehouse_id
+    </sql>
+
+    <select id="selectOutsourceOrderMaterialsList" parameterType="OutsourceOrderMaterials" resultMap="OutsourceOrderMaterialsResult">
+        <include refid="selectOutsourceOrderMaterialsVo"/>
+        <where>  
+            <if test="outsourceOrderId != null "> and oom.outsource_order_id = #{outsourceOrderId}</if>
+            <if test="materialsId != null "> and oom.materials_id = #{materialsId}</if>
+            <if test="qty != null "> and oom.qty = #{qty}</if>
+            <if test="returnQty != null "> and oom.return_qty = #{returnQty}</if>
+            <if test="price != null "> and oom.price = #{price}</if>
+            <if test="sizeLong != null "> and oom.size_long = #{sizeLong}</if>
+            <if test="sizeWidth != null "> and oom.size_width = #{sizeWidth}</if>
+            <if test="warehouseId != null "> and oom.warehouse_id = #{warehouseId}</if>
+            <if test="deliveryDate != null "> and oom.delivery_date = #{deliveryDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectOutsourceOrderMaterialsById" parameterType="Long" resultMap="OutsourceOrderMaterialsResult">
+        <include refid="selectOutsourceOrderMaterialsVo"/>
+        where oom.id = #{id}
+    </select>
+        
+    <insert id="insertOutsourceOrderMaterials" parameterType="OutsourceOrderMaterials" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into outsource_order_materials
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="outsourceOrderId != null">outsource_order_id,</if>
+            <if test="materialsId != null">materials_id,</if>
+            <if test="qty != null">qty,</if>
+            <if test="returnQty != null">return_qty,</if>
+            <if test="price != null">price,</if>
+            <if test="sizeLong != null">size_long,</if>
+            <if test="sizeWidth != null">size_width,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="outsourceOrderId != null">#{outsourceOrderId},</if>
+            <if test="materialsId != null">#{materialsId},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="returnQty != null">#{returnQty},</if>
+            <if test="price != null">#{price},</if>
+            <if test="sizeLong != null">#{sizeLong},</if>
+            <if test="sizeWidth != null">#{sizeWidth},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOutsourceOrderMaterials" parameterType="OutsourceOrderMaterials">
+        update outsource_order_materials
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="outsourceOrderId != null">outsource_order_id = #{outsourceOrderId},</if>
+            <if test="materialsId != null">materials_id = #{materialsId},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="returnQty != null">return_qty = #{returnQty},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="sizeLong != null">size_long = #{sizeLong},</if>
+            <if test="sizeWidth != null">size_width = #{sizeWidth},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOutsourceOrderMaterialsById" parameterType="Long">
+        delete from outsource_order_materials where id = #{id}
+    </delete>
+
+    <delete id="deleteOutsourceOrderMaterialsByIds" parameterType="String">
+        delete from outsource_order_materials where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.sale.saleOrderProduct.mapper.SaleOrderProductMapper">
+    
+    <resultMap type="SaleOrderProduct" id="SaleOrderProductResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="price"    column="price"    />
+        <result property="qty"    column="qty"    />
+        <result property="warehouseQty"    column="warehouse_qty"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="address"    column="address"    />
+        <result property="requirements"    column="requirements"    />
+
+        <result property="productName"    column="product_name"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="saleQuotationProductId"    column="sale_quotation_product_id"    />
+        <result property="sendQty"    column="send_qty"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="customerNo"    column="customer_no"    />
+        <result property="productFullName"    column="product_full_name"    />
+        <result property="isOutFlow"    column="is_out_flow"    />
+    </resultMap>
+
+    <sql id="selectSaleOrderProductVo">
+        select
+            p.product_name,c.customer_name,op.customer_no,op.is_out_flow,
+               if(p.product_level='C',concat(p.product_parent_name,'#',p.product_name),p.product_name) product_full_name,
+            (select ifnull(sum(qty),0) send_qty from sale_order_delivery od where od.sale_order_product_id = op.id) send_qty,
+            op.id, op.remark, op.sale_order_id, op.customer_id, op.product_id, op.price, op.qty, op.tax_rate, op.amount, op.delivery_date, op.address, op.requirements,
+            op.sale_quotation_product_id
+        from sale_order_product op
+            left join config_product p on p.id = op.product_id
+            left join config_customer c on c.id = op.customer_id
+    </sql>
+
+    <select id="selectSaleOrderProductList" parameterType="SaleOrderProduct" resultMap="SaleOrderProductResult">
+        <include refid="selectSaleOrderProductVo"/>
+        <where>  
+            <if test="saleOrderId != null "> and op.sale_order_id = #{saleOrderId}</if>
+            <if test="customerId != null "> and op.customer_id = #{customerId}</if>
+            <if test="productId != null "> and op.product_id = #{productId}</if>
+            <if test="price != null "> and op.price = #{price}</if>
+            <if test="qty != null "> and op.qty = #{qty}</if>
+            <if test="taxRate != null "> and op.tax_rate = #{taxRate}</if>
+            <if test="amount != null "> and op.amount = #{amount}</if>
+            <if test="deliveryDate != null "> and op.delivery_date = #{deliveryDate}</if>
+            <if test="address != null  and address != ''"> and op.address = #{address}</if>
+            <if test="requirements != null  and requirements != ''"> and op.requirements = #{requirements}</if>
+            <if test="saleQuotationProductId != null "> and op.sale_quotation_product_id = #{saleQuotationProductId}</if>
+            <if test="customerNo != null "> and op.customer_no = #{customerNo}</if>
+        </where>
+        order by op.id asc
+    </select>
+
+    <select id="selectSaleOrderProductList2" parameterType="SaleOrderProduct" resultMap="SaleOrderProductResult">
+        select
+            p.product_name,so.serial_number,c.customer_name,op.customer_no,op.is_out_flow,
+            (select ifnull(sum(i.qty),0) from warehouse_inventory i where i.product_id = op.product_id) warehouse_qty,
+            (select ifnull(sum(qty),0) send_qty from sale_order_delivery od where od.sale_order_product_id = op.id) send_qty,
+            op.id, op.remark, op.sale_order_id, op.customer_id, op.product_id, op.price, op.qty, op.tax_rate, op.amount, op.delivery_date, op.address, op.requirements,
+            op.sale_quotation_product_id
+        from sale_order_product op
+            left join config_product p on p.id = op.product_id
+            left join config_customer c on c.id = op.customer_id
+            left join sale_order so on so.id = op.sale_order_id
+        <where>
+            <if test="rzyValue1 != null  and rzyValue1 == 'produce'">
+                and op.id not in (select po.sale_order_product_id from produce_order po)
+                and op.sale_order_id in (select so.id from sale_order so where so.status in ('normal'))
+                and op.id not in (select oop.sale_order_product_id from outsource_order_process oop)
+            </if>
+            <if test="rzyValue1 != null  and rzyValue1 == 'outsource'">
+                and op.id not in (select po.sale_order_product_id from produce_order po)
+                and op.sale_order_id in (select so.id from sale_order so where so.status in ('normal'))
+                and op.id not in (select oop.sale_order_product_id from outsource_order_process oop)
+            </if>
+            <if test="customerId != null "> and op.customer_id = #{customerId}</if>
+            <if test="productId != null "> and op.product_id = #{productId}</if>
+            <if test="serialNumber != null  and serialNumber != ''">
+                and op.sale_order_id in (select so.id from sale_order so where so.serial_number LIKE concat('%', #{serialNumber}, '%'))
+            </if>
+            <if test="params.beginDeliveryDate != null and params.beginDeliveryDate != '' ">
+                and date_sub(op.delivery_date,interval -1 day) <![CDATA[ > ]]> #{params.beginDeliveryDate}
+            </if>
+            <if test="params.endDeliveryDate != null and params.endDeliveryDate != ''">
+                and date_sub(op.delivery_date,interval 1 day) <![CDATA[ < ]]> #{params.endDeliveryDate}
+            </if>
+            <if test="params.endDeliveryDate != null and params.endDeliveryDate != ''">
+                and date_sub(op.delivery_date,interval 1 day) <![CDATA[ < ]]> #{params.endDeliveryDate}
+            </if>
+            <if test="isOutFlow != null  and isOutFlow != ''">
+                and op.is_out_flow = #{isOutFlow}
+            </if>
+        </where>
+        order by op.delivery_date
+    </select>
+
+    <select id="selectSaleOrderProductById" parameterType="Long" resultMap="SaleOrderProductResult">
+        <include refid="selectSaleOrderProductVo"/>
+        where op.id = #{id}
+    </select>
+        
+    <insert id="insertSaleOrderProduct" parameterType="SaleOrderProduct" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sale_order_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="saleOrderId != null">sale_order_id,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="price != null">price,</if>
+            <if test="qty != null">qty,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="amount != null">amount,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+            <if test="address != null">address,</if>
+            <if test="requirements != null">requirements,</if>
+            <if test="saleQuotationProductId != null">sale_quotation_product_id,</if>
+            <if test="customerNo != null">customer_no,</if>
+            <if test="isOutFlow != null">is_out_flow,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="saleOrderId != null">#{saleOrderId},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="price != null">#{price},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+            <if test="address != null">#{address},</if>
+            <if test="requirements != null">#{requirements},</if>
+            <if test="saleQuotationProductId != null">#{saleQuotationProductId},</if>
+            <if test="customerNo != null">#{customerNo},</if>
+            <if test="isOutFlow != null">#{isOutFlow},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleOrderProduct" parameterType="SaleOrderProduct">
+        update sale_order_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="saleOrderId != null">sale_order_id = #{saleOrderId},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="requirements != null">requirements = #{requirements},</if>
+            <if test="saleQuotationProductId != null">sale_quotation_product_id = #{saleQuotationProductId},</if>
+            <if test="customerNo != null">customer_no = #{customerNo},</if>
+            <if test="isOutFlow != null">is_out_flow = #{isOutFlow},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSaleOrderProductById" parameterType="Long">
+        delete from sale_order_product where id = #{id}
+    </delete>
+
+    <delete id="deleteSaleOrderProductByIds" parameterType="String">
+        delete from sale_order_product where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectUnsendProduct" parameterType="Long" resultMap="SaleOrderProductResult">
+        select
+            x.id, (x.qty - x.dqty) qty
+        from
+            ( select p.id, ( select ifnull(sum(d.qty), 0) from sale_order_delivery d where d.sale_order_product_id = p.id ) dqty, p.qty from sale_order_product p where p.sale_order_id = #{id} ) x
+        where x.qty > x.dqty
+    </select>
+
+</mapper>

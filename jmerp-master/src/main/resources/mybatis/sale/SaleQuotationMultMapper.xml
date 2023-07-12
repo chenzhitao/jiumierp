@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.sale.saleQuotationMult.mapper.SaleQuotationMultMapper">
+    
+    <resultMap type="SaleQuotationMult" id="SaleQuotationMultResult">
+        <result property="id"    column="id"    />
+        <result property="saleQuotationId"    column="sale_quotation_id"    />
+        <result property="qty"    column="qty"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="price"    column="price"    />
+        <result property="calculateLog"    column="calculate_log"    />
+    </resultMap>
+
+    <sql id="selectSaleQuotationMultVo">
+        select id, sale_quotation_id, qty, tax_rate, amount, price, calculate_log from sale_quotation_mult
+    </sql>
+
+    <select id="selectSaleQuotationMultList" parameterType="SaleQuotationMult" resultMap="SaleQuotationMultResult">
+        <include refid="selectSaleQuotationMultVo"/>
+        <where>  
+            <if test="saleQuotationId != null "> and sale_quotation_id = #{saleQuotationId}</if>
+            <if test="qty != null "> and qty = #{qty}</if>
+            <if test="taxRate != null "> and tax_rate = #{taxRate}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="price != null "> and price = #{price}</if>
+        </where>
+    </select>
+    
+    <select id="selectSaleQuotationMultById" parameterType="Long" resultMap="SaleQuotationMultResult">
+        <include refid="selectSaleQuotationMultVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSaleQuotationMult" parameterType="SaleQuotationMult" useGeneratedKeys="true" keyProperty="id">
+        insert into sale_quotation_mult
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="saleQuotationId != null">sale_quotation_id,</if>
+            <if test="qty != null">qty,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="amount != null">amount,</if>
+            <if test="price != null">price,</if>
+            <if test="calculateLog != null">calculate_log,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="saleQuotationId != null">#{saleQuotationId},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="price != null">#{price},</if>
+            <if test="calculateLog != null">#{calculateLog},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleQuotationMult" parameterType="SaleQuotationMult">
+        update sale_quotation_mult
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="saleQuotationId != null">sale_quotation_id = #{saleQuotationId},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="calculateLog != null">calculate_log = #{calculateLog},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSaleQuotationMultById" parameterType="Long">
+        delete from sale_quotation_mult where id = #{id}
+    </delete>
+
+    <delete id="deleteSaleQuotationMultByIds" parameterType="String">
+        delete from sale_quotation_mult where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.purchase.purchaseDelivery.mapper.PurchaseDeliveryMapper">
+    
+    <resultMap type="PurchaseDelivery" id="PurchaseDeliveryResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="contact"    column="contact"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="buyerId"    column="buyer_id"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="purchaseOrderType"    column="purchase_order_type"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="settlementType"    column="settlement_type"    />
+        <result property="deliveryType"    column="delivery_type"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+
+        <result property="buyerName"    column="buyer_name"    />
+        <result property="supplierName"    column="supplier_name"    />
+    </resultMap>
+
+    <resultMap type="PurchaseDeliveryExport" id="PurchaseDeliveryExportResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="contact"    column="contact"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="buyerId"    column="buyer_id"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="purchaseOrderType"    column="purchase_order_type"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="settlementType"    column="settlement_type"    />
+        <result property="deliveryType"    column="delivery_type"    />
+
+        <result property="buyerName"    column="buyer_name"    />
+
+        <result property="purchaseDeliveryId"    column="purchase_delivery_id"    />
+        <result property="purchaseOrderId"    column="purchase_order_id"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="produceOrderMaterialsId"    column="produce_order_materials_id"    />
+        <result property="purchaseOrderMaterialsId"    column="purchase_order_materials_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="purchaseRequestId"    column="purchase_request_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="materialsId"    column="materials_id"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="orgPrice"    column="org_price"    />
+        <result property="price"    column="price"    />
+        <result property="sizeLong"    column="size_long"    />
+        <result property="sizeWidth"    column="size_width"    />
+        <result property="qty"    column="qty"    />
+        <result property="returnQty"    column="return_qty"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="requirements"    column="requirements"    />
+        <result property="address"    column="address"    />
+
+        <result property="materialsName"    column="materials_name"    />
+        <result property="purchaseOrderSN"    column="purchase_order_sn"    />
+        <result property="purchaseRequestSN"    column="purchase_request_sn"    />
+        <result property="produceOrderSN"    column="produce_order_sn"    />
+        <result property="purchaseDeliverySN"    column="purchase_delivery_sn"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="materialsSize"    column="materials_size"    />
+    </resultMap>
+
+    <sql id="selectPurchaseDeliveryVo">
+        select
+            s.supplier_name,e.employee_name buyer_name,
+            pd.id, pd.create_by, pd.create_time, pd.update_by, pd.update_time, pd.remark, pd.status, pd.approver, pd.approval_time, pd.approval_type, pd.serial_number, pd.supplier_id, pd.contact, pd.cell_phone, pd.buyer_id, pd.delivery_date, pd.purchase_order_type, pd.payment_type, pd.settlement_type, pd.delivery_type, pd.tax_rate, pd.amount
+        from purchase_delivery pd
+            left join config_supplier s on s.id = pd.supplier_id
+            left join config_employee e on e.id = pd.buyer_id
+    </sql>
+
+    <select id="selectPurchaseDeliveryList" parameterType="PurchaseDelivery" resultMap="PurchaseDeliveryResult">
+        <include refid="selectPurchaseDeliveryVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and pd.status = #{status}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and pd.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="supplierId != null "> and pd.supplier_id = #{supplierId}</if>
+            <if test="buyerId != null "> and pd.buyer_id = #{buyerId}</if>
+            <if test="purchaseOrderType != null  and purchaseOrderType != ''"> and pd.purchase_order_type = #{purchaseOrderType}</if>
+            <if test="paymentType != null  and paymentType != ''"> and pd.payment_type = #{paymentType}</if>
+            <if test="settlementType != null  and settlementType != ''"> and pd.settlement_type = #{settlementType}</if>
+            <if test="deliveryType != null  and deliveryType != ''"> and pd.delivery_type = #{deliveryType}</if>
+            <if test="params.beginDeliveryDate != null and params.beginDeliveryDate != '' ">
+                and date_sub(pd.delivery_date,interval -1 day) <![CDATA[ > ]]> #{params.beginDeliveryDate}
+            </if>
+            <if test="params.endDeliveryDate != null and params.endDeliveryDate != ''">
+                and date_sub(pd.delivery_date,interval 1 day) <![CDATA[ < ]]> #{params.endDeliveryDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPurchaseDeliveryExportList" parameterType="PurchaseDelivery" resultMap="PurchaseDeliveryExportResult">
+        select
+            m.materials_name,pu.serial_number purchase_order_sn,pr.serial_number purchase_request_sn,po.serial_number produce_order_sn,pd.serial_number purchase_delivery_sn,
+            s.supplier_name,w.warehouse_name,pdm.purchase_order_materials_id,
+            concat(pdm.size_long, '*', pdm.size_width) materials_size,e.employee_name buyer_name,
+            pdm.id, pdm.remark, pdm.purchase_delivery_id, pdm.purchase_order_id, pdm.produce_order_id, pdm.produce_order_materials_id, pdm.sale_order_id, pdm.sale_order_product_id, pdm.purchase_request_id, pdm.product_id, pdm.process_id, pdm.materials_id, pdm.warehouse_id, pdm.org_price, pdm.price, pdm.size_long, pdm.size_width, pdm.qty, pdm.return_qty, pdm.tax_rate, pdm.amount, pdm.delivery_date, pdm.requirements, pdm.address,
+            pd.status, pd.approver, pd.approval_time, pd.approval_type, pd.serial_number, pd.supplier_id, pd.contact, pd.cell_phone, pd.buyer_id, pd.purchase_order_type, pd.payment_type, pd.settlement_type, pd.delivery_type
+        from purchase_delivery_materials pdm
+            left join config_supplier s on s.id = pdm.supplier_id
+            left join config_materials m on m.id = pdm.materials_id
+            left join config_warehouse w on w.id = pdm.warehouse_id
+            left join purchase_order pu on pu.id = pdm.purchase_order_id
+            left join purchase_request pr on pr.id = pdm.purchase_request_id
+            left join produce_order po on po.id = pdm.produce_order_id
+            left join purchase_delivery pd on pd.id = pdm.purchase_delivery_id
+            left join config_employee e on e.id = pd.buyer_id
+        <where>
+            <if test="status != null  and status != ''"> and pd.status = #{status}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and pd.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="supplierId != null "> and pd.supplier_id = #{supplierId}</if>
+            <if test="buyerId != null "> and pd.buyer_id = #{buyerId}</if>
+            <if test="purchaseOrderType != null  and purchaseOrderType != ''"> and pd.purchase_order_type = #{purchaseOrderType}</if>
+            <if test="paymentType != null  and paymentType != ''"> and pd.payment_type = #{paymentType}</if>
+            <if test="settlementType != null  and settlementType != ''"> and pd.settlement_type = #{settlementType}</if>
+            <if test="deliveryType != null  and deliveryType != ''"> and pd.delivery_type = #{deliveryType}</if>
+            <if test="params.beginDeliveryDate != null and params.beginDeliveryDate != '' ">
+                and date_sub(pd.delivery_date,interval -1 day) <![CDATA[ > ]]> #{params.beginDeliveryDate}
+            </if>
+            <if test="params.endDeliveryDate != null and params.endDeliveryDate != ''">
+                and date_sub(pd.delivery_date,interval 1 day) <![CDATA[ < ]]> #{params.endDeliveryDate}
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectPurchaseDeliveryById" parameterType="Long" resultMap="PurchaseDeliveryResult">
+        <include refid="selectPurchaseDeliveryVo"/>
+        where pd.id = #{id}
+    </select>
+        
+    <insert id="insertPurchaseDelivery" parameterType="PurchaseDelivery" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into purchase_delivery
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            serial_number,
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="approver != null">approver,</if>
+            <if test="approvalTime != null">approval_time,</if>
+            <if test="approvalType != null">approval_type,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="contact != null">contact,</if>
+            <if test="cellPhone != null">cell_phone,</if>
+            <if test="buyerId != null">buyer_id,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+            <if test="purchaseOrderType != null">purchase_order_type,</if>
+            <if test="paymentType != null">payment_type,</if>
+            <if test="settlementType != null">settlement_type,</if>
+            <if test="deliveryType != null">delivery_type,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="amount != null">amount,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            seq_nextval('CDH'),
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="approvalTime != null">#{approvalTime},</if>
+            <if test="approvalType != null">#{approvalType},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="contact != null">#{contact},</if>
+            <if test="cellPhone != null">#{cellPhone},</if>
+            <if test="buyerId != null">#{buyerId},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+            <if test="purchaseOrderType != null">#{purchaseOrderType},</if>
+            <if test="paymentType != null">#{paymentType},</if>
+            <if test="settlementType != null">#{settlementType},</if>
+            <if test="deliveryType != null">#{deliveryType},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="amount != null">#{amount},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePurchaseDelivery" parameterType="PurchaseDelivery">
+        update purchase_delivery
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="approvalTime != null">approval_time = #{approvalTime},</if>
+            <if test="approvalType != null">approval_type = #{approvalType},</if>
+            <if test="serialNumber != null and serialNumber != ''">serial_number = #{serialNumber},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="cellPhone != null">cell_phone = #{cellPhone},</if>
+            <if test="buyerId != null">buyer_id = #{buyerId},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="purchaseOrderType != null">purchase_order_type = #{purchaseOrderType},</if>
+            <if test="paymentType != null">payment_type = #{paymentType},</if>
+            <if test="settlementType != null">settlement_type = #{settlementType},</if>
+            <if test="deliveryType != null">delivery_type = #{deliveryType},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePurchaseDeliveryById" parameterType="Long">
+        delete from purchase_delivery where id = #{id}
+    </delete>
+
+    <delete id="deletePurchaseDeliveryMaterialsById" parameterType="Long">
+        delete from purchase_delivery_materials where purchase_delivery_id = #{id}
+    </delete>
+
+    <delete id="deletePurchaseDeliveryByIds" parameterType="String">
+        delete from purchase_delivery where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configCutterDie.mapper.ConfigCutterDieMapper">
+    
+    <resultMap type="ConfigCutterDie" id="ConfigCutterDieResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="cutterDieName"    column="cutter_die_name"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="shelvesNo"    column="shelves_no"    />
+        <result property="cutterDieSize"    column="cutter_die_size"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="productName"    column="product_name"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+    </resultMap>
+
+    <sql id="selectConfigCutterDieVo">
+        select
+            c.customer_name, p.product_name,w.warehouse_name,
+            cd.id, cd.create_by, cd.create_time, cd.update_by, cd.update_time, cd.remark, cd.status, cd.
+            cutter_die_name, cd.warehouse_id, cd.shelves_no, cd.cutter_die_size, cd.customer_id, cd.product_id
+        from config_cutter_die cd
+            left join config_customer c on c.id = cd.customer_id
+            left join config_product p on p.id = cd.product_id
+            left join config_warehouse w on w.id = cd.warehouse_id
+    </sql>
+
+    <select id="selectConfigCutterDieList" parameterType="ConfigCutterDie" resultMap="ConfigCutterDieResult">
+        <include refid="selectConfigCutterDieVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and cd.status = #{status}</if>
+            <if test="cutterDieName != null  and cutterDieName != ''"> and cd.cutter_die_name like concat('%', #{cutterDieName}, '%')</if>
+            <if test="shelvesNo != null  and shelvesNo != ''"> and cd.shelves_no like concat('%', #{shelvesNo}, '%')</if>
+            <if test="customerId != null "> and cd.customer_id = #{customerId}</if>
+            <if test="productId != null "> and cd.product_id = #{productId}</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigCutterDieById" parameterType="Long" resultMap="ConfigCutterDieResult">
+        <include refid="selectConfigCutterDieVo"/>
+        where cd.id = #{id}
+    </select>
+        
+    <insert id="insertConfigCutterDie" parameterType="ConfigCutterDie" useGeneratedKeys="true" keyProperty="id">
+        insert into config_cutter_die
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="cutterDieName != null and cutterDieName != ''">cutter_die_name,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="shelvesNo != null">shelves_no,</if>
+            <if test="cutterDieSize != null">cutter_die_size,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="productId != null">product_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="cutterDieName != null and cutterDieName != ''">#{cutterDieName},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="shelvesNo != null">#{shelvesNo},</if>
+            <if test="cutterDieSize != null">#{cutterDieSize},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="productId != null">#{productId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigCutterDie" parameterType="ConfigCutterDie">
+        update config_cutter_die
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="cutterDieName != null and cutterDieName != ''">cutter_die_name = #{cutterDieName},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="shelvesNo != null">shelves_no = #{shelvesNo},</if>
+            <if test="cutterDieSize != null">cutter_die_size = #{cutterDieSize},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigCutterDieById" parameterType="Long">
+        delete from config_cutter_die where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigCutterDieByIds" parameterType="String">
+        delete from config_cutter_die where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

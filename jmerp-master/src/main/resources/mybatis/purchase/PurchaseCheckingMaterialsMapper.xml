@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.purchase.purchaseCheckingMaterials.mapper.PurchaseCheckingMaterialsMapper">
+    
+    <resultMap type="PurchaseCheckingMaterials" id="PurchaseCheckingMaterialsResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="purchaseCheckingId"    column="purchase_checking_id"    />
+        <result property="purchaseOrderId"    column="purchase_order_id"    />
+        <result property="purchaseOrderMaterialsId"    column="purchase_order_materials_id"    />
+        <result property="purchaseDeliveryId"    column="purchase_delivery_id"    />
+        <result property="purchaseDeliveryMaterialsId"    column="purchase_delivery_materials_id"    />
+        <result property="purchaseRequestId"    column="purchase_request_id"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="produceOrderMaterialsId"    column="produce_order_materials_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="materialsId"    column="materials_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="orgPrice"    column="org_price"    />
+        <result property="price"    column="price"    />
+        <result property="sizeLong"    column="size_long"    />
+        <result property="sizeWidth"    column="size_width"    />
+        <result property="qty"    column="qty"    />
+        <result property="returnQty"    column="return_qty"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="requirements"    column="requirements"    />
+        <result property="address"    column="address"    />
+
+        <result property="materialsName"    column="materials_name"    />
+        <result property="purchaseOrderSN"    column="purchase_order_sn"    />
+        <result property="purchaseRequestSN"    column="purchase_request_sn"    />
+        <result property="produceOrderSN"    column="produce_order_sn"    />
+        <result property="purchaseDeliverySN"    column="purchase_delivery_sn"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+    </resultMap>
+
+    <sql id="selectPurchaseCheckingMaterialsVo">
+        select
+            m.materials_name,pu.serial_number purchase_order_sn,pr.serial_number purchase_request_sn,po.serial_number produce_order_sn,pd.serial_number purchase_delivery_sn,
+            pdm.supplier_id,s.supplier_name,w.warehouse_name,pdm.purchase_order_materials_id,
+            pdm.warehouse_id, pdm.org_price, pdm.price, pdm.size_long, pdm.size_width, pdm.qty, pdm.return_qty, pdm.tax_rate, pdm.amount, pdm.delivery_date, pdm.requirements, pdm.address,
+            pcm.id, pcm.remark, pcm.purchase_checking_id, pcm.purchase_order_id, pcm.purchase_order_materials_id, pcm.purchase_delivery_id, pcm.purchase_delivery_materials_id, pcm.purchase_request_id, pcm.produce_order_id, pcm.produce_order_materials_id, pcm.sale_order_id, pcm.sale_order_product_id, pcm.product_id, pcm.process_id, pcm.materials_id, pcm.supplier_id
+        from purchase_checking_materials pcm
+            left join purchase_delivery_materials pdm on pdm.id = pcm.purchase_delivery_materials_id
+            left join config_supplier s on s.id = pdm.supplier_id
+            left join config_materials m on m.id = pdm.materials_id
+            left join config_warehouse w on w.id = pdm.warehouse_id
+            left join purchase_order pu on pu.id = pdm.purchase_order_id
+            left join purchase_request pr on pr.id = pdm.purchase_request_id
+            left join produce_order po on po.id = pdm.produce_order_id
+            left join purchase_delivery pd on pd.id = pdm.purchase_delivery_id
+
+    </sql>
+
+    <select id="selectPurchaseCheckingMaterialsList" parameterType="PurchaseCheckingMaterials" resultMap="PurchaseCheckingMaterialsResult">
+        <include refid="selectPurchaseCheckingMaterialsVo"/>
+        <where>  
+            <if test="purchaseCheckingId != null "> and pcm.purchase_checking_id = #{purchaseCheckingId}</if>
+            <if test="purchaseOrderId != null "> and pcm.purchase_order_id = #{purchaseOrderId}</if>
+            <if test="purchaseOrderMaterialsId != null "> and pcm.purchase_order_materials_id = #{purchaseOrderMaterialsId}</if>
+            <if test="purchaseDeliveryId != null "> and pcm.purchase_delivery_id = #{purchaseDeliveryId}</if>
+            <if test="purchaseDeliveryMaterialsId != null "> and pcm.purchase_delivery_materials_id = #{purchaseDeliveryMaterialsId}</if>
+            <if test="purchaseRequestId != null "> and pcm.purchase_request_id = #{purchaseRequestId}</if>
+            <if test="produceOrderId != null "> and pcm.produce_order_id = #{produceOrderId}</if>
+            <if test="produceOrderMaterialsId != null "> and pcm.produce_order_materials_id = #{produceOrderMaterialsId}</if>
+            <if test="saleOrderId != null "> and pcm.sale_order_id = #{saleOrderId}</if>
+            <if test="saleOrderProductId != null "> and pcm.sale_order_product_id = #{saleOrderProductId}</if>
+            <if test="productId != null "> and pcm.product_id = #{productId}</if>
+            <if test="processId != null "> and pcm.process_id = #{processId}</if>
+            <if test="materialsId != null "> and pcm.materials_id = #{materialsId}</if>
+            <if test="supplierId != null "> and pcm.supplier_id = #{supplierId}</if>
+        </where>
+    </select>
+    
+    <select id="selectPurchaseCheckingMaterialsById" parameterType="Long" resultMap="PurchaseCheckingMaterialsResult">
+        <include refid="selectPurchaseCheckingMaterialsVo"/>
+        where pcm.id = #{id}
+    </select>
+        
+    <insert id="insertPurchaseCheckingMaterials" parameterType="PurchaseCheckingMaterials" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into purchase_checking_materials
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="purchaseCheckingId != null">purchase_checking_id,</if>
+            <if test="purchaseOrderId != null">purchase_order_id,</if>
+            <if test="purchaseOrderMaterialsId != null">purchase_order_materials_id,</if>
+            <if test="purchaseDeliveryId != null">purchase_delivery_id,</if>
+            <if test="purchaseDeliveryMaterialsId != null">purchase_delivery_materials_id,</if>
+            <if test="purchaseRequestId != null">purchase_request_id,</if>
+            <if test="produceOrderId != null">produce_order_id,</if>
+            <if test="produceOrderMaterialsId != null">produce_order_materials_id,</if>
+            <if test="saleOrderId != null">sale_order_id,</if>
+            <if test="saleOrderProductId != null">sale_order_product_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="materialsId != null">materials_id,</if>
+            <if test="supplierId != null">supplier_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="purchaseCheckingId != null">#{purchaseCheckingId},</if>
+            <if test="purchaseOrderId != null">#{purchaseOrderId},</if>
+            <if test="purchaseOrderMaterialsId != null">#{purchaseOrderMaterialsId},</if>
+            <if test="purchaseDeliveryId != null">#{purchaseDeliveryId},</if>
+            <if test="purchaseDeliveryMaterialsId != null">#{purchaseDeliveryMaterialsId},</if>
+            <if test="purchaseRequestId != null">#{purchaseRequestId},</if>
+            <if test="produceOrderId != null">#{produceOrderId},</if>
+            <if test="produceOrderMaterialsId != null">#{produceOrderMaterialsId},</if>
+            <if test="saleOrderId != null">#{saleOrderId},</if>
+            <if test="saleOrderProductId != null">#{saleOrderProductId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="materialsId != null">#{materialsId},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePurchaseCheckingMaterials" parameterType="PurchaseCheckingMaterials">
+        update purchase_checking_materials
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="purchaseCheckingId != null">purchase_checking_id = #{purchaseCheckingId},</if>
+            <if test="purchaseOrderId != null">purchase_order_id = #{purchaseOrderId},</if>
+            <if test="purchaseOrderMaterialsId != null">purchase_order_materials_id = #{purchaseOrderMaterialsId},</if>
+            <if test="purchaseDeliveryId != null">purchase_delivery_id = #{purchaseDeliveryId},</if>
+            <if test="purchaseDeliveryMaterialsId != null">purchase_delivery_materials_id = #{purchaseDeliveryMaterialsId},</if>
+            <if test="purchaseRequestId != null">purchase_request_id = #{purchaseRequestId},</if>
+            <if test="produceOrderId != null">produce_order_id = #{produceOrderId},</if>
+            <if test="produceOrderMaterialsId != null">produce_order_materials_id = #{produceOrderMaterialsId},</if>
+            <if test="saleOrderId != null">sale_order_id = #{saleOrderId},</if>
+            <if test="saleOrderProductId != null">sale_order_product_id = #{saleOrderProductId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="materialsId != null">materials_id = #{materialsId},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePurchaseCheckingMaterialsById" parameterType="Long">
+        delete from purchase_checking_materials where id = #{id}
+    </delete>
+
+    <delete id="deletePurchaseCheckingMaterialsByIds" parameterType="String">
+        delete from purchase_checking_materials where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

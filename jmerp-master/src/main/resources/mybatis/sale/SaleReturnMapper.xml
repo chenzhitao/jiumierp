@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.sale.saleReturn.mapper.SaleReturnMapper">
+    
+    <resultMap type="SaleReturn" id="SaleReturnResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="salesmanId"    column="salesman_id"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="settlementType"    column="settlement_type"    />
+        <result property="deliveryType"    column="delivery_type"    />
+        <result property="contact"    column="contact"    />
+        <result property="contactPhone"    column="contact_phone"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="returnDate"    column="return_date"    />
+        <result property="address"    column="address"    />
+
+        <result property="customerName"    column="customer_name"    />
+        <result property="salesmanName"    column="salesman_name"    />
+    </resultMap>
+
+    <resultMap type="SaleReturnExport" id="SaleReturnExportResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="salesmanId"    column="salesman_id"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="settlementType"    column="settlement_type"    />
+        <result property="deliveryType"    column="delivery_type"    />
+        <result property="contact"    column="contact"    />
+        <result property="contactPhone"    column="contact_phone"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="salesmanName"    column="salesman_name"    />
+        <result property="saleReturnId"    column="sale_return_id"    />
+        <result property="saleDeliveryId"    column="sale_delivery_id"    />
+        <result property="saleDeliveryProductId"    column="sale_delivery_product_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="saleOrderDeliveryId"    column="sale_order_delivery_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="returnType"    column="return_type"    />
+        <result property="returnRate"    column="return_rate"    />
+        <result property="qty"    column="qty"    />
+        <result property="price"    column="price"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="returnDate"    column="return_date"    />
+        <result property="address"    column="address"    />
+        <result property="productName"    column="product_name"    />
+        <result property="saleDeliverySN"    column="sale_delivery_sn"    />
+        <result property="saleOrderSN"    column="sale_order_sn"    />
+        <result property="saleReturnSN"    column="sale_return_sn"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="deliveryQty"    column="delivery_qty"    />
+    </resultMap>
+
+    <sql id="selectSaleReturnVo">
+        select
+            sr.address,c.customer_name,e.employee_name salesman_name,
+            sr.id, sr.create_by, sr.create_time, sr.update_by, sr.update_time, sr.remark, sr.status, sr.approver, sr.approval_time, sr.approval_type, sr.serial_number, sr.customer_id, sr.salesman_id, sr.payment_type, sr.settlement_type, sr.delivery_type, sr.contact, sr.contact_phone, sr.tax_rate, sr.amount, sr.return_date
+        from sale_return sr
+            left join config_customer c on c.id = sr.customer_id
+            left join config_employee e on e.id = sr.salesman_id
+    </sql>
+
+    <select id="selectSaleReturnExportList" parameterType="SaleReturn" resultMap="SaleReturnExportResult">
+        select
+            p.product_name,c.customer_name,sd.serial_number sale_delivery_sn,so.serial_number sale_order_sn,sr.serial_number sale_return_sn,w.warehouse_name,e.employee_name salesman_name,
+            (select ifnull(sum(sdp1.qty),0) from sale_delivery_product sdp1 where sdp1.id = srp.sale_delivery_product_id) delivery_qty,
+            srp.id, srp.remark, srp.sale_return_id, srp.sale_delivery_id, srp.sale_delivery_product_id, srp.sale_order_id, srp.sale_order_product_id, srp.sale_order_delivery_id, srp.customer_id, srp.product_id, srp.return_type, srp.return_rate, srp.qty, srp.price, srp.warehouse_id,
+            sr.status, sr.approver, sr.approval_time, sr.approval_type, sr.serial_number, sr.customer_id, sr.salesman_id, sr.payment_type, sr.settlement_type, sr.delivery_type, sr.contact, sr.contact_phone, sr.tax_rate, sr.amount, sr.return_date
+        from sale_return_product srp
+            left join sale_return sr on sr.id = srp.sale_return_id
+            left join config_customer c on c.id = srp.customer_id
+            left join config_product p on p.id = srp.product_id
+            left join sale_order so on so.id = srp.sale_order_id
+            left join sale_delivery sd on sd.id = srp.sale_delivery_id
+            left join config_warehouse w on w.id = srp.warehouse_id
+            left join config_employee e on e.id = sr.salesman_id
+        <where>  
+            <if test="status != null  and status != ''"> and sr.status = #{status}</if>
+            <if test="status == null  or status == ''"> and sr.status <![CDATA[ <> ]]> 'delete' </if>
+            <if test="serialNumber != null  and serialNumber != ''"> and sr.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="customerId != null "> and sr.customer_id = #{customerId}</if>
+            <if test="salesmanId != null "> and sr.salesman_id = #{salesmanId}</if>
+            <if test="paymentType != null  and paymentType != ''"> and sr.payment_type = #{paymentType}</if>
+            <if test="settlementType != null  and settlementType != ''"> and sr.settlement_type = #{settlementType}</if>
+            <if test="deliveryType != null  and deliveryType != ''"> and sr.delivery_type = #{deliveryType}</if>
+            <if test="contact != null  and contact != ''"> and sr.contact like concat('%', #{contact}, '%')</if>
+            <if test="params.beginReturnDate != null and params.beginReturnDate != ''"><!-- 开始时间检索 -->
+                and date_format(sr.return_date,'%y%m%d') &gt;= date_format(#{params.beginReturnDate},'%y%m%d')
+            </if>
+            <if test="params.endReturnDate != null and params.endReturnDate != ''"><!-- 结束时间检索 -->
+                and date_format(sr.return_date,'%y%m%d') &lt;= date_format(#{params.endReturnDate},'%y%m%d')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSaleReturnList" parameterType="SaleReturn" resultMap="SaleReturnExportResult">
+        <include refid="selectSaleReturnVo"/>
+        <where>
+            <if test="status != null  and status != ''"> and sr.status = #{status}</if>
+            <if test="status == null  or status == ''"> and sr.status <![CDATA[ <> ]]> 'delete' </if>
+            <if test="serialNumber != null  and serialNumber != ''"> and sr.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="customerId != null "> and sr.customer_id = #{customerId}</if>
+            <if test="salesmanId != null "> and sr.salesman_id = #{salesmanId}</if>
+            <if test="paymentType != null  and paymentType != ''"> and sr.payment_type = #{paymentType}</if>
+            <if test="settlementType != null  and settlementType != ''"> and sr.settlement_type = #{settlementType}</if>
+            <if test="deliveryType != null  and deliveryType != ''"> and sr.delivery_type = #{deliveryType}</if>
+            <if test="contact != null  and contact != ''"> and sr.contact like concat('%', #{contact}, '%')</if>
+            <if test="params.beginReturnDate != null and params.beginReturnDate != ''"><!-- 开始时间检索 -->
+                and date_format(sr.return_date,'%y%m%d') &gt;= date_format(#{params.beginReturnDate},'%y%m%d')
+            </if>
+            <if test="params.endReturnDate != null and params.endReturnDate != ''"><!-- 结束时间检索 -->
+                and date_format(sr.return_date,'%y%m%d') &lt;= date_format(#{params.endReturnDate},'%y%m%d')
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectSaleReturnById" parameterType="Long" resultMap="SaleReturnResult">
+        <include refid="selectSaleReturnVo"/>
+        where sr.id = #{id}
+    </select>
+        
+    <insert id="insertSaleReturn" parameterType="SaleReturn" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sale_return
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            serial_number,
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="approver != null">approver,</if>
+            <if test="approvalTime != null">approval_time,</if>
+            <if test="approvalType != null">approval_type,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="salesmanId != null">salesman_id,</if>
+            <if test="paymentType != null">payment_type,</if>
+            <if test="settlementType != null">settlement_type,</if>
+            <if test="deliveryType != null">delivery_type,</if>
+            <if test="contact != null">contact,</if>
+            <if test="contactPhone != null">contact_phone,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="amount != null">amount,</if>
+            <if test="returnDate != null">return_date,</if>
+            <if test="address != null">address,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            seq_nextval('XTH'),
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="approvalTime != null">#{approvalTime},</if>
+            <if test="approvalType != null">#{approvalType},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="salesmanId != null">#{salesmanId},</if>
+            <if test="paymentType != null">#{paymentType},</if>
+            <if test="settlementType != null">#{settlementType},</if>
+            <if test="deliveryType != null">#{deliveryType},</if>
+            <if test="contact != null">#{contact},</if>
+            <if test="contactPhone != null">#{contactPhone},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="returnDate != null">#{returnDate},</if>
+            <if test="address != null">#{address},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleReturn" parameterType="SaleReturn">
+        update sale_return
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="approvalTime != null">approval_time = #{approvalTime},</if>
+            <if test="approvalType != null">approval_type = #{approvalType},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="salesmanId != null">salesman_id = #{salesmanId},</if>
+            <if test="paymentType != null">payment_type = #{paymentType},</if>
+            <if test="settlementType != null">settlement_type = #{settlementType},</if>
+            <if test="deliveryType != null">delivery_type = #{deliveryType},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="contactPhone != null">contact_phone = #{contactPhone},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="returnDate != null">return_date = #{returnDate},</if>
+            <if test="address != null">address = #{address},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSaleReturnById" parameterType="Long">
+        delete from sale_return where id = #{id}
+    </delete>
+
+    <delete id="deleteSaleReturnProductById" parameterType="Long">
+        delete from sale_return_product where sale_return_id = #{id}
+    </delete>
+
+    <delete id="deleteSaleReturnByIds" parameterType="String">
+        delete from sale_return where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.purchase.purchaseChecking.mapper.PurchaseCheckingMapper">
+    
+    <resultMap type="PurchaseChecking" id="PurchaseCheckingResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="checkingDate"    column="checking_date"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="settlementType"    column="settlement_type"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="deliveryAmount"    column="delivery_amount"    />
+        <result property="returnAmount"    column="return_amount"    />
+        <result property="invoiceNo"    column="invoice_no"    />
+        <result property="invoiceUnit"    column="invoice_unit"    />
+        <result property="supplierName"    column="supplier_name"    />
+    </resultMap>
+
+    <sql id="selectPurchaseCheckingVo">
+        select
+            s.supplier_name,
+            pc.id, pc.create_by, pc.create_time, pc.update_by, pc.update_time, pc.remark, pc.status, pc.approver, pc.approval_time, pc.approval_type, pc.serial_number, pc.supplier_id, pc.checking_date, pc.payment_type, pc.settlement_type, pc.tax_rate, pc.amount, pc.delivery_amount, pc.return_amount, pc.invoice_no, invoice_unit
+        from purchase_checking pc
+            left join config_supplier s on s.id = pc.supplier_id
+    </sql>
+
+    <select id="selectPurchaseCheckingList" parameterType="PurchaseChecking" resultMap="PurchaseCheckingResult">
+        <include refid="selectPurchaseCheckingVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and pc.status = #{status}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and pc.serial_number like concat('%', pc.#{serialNumber}, '%')</if>
+            <if test="supplierId != null "> and pc.supplier_id = #{supplierId}</if>
+            <if test="paymentType != null  and paymentType != ''"> and pc.payment_type = #{paymentType}</if>
+            <if test="settlementType != null  and settlementType != ''"> and pc.settlement_type = #{settlementType}</if>
+            <if test="params.beginCheckingDate != null and params.beginCheckingDate != '' ">
+                and date_sub(pc.checking_date,interval -1 day) <![CDATA[ > ]]> #{params.beginCheckingDate}
+            </if>
+            <if test="params.endCheckingDate != null and params.endCheckingDate != ''">
+                and date_sub(pc.checking_date,interval 1 day) <![CDATA[ < ]]> #{params.endCheckingDate}
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectPurchaseCheckingById" parameterType="Long" resultMap="PurchaseCheckingResult">
+        <include refid="selectPurchaseCheckingVo"/>
+        where pc.id = #{id}
+    </select>
+        
+    <insert id="insertPurchaseChecking" parameterType="PurchaseChecking" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into purchase_checking
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            serial_number,
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="approver != null">approver,</if>
+            <if test="approvalTime != null">approval_time,</if>
+            <if test="approvalType != null">approval_type,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="checkingDate != null">checking_date,</if>
+            <if test="paymentType != null">payment_type,</if>
+            <if test="settlementType != null">settlement_type,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="amount != null">amount,</if>
+            <if test="deliveryAmount != null">delivery_amount,</if>
+            <if test="returnAmount != null">return_amount,</if>
+            <if test="invoiceNo != null">invoice_no,</if>
+            <if test="invoiceUnit != null">invoice_unit,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            seq_nextval('CDZ'),
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="approvalTime != null">#{approvalTime},</if>
+            <if test="approvalType != null">#{approvalType},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="checkingDate != null">#{checkingDate},</if>
+            <if test="paymentType != null">#{paymentType},</if>
+            <if test="settlementType != null">#{settlementType},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="deliveryAmount != null">#{deliveryAmount},</if>
+            <if test="returnAmount != null">#{returnAmount},</if>
+            <if test="invoiceNo != null">#{invoiceNo},</if>
+            <if test="invoiceUnit != null">#{invoiceUnit},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePurchaseChecking" parameterType="PurchaseChecking">
+        update purchase_checking
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="approvalTime != null">approval_time = #{approvalTime},</if>
+            <if test="approvalType != null">approval_type = #{approvalType},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="checkingDate != null">checking_date = #{checkingDate},</if>
+            <if test="paymentType != null">payment_type = #{paymentType},</if>
+            <if test="settlementType != null">settlement_type = #{settlementType},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="deliveryAmount != null">delivery_amount = #{deliveryAmount},</if>
+            <if test="returnAmount != null">return_amount = #{returnAmount},</if>
+            <if test="invoiceNo != null">invoice_no = #{invoiceNo},</if>
+            <if test="invoiceUnit != null">invoice_unit = #{invoiceUnit},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePurchaseCheckingById" parameterType="Long">
+        delete from purchase_checking where id = #{id}
+    </delete>
+
+    <delete id="deletePurchaseCheckingMaterialsById" parameterType="Long">
+        delete from purchase_checking_materials where purchase_checking_id = #{id}
+    </delete>
+
+    <delete id="deletePurchaseCheckingByIds" parameterType="String">
+        delete from purchase_checking where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

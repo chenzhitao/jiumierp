@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configProcess.mapper.ConfigProcessMapper">
+    
+    <resultMap type="ConfigProcess" id="ConfigProcessResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="processName"    column="process_name"    />
+        <result property="processType"    column="process_type"    />
+        <result property="equipmentId"    column="equipment_id"    />
+        <result property="minBatchQty"    column="min_batch_qty"    />
+        <result property="semiFinishedUnit"    column="semi_finished_unit"    />
+        <result property="processingType"    column="processing_type"    />
+        <result property="requirements"    column="requirements"    />
+        <result property="equipmentName"    column="equipment_name"    />
+    </resultMap>
+
+    <sql id="selectConfigProcessVo">
+        select
+            e.equipment_name,
+            p.id, p.create_by, p.create_time, p.update_by, p.update_time, p.remark, p.status,
+            p.process_name, p.process_type, p.equipment_id, p.min_batch_qty, p.semi_finished_unit,
+            p.processing_type, p.requirements
+        from config_process p
+            left join config_equipment e on e.id = p.equipment_id
+    </sql>
+
+    <select id="selectConfigProcessList" parameterType="ConfigProcess" resultMap="ConfigProcessResult">
+        <include refid="selectConfigProcessVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and p.status = #{status}</if>
+            <if test="processName != null  and processName != ''"> and p.process_name like concat('%', #{processName}, '%')</if>
+            <if test="processType != null  and processType != ''"> and p.process_type = #{processType}</if>
+            <if test="processingType != null  and processingType != ''"> and p.processing_type = #{processingType}</if>
+        </where>
+        <if test="rzyValue2 != null  and rzyValue2 == 'select'">
+            order by (select sdd.dict_sort from sys_dict_data sdd where sdd.dict_type = 'process_type' and sdd.dict_value = p.process_type)
+        </if>
+    </select>
+    
+    <select id="selectConfigProcessById" parameterType="Long" resultMap="ConfigProcessResult">
+        <include refid="selectConfigProcessVo"/>
+        where p.id = #{id}
+    </select>
+        
+    <insert id="insertConfigProcess" parameterType="ConfigProcess" useGeneratedKeys="true" keyProperty="id">
+        insert into config_process
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="processName != null and processName != ''">process_name,</if>
+            <if test="processType != null">process_type,</if>
+            <if test="equipmentId != null">equipment_id,</if>
+            <if test="minBatchQty != null">min_batch_qty,</if>
+            <if test="semiFinishedUnit != null">semi_finished_unit,</if>
+            <if test="processingType != null">processing_type,</if>
+            <if test="requirements != null">requirements,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="processName != null and processName != ''">#{processName},</if>
+            <if test="processType != null">#{processType},</if>
+            <if test="equipmentId != null">#{equipmentId},</if>
+            <if test="minBatchQty != null">#{minBatchQty},</if>
+            <if test="semiFinishedUnit != null">#{semiFinishedUnit},</if>
+            <if test="processingType != null">#{processingType},</if>
+            <if test="requirements != null">#{requirements},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigProcess" parameterType="ConfigProcess">
+        update config_process
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="processName != null and processName != ''">process_name = #{processName},</if>
+            <if test="processType != null">process_type = #{processType},</if>
+            <if test="equipmentId != null">equipment_id = #{equipmentId},</if>
+            <if test="minBatchQty != null">min_batch_qty = #{minBatchQty},</if>
+            <if test="semiFinishedUnit != null">semi_finished_unit = #{semiFinishedUnit},</if>
+            <if test="processingType != null">processing_type = #{processingType},</if>
+            <if test="requirements != null">requirements = #{requirements},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigProcessById" parameterType="Long">
+        delete from config_process where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigProcessByIds" parameterType="String">
+        delete from config_process where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

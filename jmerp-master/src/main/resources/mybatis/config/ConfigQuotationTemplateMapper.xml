@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configQuotationTemplate.mapper.ConfigQuotationTemplateMapper">
+    
+    <resultMap type="ConfigQuotationTemplate" id="ConfigQuotationTemplateResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="templateName"    column="template_name"    />
+        <result property="requirements"    column="requirements"    />
+
+        <result property="processArr"    column="process_arr"    />
+        <result property="materialsArr"    column="materials_arr"    />
+    </resultMap>
+
+    <sql id="selectConfigQuotationTemplateVo">
+        select
+            (select group_concat(p.process_name) from config_quotation_template_process qt left join config_process p on p.id = qt.process_id where qt.quotation_template_id = q.id) process_arr,
+            (select group_concat(m.materials_name) from config_quotation_template_materials qt left join config_materials m on m.id = qt.materials_id where qt.quotation_template_id = q.id) materials_arr,
+            q.id, q.create_by, q.create_time, q.update_by, q.update_time, q.remark, q.status, q.template_name, q.requirements
+        from config_quotation_template q
+    </sql>
+
+    <select id="selectConfigQuotationTemplateList" parameterType="ConfigQuotationTemplate" resultMap="ConfigQuotationTemplateResult">
+        <include refid="selectConfigQuotationTemplateVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and q.status = #{status}</if>
+            <if test="templateName != null  and templateName != ''"> and q.template_name like concat('%', #{templateName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigQuotationTemplateById" parameterType="Long" resultMap="ConfigQuotationTemplateResult">
+        <include refid="selectConfigQuotationTemplateVo"/>
+        where q.id = #{id}
+    </select>
+        
+    <insert id="insertConfigQuotationTemplate" parameterType="ConfigQuotationTemplate" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into config_quotation_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="templateName != null and templateName != ''">template_name,</if>
+            <if test="requirements != null">requirements,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="templateName != null and templateName != ''">#{templateName},</if>
+            <if test="requirements != null">#{requirements},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigQuotationTemplate" parameterType="ConfigQuotationTemplate">
+        update config_quotation_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="templateName != null and templateName != ''">template_name = #{templateName},</if>
+            <if test="requirements != null">requirements = #{requirements},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigQuotationTemplateById" parameterType="Long">
+        delete from config_quotation_template where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigQuotationTemplateProcessById" parameterType="Long">
+        delete from config_quotation_template_process where quotation_template_id = #{id}
+    </delete>
+
+    <delete id="deleteConfigQuotationTemplateMaterialsById" parameterType="Long">
+        delete from config_quotation_template_materials where quotation_template_id = #{id}
+    </delete>
+
+    <delete id="deleteConfigQuotationTemplateByIds" parameterType="String">
+        delete from config_quotation_template where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteConfigQuotationTemplateProcessByIds" parameterType="String">
+        delete from config_quotation_template_process where quotation_template_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteConfigQuotationTemplateMaterialsByIds" parameterType="String">
+        delete from config_quotation_template_materials where quotation_template_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

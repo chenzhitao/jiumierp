@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.sale.saleCheckingProduct.mapper.SaleCheckingProductMapper">
+    
+    <resultMap type="SaleCheckingProduct" id="SaleCheckingProductResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="saleCheckingId"    column="sale_checking_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="saleOrderDeliveryId"    column="sale_order_delivery_id"    />
+        <result property="saleDeliveryId"    column="sale_delivery_id"    />
+        <result property="saleDeliveryProductId"    column="sale_delivery_product_id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="price"    column="price"    />
+        <result property="qty"    column="qty"    />
+        <result property="freeQty"    column="free_qty"    />
+        <result property="returnQty"    column="return_qty"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="address"    column="address"    />
+
+        <result property="customerName"    column="customer_name"    />
+        <result property="productName"    column="product_name"    />
+        <result property="saleDeliverySN"    column="sale_delivery_sn"    />
+        <result property="saleOrderSN"    column="sale_order_sn"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="warehouseQty"    column="warehouse_qty"    />
+    </resultMap>
+
+    <sql id="selectSaleCheckingProductVo">
+        select
+            p.product_name,c.customer_name,sd.serial_number sale_delivery_sn,so.serial_number sale_order_sn,w.warehouse_name,
+            sdp.id, sdp.remark, sdp.sale_delivery_id, sdp.sale_order_id, sdp.sale_order_product_id, sdp.sale_order_delivery_id, sdp.customer_id, sdp.product_id, sdp.price, sdp.qty, sdp.free_qty, sdp.return_qty, sdp.tax_rate, sdp.amount, sdp.warehouse_id, sdp.delivery_date, sdp.address,
+            scp.id
+        from sale_checking_product scp
+            left join sale_delivery_product sdp on sdp.id = scp.sale_delivery_product_id
+            left join config_customer c on c.id = sdp.customer_id
+            left join config_product p on p.id = sdp.product_id
+            left join sale_order so on so.id = sdp.sale_order_id
+            left join sale_delivery sd on sd.id = sdp.sale_delivery_id
+            left join config_warehouse w on w.id = sdp.warehouse_id
+    </sql>
+
+    <select id="selectSaleCheckingProductList" parameterType="SaleCheckingProduct" resultMap="SaleCheckingProductResult">
+        <include refid="selectSaleCheckingProductVo"/>
+        <where>  
+            <if test="saleCheckingId != null "> and scp.sale_checking_id = #{saleCheckingId}</if>
+            <if test="saleOrderId != null "> and scp.sale_order_id = #{saleOrderId}</if>
+            <if test="saleOrderProductId != null "> and scp.sale_order_product_id = #{saleOrderProductId}</if>
+            <if test="saleOrderDeliveryId != null "> and scp.sale_order_delivery_id = #{saleOrderDeliveryId}</if>
+            <if test="saleDeliveryId != null "> and scp.sale_delivery_id = #{saleDeliveryId}</if>
+            <if test="saleDeliveryProductId != null "> and scp.sale_delivery_product_id = #{saleDeliveryProductId}</if>
+            <if test="customerId != null "> and scp.customer_id = #{customerId}</if>
+            <if test="productId != null "> and scp.product_id = #{productId}</if>
+        </where>
+    </select>
+    
+    <select id="selectSaleCheckingProductById" parameterType="Long" resultMap="SaleCheckingProductResult">
+        <include refid="selectSaleCheckingProductVo"/>
+        where scp.id = #{id}
+    </select>
+        
+    <insert id="insertSaleCheckingProduct" parameterType="SaleCheckingProduct" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sale_checking_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="saleCheckingId != null">sale_checking_id,</if>
+            <if test="saleOrderId != null">sale_order_id,</if>
+            <if test="saleOrderProductId != null">sale_order_product_id,</if>
+            <if test="saleOrderDeliveryId != null">sale_order_delivery_id,</if>
+            <if test="saleDeliveryId != null">sale_delivery_id,</if>
+            <if test="saleDeliveryProductId != null">sale_delivery_product_id,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="productId != null">product_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="saleCheckingId != null">#{saleCheckingId},</if>
+            <if test="saleOrderId != null">#{saleOrderId},</if>
+            <if test="saleOrderProductId != null">#{saleOrderProductId},</if>
+            <if test="saleOrderDeliveryId != null">#{saleOrderDeliveryId},</if>
+            <if test="saleDeliveryId != null">#{saleDeliveryId},</if>
+            <if test="saleDeliveryProductId != null">#{saleDeliveryProductId},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="productId != null">#{productId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleCheckingProduct" parameterType="SaleCheckingProduct">
+        update sale_checking_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="saleCheckingId != null">sale_checking_id = #{saleCheckingId},</if>
+            <if test="saleOrderId != null">sale_order_id = #{saleOrderId},</if>
+            <if test="saleOrderProductId != null">sale_order_product_id = #{saleOrderProductId},</if>
+            <if test="saleOrderDeliveryId != null">sale_order_delivery_id = #{saleOrderDeliveryId},</if>
+            <if test="saleDeliveryId != null">sale_delivery_id = #{saleDeliveryId},</if>
+            <if test="saleDeliveryProductId != null">sale_delivery_product_id = #{saleDeliveryProductId},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSaleCheckingProductById" parameterType="Long">
+        delete from sale_checking_product where id = #{id}
+    </delete>
+
+    <delete id="deleteSaleCheckingProductByIds" parameterType="String">
+        delete from sale_checking_product where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

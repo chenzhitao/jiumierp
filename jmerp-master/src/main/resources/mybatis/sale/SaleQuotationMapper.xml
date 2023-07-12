@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.sale.saleQuotation.mapper.SaleQuotationMapper">
+    
+    <resultMap type="SaleQuotation" id="SaleQuotationResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="quotationDate"    column="quotation_date"    />
+        <result property="contact"    column="contact"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="profitRate"    column="profit_rate"    />
+        <result property="quoterId"    column="quoter_id"    />
+
+        <result property="quoterName"    column="quoter_name"    />
+        <result property="productName"    column="product_name"    />
+        <result property="qty"    column="qty"    />
+    </resultMap>
+
+    <resultMap type="SaleQuotationExport" id="SaleQuotationExportResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="quotationDate"    column="quotation_date"    />
+        <result property="contact"    column="contact"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="profitRate"    column="profit_rate"    />
+        <result property="quoterId"    column="quoter_id"    />
+
+        <result property="quoterName"    column="quoter_name"    />
+        <result property="productName"    column="product_name"    />
+        <result property="qty"    column="qty"    />
+        <result property="price"    column="price"    />
+    </resultMap>
+
+
+    <sql id="selectSaleQuotationVo">
+        select
+            c.customer_name,e.employee_name quoter_name,
+            q.id, q.create_by, q.create_time, q.update_by, q.update_time, q.remark, q.status, q.approver, q.approval_time, q.approval_type, q.serial_number, q.customer_id, q.quotation_date, q.contact, q.cell_phone, q.tax_rate, q.amount, q.profit_rate, q.quoter_id
+        from sale_quotation q
+            left join config_customer c on c.id = q.customer_id
+            left join config_employee e on e.id = q.quoter_id
+    </sql>
+
+    <select id="selectSaleQuotationList" parameterType="SaleQuotation" resultMap="SaleQuotationResult">
+        <include refid="selectSaleQuotationVo"/>
+        <where>
+            customer_permission(#{rzyUserId},q.customer_id) = 'Y'
+            <if test="status != null  and status != ''"> and q.status = #{status}</if>
+            <if test="status == null  or status == ''"> and q.status <![CDATA[ <> ]]> 'delete' </if>
+            <if test="serialNumber != null  and serialNumber != ''"> and q.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="customerId != null "> and q.customer_id = #{customerId}</if>
+            <if test="quoterId != null "> and q.quoter_id = #{quoterId}</if>
+            <if test="params.beginQuotationDate != null and params.beginQuotationDate != '' ">
+                and date_sub(q.quotation_date,interval -1 day) <![CDATA[ > ]]> #{params.beginQuotationDate}
+            </if>
+            <if test="params.endQuotationDate != null and params.endQuotationDate != ''">
+                and date_sub(q.quotation_date,interval 1 day) <![CDATA[ < ]]> #{params.endQuotationDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSaleQuotationExportList" parameterType="SaleQuotation" resultMap="SaleQuotationExportResult">
+        select
+            c.customer_name,e.employee_name quoter_name,
+            q.serial_number, q.customer_id, q.quotation_date, q.contact, q.cell_phone,  q.profit_rate, q.quoter_id,
+            sqm.id,sqm.amount,sqm.qty,q.tax_rate,
+            round(sqm.amount/sqm.qty,2) price,
+            (select group_concat(cp.product_name) from sale_quotation_product p left join config_product cp on cp.id = p.product_id where p.sale_quotation_id = sqm.sale_quotation_id) product_name
+        from sale_quotation_mult sqm
+            left join sale_quotation q on q.id = sqm.sale_quotation_id
+            left join config_customer c on c.id = q.customer_id
+            left join config_employee e on e.id = q.quoter_id
+        <where>
+            customer_permission(#{rzyUserId},q.customer_id) = 'Y'
+            <if test="status != null  and status != ''"> and q.status = #{status}</if>
+            <if test="status == null  or status == ''"> and q.status <![CDATA[ <> ]]> 'delete' </if>
+            <if test="serialNumber != null  and serialNumber != ''"> and q.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="customerId != null "> and q.customer_id = #{customerId}</if>
+            <if test="quoterId != null "> and q.quoter_id = #{quoterId}</if>
+            <if test="params.beginQuotationDate != null and params.beginQuotationDate != '' ">
+                and date_sub(q.quotation_date,interval -1 day) <![CDATA[ > ]]> #{params.beginQuotationDate}
+            </if>
+            <if test="params.endQuotationDate != null and params.endQuotationDate != ''">
+                and date_sub(q.quotation_date,interval 1 day) <![CDATA[ < ]]> #{params.endQuotationDate}
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectSaleQuotationById" parameterType="Long" resultMap="SaleQuotationResult">
+        <include refid="selectSaleQuotationVo"/>
+        where q.id = #{id}
+    </select>
+        
+    <insert id="insertSaleQuotation" parameterType="SaleQuotation" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sale_quotation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            serial_number,
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="approver != null">approver,</if>
+            <if test="approvalTime != null">approval_time,</if>
+            <if test="approvalType != null">approval_type,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="customerName != null">customer_name,</if>
+            <if test="quotationDate != null">quotation_date,</if>
+            <if test="contact != null">contact,</if>
+            <if test="cellPhone != null">cell_phone,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="amount != null">amount,</if>
+            <if test="profitRate != null">profit_rate,</if>
+            <if test="quoterId != null">quoter_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            seq_nextval('XBJ'),
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="approvalTime != null">#{approvalTime},</if>
+            <if test="approvalType != null">#{approvalType},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="customerName != null">#{customerName},</if>
+            <if test="quotationDate != null">#{quotationDate},</if>
+            <if test="contact != null">#{contact},</if>
+            <if test="cellPhone != null">#{cellPhone},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="profitRate != null">#{profitRate},</if>
+            <if test="quoterId != null">#{quoterId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleQuotation" parameterType="SaleQuotation">
+        update sale_quotation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="approvalTime != null">approval_time = #{approvalTime},</if>
+            <if test="approvalType != null">approval_type = #{approvalType},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="customerName != null">customer_name = #{customerName},</if>
+            <if test="quotationDate != null">quotation_date = #{quotationDate},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="cellPhone != null">cell_phone = #{cellPhone},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="profitRate != null">profit_rate = #{profitRate},</if>
+            <if test="quoterId != null">quoter_id = #{quoterId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSaleQuotationById" parameterType="Long">
+        delete from sale_quotation where id = #{id}
+    </delete>
+
+    <delete id="deleteSaleQuotationByIds" parameterType="String">
+        delete from sale_quotation where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

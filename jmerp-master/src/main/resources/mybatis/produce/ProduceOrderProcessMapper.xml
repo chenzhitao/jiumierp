@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.produce.produceOrderProcess.mapper.ProduceOrderProcessMapper">
+    
+    <resultMap type="ProduceOrderProcess" id="ProduceOrderProcessResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="produceOrderProductId"    column="produce_order_product_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="productionTemplateId"    column="production_template_id"    />
+        <result property="productionTemplateProcessId"    column="production_template_process_id"    />
+        <result property="produceStatus"    column="produce_status"    />
+        <result property="processOrder"    column="process_order"    />
+        <result property="valuationType"    column="valuation_type"    />
+        <result property="isIncount"    column="is_incount"    />
+        <result property="qty"    column="qty"    />
+        <result property="returnQty"    column="return_qty"    />
+        <result property="isOutsource"    column="is_outsource"    />
+        <result property="outsourcePrice"    column="outsource_price"    />
+        <result property="isWithMaterials"    column="is_with_materials"    />
+        <result property="times"    column="times"    />
+        <result property="price"    column="price"    />
+        <result property="equipmentId"    column="equipment_id"    />
+        <result property="lossRate"    column="loss_rate"    />
+        <result property="lossQty"    column="loss_qty"    />
+        <result property="requirements"    column="requirements"    />
+        <result property="inQty"    column="in_qty"    />
+        <result property="outQty"    column="out_qty"    />
+        <result property="processName"    column="process_name"    />
+        <result property="equipmentName"    column="equipment_name"    />
+
+        <result property="produceOrderSN"    column="produce_order_sn"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="produceDate"    column="produce_date"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="productName"    column="product_name"    />
+        <result property="sizeLong"    column="size_long"    />
+        <result property="sizeWidth"    column="size_width"    />
+        <result property="sizeHeight"    column="size_height"    />
+        <result property="processName"    column="process_name"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="leftQty"    column="left_qty"    />
+        <result property="isPrint"    column="is_print"    />
+        <result property="equipmentSize"    column="equipment_size"    />
+        <result property="processType"    column="process_type"    />
+        <result property="cuttingSizeLong"    column="cutting_size_long"    />
+        <result property="cuttingSizeWidth"    column="cutting_size_width"    />
+        <result property="alias"    column="alias"    />
+        <result property="chargeAmount"    column="charge_amount"    />
+        <result property="produceOrderPartId"    column="produce_order_part_id"    />
+        <result property="printType"    column="print_type"    />
+        <result property="produceOrderPartName"    column="produce_order_part_name"    />
+    </resultMap>
+
+    <sql id="selectProduceOrderProcessVo">
+        select
+            op.produce_order_part_id,op.print_type,pop.product_name produce_order_part_name,
+            cp.process_name,e.equipment_name,op.is_print,concat(e.max_work_long, '*', e.max_work_width) equipment_size,cp.process_type,op.alias,op.charge_amount,
+            op.cutting_size_long,op.cutting_size_width,
+            op.out_qty - (select ifnull(sum(oop1.qty),0) from outsource_order_process oop1 where oop1.produce_order_process_id = op.id) left_qty,
+            op.id, op.remark, op.produce_order_id, op.produce_order_product_id, op.sale_order_product_id, op.sale_order_id, op.product_id, op.process_id, op.production_template_id, op.production_template_process_id, op.produce_status, op.process_order, op.valuation_type, op.is_incount, op.qty, op.is_outsource, op.outsource_price, op.is_with_materials, op.times, op.price, op.equipment_id, op.loss_rate, op.loss_qty, op.requirements, op.in_qty, op.out_qty
+        from produce_order_process op
+            left join config_process cp on cp.id = op.process_id
+            left join config_equipment e on e.id = op.equipment_id
+            left join produce_order_part pop on pop.id = op.produce_order_part_id
+    </sql>
+
+    <select id="selectProduceOrderProcessList" parameterType="ProduceOrderProcess" resultMap="ProduceOrderProcessResult">
+        <include refid="selectProduceOrderProcessVo"/>
+        <where>  
+            <if test="produceOrderId != null "> and op.produce_order_id = #{produceOrderId}</if>
+            <if test="produceOrderPartId != null "> and op.produce_order_part_id = #{produceOrderPartId}</if>
+            <if test="produceOrderProductId != null "> and op.produce_order_product_id = #{produceOrderProductId}</if>
+            <if test="saleOrderProductId != null "> and op.sale_order_product_id = #{saleOrderProductId}</if>
+            <if test="saleOrderId != null "> and op.sale_order_id = #{saleOrderId}</if>
+            <if test="productId != null "> and op.product_id = #{productId}</if>
+            <if test="processId != null "> and op.process_id = #{processId}</if>
+            <if test="productionTemplateId != null "> and op.production_template_id = #{productionTemplateId}</if>
+            <if test="productionTemplateProcessId != null "> and op.production_template_process_id = #{productionTemplateProcessId}</if>
+            <if test="produceStatus != null  and produceStatus != ''"> and op.produce_status = #{produceStatus}</if>
+            <if test="processOrder != null "> and op.process_order = #{processOrder}</if>
+            <if test="valuationType != null  and valuationType != ''"> and op.valuation_type = #{valuationType}</if>
+            <if test="isIncount != null  and isIncount != ''"> and op.is_incount = #{isIncount}</if>
+            <if test="qty != null "> and op.qty = #{qty}</if>
+            <if test="isOutsource != null  and isOutsource != ''"> and op.is_outsource = #{isOutsource}</if>
+            <if test="outsourcePrice != null "> and op.outsource_price = #{outsourcePrice}</if>
+            <if test="isWithMaterials != null  and isWithMaterials != ''"> and op.is_with_materials = #{isWithMaterials}</if>
+            <if test="times != null "> and op.times = #{times}</if>
+            <if test="price != null "> and op.price = #{price}</if>
+            <if test="equipmentId != null "> and op.equipment_id = #{equipmentId}</if>
+            <if test="lossRate != null "> and op.loss_rate = #{lossRate}</if>
+            <if test="lossQty != null "> and op.loss_qty = #{lossQty}</if>
+            <if test="requirements != null  and requirements != ''"> and requirements = #{requirements}</if>
+            <if test="inQty != null "> and op.in_qty = #{inQty}</if>
+            <if test="outQty != null "> and op.out_qty = #{outQty}</if>
+            <if test="isPrint != null "> and op.is_print = #{isPrint}</if>
+        </where>
+        order by op.process_order asc
+    </select>
+
+    <select id="selectProduceOrderProcessListForSchedule" parameterType="ProduceOrderProcess" resultMap="ProduceOrderProcessResult">
+        select
+            pop.id,
+            pop.alias,
+            pop.charge_amount,
+            po.customer_id,
+            po.product_id,
+            pop.process_id,
+            po.serial_number produce_order_sn,
+            po.delivery_date,
+            po.produce_date,
+            cc.customer_name,
+            cp.product_name,
+            po.size_long,
+            po.size_width,
+            po.size_height,
+            co.process_name,
+            pop.in_qty,
+            pop.out_qty,
+            pop.requirements,
+            pop.cutting_size_long,
+            pop.cutting_size_width,
+            pop.produce_order_part_id,
+            pop.print_type
+         from produce_order_process pop
+            left join produce_order po on po.id = pop.produce_order_id
+            left join config_product cp on cp.id = po.product_id
+            left join config_customer cc on cc.id = po.customer_id
+            left join config_process co on co.id = pop.process_id
+        where
+            po.status = 'normal'
+        <if test="rzyValue2 != null  and rzyValue2 != ''"> and po.serial_number like concat('%', #{rzyValue2}, '%')</if>
+        <if test="productId != null "> and po.product_id = #{productId}</if>
+        <if test="customerId != null "> and po.customer_id = #{customerId}</if>
+        <if test="processId != null "> and pop.process_id = #{processId}</if>
+        <if test="params.beginProduceDate != null and params.beginProduceDate != ''"><!-- 开始时间检索 -->
+            and date_format(po.produce_date,'%y%m%d') &gt;= date_format(#{params.beginProduceDate},'%y%m%d')
+        </if>
+        <if test="params.endProduceDate != null and params.endProduceDate != ''"><!-- 结束时间检索 -->
+            and date_format(po.produce_date,'%y%m%d') &lt;= date_format(#{params.endProduceDate},'%y%m%d')
+        </if>
+            and po.is_outsource = 'N'
+            and pop.is_outsource = 'N'
+            and pop.id not in (select psp.produce_order_process_id from produce_schedule_process psp where psp.produce_order_process_id is not null)
+        order by po.update_time desc,pop.process_order
+    </select>
+
+    <select id="selectProduceOrderProcessListForOutsource" parameterType="ProduceOrderProcess" resultMap="ProduceOrderProcessResult">
+        select
+            pop.id,
+            pop.alias,
+            pop.charge_amount,
+            po.customer_id,
+            po.product_id,
+            pop.process_id,
+            po.serial_number produce_order_sn,
+            po.delivery_date,
+            po.produce_date,
+            cc.customer_name,
+            cp.product_name,
+            po.size_long,
+            po.size_width,
+            po.size_height,
+            co.process_name,
+            pop.in_qty,
+            pop.out_qty,
+            pop.requirements,
+            po.is_outsource,
+            pop.cutting_size_long,
+            pop.cutting_size_width,
+            pop.out_qty - (select ifnull(sum(oop1.qty),0) from outsource_order_process oop1 where oop1.produce_order_process_id = pop.id)  left_qty,
+            pop.produce_order_part_id,
+            pop.print_type
+        from produce_order_process pop
+            left join produce_order po on po.id = pop.produce_order_id
+            left join config_product cp on cp.id = po.product_id
+            left join config_customer cc on cc.id = po.customer_id
+            left join config_process co on co.id = pop.process_id
+        where
+            po.status = 'normal'
+            <if test="produceOrderSN != null  and produceOrderSN != ''"> and po.serial_number like concat('%', #{produceOrderSN}, '%')</if>
+            <if test="productId != null "> and po.product_id = #{productId}</if>
+            <if test="customerId != null "> and po.customer_id = #{customerId}</if>
+            <if test="processId != null "> and pop.process_id = #{processId}</if>
+            <if test="params.beginDeliveryDate != null and params.beginDeliveryDate != ''"><!-- 开始时间检索 -->
+                and date_format(po.delivery_date,'%y%m%d') &gt;= date_format(#{params.beginDeliveryDate},'%y%m%d')
+            </if>
+            <if test="params.endDeliveryDate != null and params.endDeliveryDate != ''"><!-- 结束时间检索 -->
+                and date_format(po.delivery_date,'%y%m%d') &lt;= date_format(#{params.endDeliveryDate},'%y%m%d')
+            </if>
+            and pop.is_outsource = 'Y'
+            and pop.out_qty <![CDATA[ > ]]> (select ifnull(sum(oop1.qty),0) from outsource_order_process oop1 where oop1.produce_order_process_id = pop.id)
+        order by po.update_time desc,pop.process_order
+    </select>
+
+
+    <select id="selectProduceOrderProcessById" parameterType="Long" resultMap="ProduceOrderProcessResult">
+        <include refid="selectProduceOrderProcessVo"/>
+        where op.id = #{id}
+    </select>
+        
+    <insert id="insertProduceOrderProcess" parameterType="ProduceOrderProcess" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into produce_order_process
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="produceOrderId != null">produce_order_id,</if>
+            <if test="produceOrderProductId != null">produce_order_product_id,</if>
+            <if test="saleOrderProductId != null">sale_order_product_id,</if>
+            <if test="saleOrderId != null">sale_order_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="productionTemplateId != null">production_template_id,</if>
+            <if test="productionTemplateProcessId != null">production_template_process_id,</if>
+            <if test="produceStatus != null">produce_status,</if>
+            <if test="processOrder != null">process_order,</if>
+            <if test="valuationType != null">valuation_type,</if>
+            <if test="isIncount != null">is_incount,</if>
+            <if test="qty != null">qty,</if>
+            <if test="isOutsource != null">is_outsource,</if>
+            <if test="outsourcePrice != null">outsource_price,</if>
+            <if test="isWithMaterials != null">is_with_materials,</if>
+            <if test="times != null">times,</if>
+            <if test="price != null">price,</if>
+            <if test="equipmentId != null">equipment_id,</if>
+            <if test="lossRate != null">loss_rate,</if>
+            <if test="lossQty != null">loss_qty,</if>
+            <if test="requirements != null">requirements,</if>
+            <if test="inQty != null">in_qty,</if>
+            <if test="outQty != null">out_qty,</if>
+            <if test="isPrint != null">is_print,</if>
+            <if test="cuttingSizeLong != null">cutting_size_long,</if>
+            <if test="cuttingSizeWidth != null">cutting_size_width,</if>
+            <if test="alias != null">alias,</if>
+            <if test="chargeAmount != null">charge_amount,</if>
+            <if test="produceOrderPartId != null">produce_order_part_id,</if>
+            <if test="printType != null">print_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="produceOrderId != null">#{produceOrderId},</if>
+            <if test="produceOrderProductId != null">#{produceOrderProductId},</if>
+            <if test="saleOrderProductId != null">#{saleOrderProductId},</if>
+            <if test="saleOrderId != null">#{saleOrderId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="productionTemplateId != null">#{productionTemplateId},</if>
+            <if test="productionTemplateProcessId != null">#{productionTemplateProcessId},</if>
+            <if test="produceStatus != null">#{produceStatus},</if>
+            <if test="processOrder != null">#{processOrder},</if>
+            <if test="valuationType != null">#{valuationType},</if>
+            <if test="isIncount != null">#{isIncount},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="isOutsource != null">#{isOutsource},</if>
+            <if test="outsourcePrice != null">#{outsourcePrice},</if>
+            <if test="isWithMaterials != null">#{isWithMaterials},</if>
+            <if test="times != null">#{times},</if>
+            <if test="price != null">#{price},</if>
+            <if test="equipmentId != null">#{equipmentId},</if>
+            <if test="lossRate != null">#{lossRate},</if>
+            <if test="lossQty != null">#{lossQty},</if>
+            <if test="requirements != null">#{requirements},</if>
+            <if test="inQty != null">#{inQty},</if>
+            <if test="outQty != null">#{outQty},</if>
+            <if test="isPrint != null">#{isPrint},</if>
+            <if test="cuttingSizeLong != null">#{cuttingSizeLong},</if>
+            <if test="cuttingSizeWidth != null">#{cuttingSizeWidth},</if>
+            <if test="alias != null">#{alias},</if>
+            <if test="chargeAmount != null">#{chargeAmount},</if>
+            <if test="produceOrderPartId != null">#{produceOrderPartId},</if>
+            <if test="printType != null">#{printType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProduceOrderProcess" parameterType="ProduceOrderProcess">
+        update produce_order_process
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="produceOrderId != null">produce_order_id = #{produceOrderId},</if>
+            <if test="produceOrderProductId != null">produce_order_product_id = #{produceOrderProductId},</if>
+            <if test="saleOrderProductId != null">sale_order_product_id = #{saleOrderProductId},</if>
+            <if test="saleOrderId != null">sale_order_id = #{saleOrderId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="productionTemplateId != null">production_template_id = #{productionTemplateId},</if>
+            <if test="productionTemplateProcessId != null">production_template_process_id = #{productionTemplateProcessId},</if>
+            <if test="produceStatus != null">produce_status = #{produceStatus},</if>
+            <if test="processOrder != null">process_order = #{processOrder},</if>
+            <if test="valuationType != null">valuation_type = #{valuationType},</if>
+            <if test="isIncount != null">is_incount = #{isIncount},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="isOutsource != null">is_outsource = #{isOutsource},</if>
+            <if test="outsourcePrice != null">outsource_price = #{outsourcePrice},</if>
+            <if test="isWithMaterials != null">is_with_materials = #{isWithMaterials},</if>
+            <if test="times != null">times = #{times},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="equipmentId != null">equipment_id = #{equipmentId},</if>
+            <if test="lossRate != null">loss_rate = #{lossRate},</if>
+            <if test="lossQty != null">loss_qty = #{lossQty},</if>
+            <if test="requirements != null">requirements = #{requirements},</if>
+            <if test="inQty != null">in_qty = #{inQty},</if>
+            <if test="outQty != null">out_qty = #{outQty},</if>
+            <if test="isPrint != null">is_print = #{isPrint},</if>
+            <if test="cuttingSizeLong != null">cutting_size_long = #{cuttingSizeLong},</if>
+            <if test="cuttingSizeWidth != null">cutting_size_width = #{cuttingSizeWidth},</if>
+            <if test="alias != null">alias = #{alias},</if>
+            <if test="chargeAmount != null">charge_amount = #{chargeAmount},</if>
+            <if test="produceOrderPartId != null">produce_order_part_id = #{produceOrderPartId},</if>
+            <if test="printType != null">print_type = #{printType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProduceOrderProcessById" parameterType="Long">
+        delete from produce_order_process where id = #{id}
+    </delete>
+
+    <delete id="deleteProduceOrderProcessByIds" parameterType="String">
+        delete from produce_order_process where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="setupStatusByProduceOrderId" parameterType="ProduceOrderProcess">
+        update produce_order_process set produce_status = #{produceStatus} where produce_order_id = #{produceOrderId}
+    </update>
+
+    <select id="findFullProduceOrderProcessIds" parameterType="String" resultType="Long">
+        select pop2.id from produce_order_process pop2 where pop2.produce_order_id in (
+            select pop1.produce_order_id from produce_order_process pop1 where pop1.id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        )
+        union
+        select pop3.id from produce_order_process pop3 where pop3.id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="findOutsourceProcessList" parameterType="String" resultType="Long">
+        select pop1.id from produce_order_process pop1 where pop1.id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        union
+        select pop3.id from produce_order_process pop3 where pop3.produce_order_id in (
+            select po1.id from produce_order po1 where po1.id in (
+                select pop2.produce_order_id from produce_order_process pop2 where pop2.id in
+                <foreach item="id" collection="array" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            )
+            and po1.is_outsource = 'Y'
+        )
+    </select>
+
+</mapper>

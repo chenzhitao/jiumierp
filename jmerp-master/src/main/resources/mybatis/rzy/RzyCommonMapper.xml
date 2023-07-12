@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.rzy.rzyCommon.mapper.RzyCommonMapper">
+
+    <resultMap type="RzyCommon" id="RzyCommonResult">
+        <result property="strValue1"    column="str_value1"    />
+        <result property="strValue2"    column="str_value2"    />
+        <result property="strValue3"    column="str_value3"    />
+        <result property="strValue4"    column="str_value4"    />
+        <result property="strValue5"    column="str_value5"    />
+        <result property="strValue6"    column="str_value6"    />
+        <result property="strValue7"    column="str_value7"    />
+        <result property="strValue8"    column="str_value8"    />
+        <result property="strValue9"    column="str_value9"    />
+        <result property="intValue1"    column="int_value1"    />
+        <result property="intValue2"    column="int_value2"    />
+        <result property="intValue3"    column="int_value3"    />
+        <result property="intValue4"    column="int_value4"    />
+        <result property="intValue5"    column="int_value5"    />
+        <result property="intValue6"    column="int_value6"    />
+        <result property="intValue7"    column="int_value7"    />
+        <result property="intValue8"    column="int_value8"    />
+        <result property="intValue9"    column="int_value9"    />
+        <result property="doubleValue1"    column="double_value1"    />
+        <result property="doubleValue2"    column="double_value2"    />
+        <result property="doubleValue3"    column="double_value3"    />
+        <result property="doubleValue4"    column="double_value4"    />
+        <result property="doubleValue5"    column="double_value5"    />
+        <result property="dateValue1"    column="date_value1"    />
+        <result property="dateValue2"    column="date_value2"    />
+        <result property="dateValue3"    column="date_value3"    />
+        <result property="dateValue4"    column="date_value4"    />
+        <result property="dateValue5"    column="date_value5"    />
+
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+    </resultMap>
+
+    <sql id="selectRzyCommonVo">
+
+    </sql>
+
+    <select id="selectRzyCommonList" parameterType="RzyCommon" resultMap="RzyCommonResult">
+
+    </select>
+
+    <select id="selectRzyCommonById" parameterType="String" resultMap="RzyCommonResult">
+        <include refid="selectRzyCommonVo"/>
+        where str_value1 = #{strValue1}
+    </select>
+
+    <insert id="insertRzyCommon" parameterType="RzyCommon">
+
+    </insert>
+
+    <update id="updateRzyCommon" parameterType="RzyCommon">
+
+    </update>
+
+    <delete id="deleteRzyCommonById" parameterType="String">
+
+    </delete>
+
+    <delete id="deleteRzyCommonByIds" parameterType="String">
+
+    </delete>
+
+    <select id="findIdByName" resultType="long">
+        select ${outcolumn} from ${tableName} where ${incolumn} = #{paramValue}
+            limit 1
+    </select>
+
+    <select id="findRateByName" resultType="java.math.BigDecimal">
+        select ${outcolumn} from ${tableName} where ${incolumn} = #{paramValue}
+            limit 1
+    </select>
+
+    <select id="countRepeat" resultType="int">
+        select count(*) from ${tableName} where ${incolumn} = #{paramValue}
+    </select>
+
+    <select id="findDefaultDictValue" resultType="String">
+        select d.dict_value from sys_dict_data d where d.dict_type = #{dictType} and d.is_default = 'Y' order by d.dict_sort desc
+            limit 1
+    </select>
+
+    <select id="selectSecurityCode" resultType="String">
+        select ifnull(s.code,'N') code from base_security s where s.key_val = 'regist'
+            limit 1
+    </select>
+
+    <update id="insertCode" parameterType="String">
+        update base_security set code = #{code} where key_val = 'regist'
+    </update>
+
+    <update id="insertDate" parameterType="String">
+        update base_security set code = #{code} where key_val = 'expire'
+    </update>
+
+    <select id="selectSysInfo" parameterType="String" resultMap="RzyCommonResult">
+        select code str_value1, key_val str_value2 from base_security
+    </select>
+
+    <!-- 销售 -->
+    <sql id="sale_qty_sql">
+        select
+            'sale_qty' str_value1,
+            (SELECT count(*) FROM sale_order so1 WHERE so1.status = 'normal' and DATE_FORMAT( so1.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )) int_value1,
+            (SELECT count(*) FROM sale_order so2 WHERE so2.status = 'normal' and YEAR (so2.create_time) = YEAR (NOW())) int_value2,
+            -1 int_value3,
+            -1 int_value4
+        from dual
+    </sql>
+
+    <!-- 施工单 -->
+    <sql id="proudce_qty_sql">
+        select
+            'proudce_qty' str_value1,
+            (SELECT count(*) FROM produce_order po1 WHERE po1.status = 'normal' and DATE_FORMAT( po1.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )) int_value1,
+            (SELECT count(*) FROM produce_order po2 WHERE po2.status = 'normal' and YEAR (po2.create_time) = YEAR (NOW())) int_value2,
+            -1 int_value3,
+            -1 int_value4
+        from dual
+    </sql>
+
+    <!-- 外发加工 -->
+    <sql id="outsource_qty_sql">
+        select
+            'outsource_qty' str_value1,
+            (SELECT count(*) FROM outsource_order po1 WHERE po1.status = 'normal' and DATE_FORMAT( po1.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )) int_value1,
+            (SELECT count(*) FROM outsource_order po2 WHERE po2.status = 'normal' and YEAR (po2.create_time) = YEAR (NOW())) int_value2,
+            -1 int_value3,
+            -1 int_value4
+        from dual
+    </sql>
+
+    <!-- 采购 -->
+    <sql id="purchase_qty_sql">
+        select
+            'purchase_qty' str_value1,
+            (SELECT count(*) FROM purchase_order po1 WHERE po1.status = 'normal' and DATE_FORMAT( po1.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )) int_value1,
+            (SELECT count(*) FROM purchase_order po2 WHERE po2.status = 'normal' and YEAR (po2.create_time) = YEAR (NOW())) int_value2,
+            -1 int_value3,
+            -1 int_value4
+        from dual
+    </sql>
+
+    <!-- 生产总数 -->
+    <sql id="broad_produce_qty_sql">
+        select
+            'broad_produce_qty' str_value1,
+            (SELECT count(*) FROM produce_order_process po1 LEFT JOIN produce_order po on po.id = po1.produce_order_id WHERE po.status = 'normal' and DATE_FORMAT( po.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )) int_value1,
+            (SELECT count(*) FROM produce_order_process po2 LEFT JOIN produce_order po on po.id = po2.produce_order_id WHERE po.status = 'normal' and YEAR (po.create_time) = YEAR (NOW())) int_value2,
+            -1 int_value3,
+            -1 int_value4
+        from dual
+    </sql>
+
+    <!-- 报产总数 -->
+    <sql id="broad_report_qty_sql">
+        select
+            'broad_report_qty' str_value1,
+            (SELECT count(*) FROM produce_schedule_process po1 LEFT JOIN produce_order po on po.id = po1.produce_order_id WHERE po.status != 'delete' and DATE_FORMAT( po.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )) int_value1,
+            (SELECT count(*) FROM produce_schedule_process po2 LEFT JOIN produce_order po on po.id = po2.produce_order_id WHERE po.status != 'delete' and YEAR (po.create_time) = YEAR (NOW())) int_value2,
+            -1 int_value3,
+            -1 int_value4
+        from dual
+    </sql>
+
+    <!-- 入库总数 -->
+    <sql id="broad_warehouse_qty_sql">
+        select
+            'broad_warehouse_qty' str_value1,
+            (SELECT count(*) FROM produce_schedule_process po1 LEFT JOIN produce_schedule po on po.id = po1.produce_schedule_id WHERE po.status != 'delete' and po1.produce_status = 'warehouse' and DATE_FORMAT( po.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )) int_value1,
+            (SELECT count(*) FROM produce_schedule_process po2 LEFT JOIN produce_schedule po on po.id = po2.produce_schedule_id WHERE po.status != 'delete' and po2.produce_status = 'warehouse' and YEAR (po.create_time) = YEAR (NOW())) int_value2,
+            -1 int_value3,
+            -1 int_value4
+        from dual
+    </sql>
+
+    <select id="selectMainBoardList" parameterType="RzyCommon" resultMap="RzyCommonResult">
+        <include refid="sale_qty_sql"/>
+        UNION ALL
+        <include refid="proudce_qty_sql"/>
+        UNION ALL
+        <include refid="outsource_qty_sql"/>
+        UNION ALL
+        <include refid="purchase_qty_sql"/>
+        UNION ALL
+        <include refid="broad_produce_qty_sql"/>
+        UNION ALL
+        <include refid="broad_report_qty_sql"/>
+        UNION ALL
+        <include refid="broad_warehouse_qty_sql"/>
+    </select>
+
+    <select id="selectDocumentById" parameterType="RzyCommon" resultMap="RzyCommonResult">
+        select
+            x.id int_value1, x.create_by, x.create_time, x.update_by, x.update_time, x.remark str_value1, x.serial_number str_value2,
+            x.approver str_value3, date_format(x.approval_time, '%Y-%m-%d %H:%i:%S') str_value4, x.approval_type str_value5, x.status str_value6
+        from ${strValue5} x
+        where x.id = #{intValue1}
+    </select>
+
+    <select id="selectDocumentBySN" parameterType="RzyCommon" resultMap="RzyCommonResult">
+        select
+            x.id int_value1, x.create_by, x.create_time, x.update_by, x.update_time, x.remark str_value1, x.serial_number str_value2,
+            x.approver str_value3, date_format(x.approval_time, '%Y-%m-%d %H:%i:%S') str_value4, x.approval_type str_value5, x.status str_value6
+        from ${strValue5} x
+        where x.serial_number = #{strValue4}
+            limit 1
+    </select>
+
+    <select id="getFullPaperSizeList" parameterType="RzyCommon" resultMap="RzyCommonResult">
+        SELECT
+            concat(size_code,'_',size_long,'_',size_width) str_value1,
+            size_name str_value2,
+            size_type str_value3,
+            size_long int_value1,
+            size_width int_value2
+        FROM
+            base_paper_size
+        ORDER BY
+            IF (
+                        size_type = 'D',
+                        'X',
+                        size_type
+                ) DESC,
+            size_long DESC
+    </select>
+
+
+</mapper>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.sale.saleDeliveryProduct.mapper.SaleDeliveryProductMapper">
+    
+    <resultMap type="SaleDeliveryProduct" id="SaleDeliveryProductResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="saleDeliveryId"    column="sale_delivery_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="saleOrderDeliveryId"    column="sale_order_delivery_id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="price"    column="price"    />
+        <result property="qty"    column="qty"    />
+        <result property="freeQty"    column="free_qty"    />
+        <result property="returnQty"    column="return_qty"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="address"    column="address"    />
+
+        <result property="customerName"    column="customer_name"    />
+        <result property="productName"    column="product_name"    />
+        <result property="saleDeliverySN"    column="sale_delivery_sn"    />
+        <result property="saleOrderSN"    column="sale_order_sn"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="warehouseQty"    column="warehouse_qty"    />
+        <result property="saleUnit"    column="sale_unit"    />
+        <result property="customerNo"    column="customer_no"    />
+    </resultMap>
+
+    <sql id="selectSaleDeliveryProductVo">
+        select
+            p.product_name,c.customer_name,sd.serial_number sale_delivery_sn,so.serial_number sale_order_sn,w.warehouse_name,p.sale_unit,sdp.customer_no,
+            (select ifnull(sum(wi.qty),0) from warehouse_inventory wi where wi.product_id = sdp.product_id) warehouse_qty,
+            sdp.id, sdp.remark, sdp.sale_delivery_id, sdp.sale_order_id, sdp.sale_order_product_id, sdp.sale_order_delivery_id, sdp.customer_id, sdp.product_id, sdp.price, sdp.qty, sdp.free_qty, sdp.return_qty, sdp.tax_rate, sdp.amount, sdp.warehouse_id, sdp.delivery_date, sdp.address
+        from sale_delivery_product sdp
+            left join config_customer c on c.id = sdp.customer_id
+            left join config_product p on p.id = sdp.product_id
+            left join sale_order so on so.id = sdp.sale_order_id
+            left join sale_delivery sd on sd.id = sdp.sale_delivery_id
+            left join config_warehouse w on w.id = sdp.warehouse_id
+            left join sale_order_delivery sod on sdp.sale_order_delivery_id = sod.id
+            left join sale_order_product sop on sod.sale_order_product_id = sop.id
+    </sql>
+
+    <select id="selectSaleDeliveryProductList" parameterType="SaleDeliveryProduct" resultMap="SaleDeliveryProductResult">
+        <include refid="selectSaleDeliveryProductVo"/>
+        <where>  
+            <if test="saleDeliveryId != null "> and sdp.sale_delivery_id = #{saleDeliveryId}</if>
+            <if test="saleOrderId != null "> and sdp.sale_order_id = #{saleOrderId}</if>
+            <if test="saleOrderProductId != null "> and sdp.sale_order_product_id = #{saleOrderProductId}</if>
+            <if test="saleOrderDeliveryId != null "> and sdp.sale_order_delivery_id = #{saleOrderDeliveryId}</if>
+            <if test="customerId != null "> and sdp.customer_id = #{customerId}</if>
+            <if test="productId != null "> and sdp.product_id = #{productId}</if>
+            <if test="price != null "> and sdp.price = #{price}</if>
+            <if test="qty != null "> and sdp.qty = #{qty}</if>
+            <if test="freeQty != null "> and sdp.free_qty = #{freeQty}</if>
+            <if test="returnQty != null "> and sdp.return_qty = #{returnQty}</if>
+            <if test="taxRate != null "> and sdp.tax_rate = #{taxRate}</if>
+            <if test="amount != null "> and sdp.amount = #{amount}</if>
+            <if test="warehouseId != null "> and sdp.warehouse_id = #{warehouseId}</if>
+            <if test="deliveryDate != null "> and sdp.delivery_date = #{deliveryDate}</if>
+            <if test="address != null  and address != ''"> and sdp.address = #{address}</if>
+            <if test="rzyValue1 != null and rzyValue1 == 'checking' ">
+                and sdp.sale_delivery_id in (select pd2.id from sale_delivery pd2 where pd2.status = 'normal')
+                and sdp.id not in (select pcm1.sale_delivery_product_id from sale_checking_product pcm1 where pcm1.sale_delivery_product_id is not null)
+            </if>
+            <if test="saleCheckingId != null ">
+                and sdp.id in (select pcm1.sale_delivery_product_id from sale_checking_product pcm1 where pcm1.sale_checking_id = #{saleCheckingId})
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectSaleDeliveryProductById" parameterType="Long" resultMap="SaleDeliveryProductResult">
+        <include refid="selectSaleDeliveryProductVo"/>
+        where sdp.id = #{id}
+    </select>
+        
+    <insert id="insertSaleDeliveryProduct" parameterType="SaleDeliveryProduct" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sale_delivery_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="saleDeliveryId != null">sale_delivery_id,</if>
+            <if test="saleOrderId != null">sale_order_id,</if>
+            <if test="saleOrderProductId != null">sale_order_product_id,</if>
+            <if test="saleOrderDeliveryId != null">sale_order_delivery_id,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="price != null">price,</if>
+            <if test="qty != null">qty,</if>
+            <if test="freeQty != null">free_qty,</if>
+            <if test="returnQty != null">return_qty,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="amount != null">amount,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+            <if test="address != null">address,</if>
+            <if test="customerNo != null">customer_no,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="saleDeliveryId != null">#{saleDeliveryId},</if>
+            <if test="saleOrderId != null">#{saleOrderId},</if>
+            <if test="saleOrderProductId != null">#{saleOrderProductId},</if>
+            <if test="saleOrderDeliveryId != null">#{saleOrderDeliveryId},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="price != null">#{price},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="freeQty != null">#{freeQty},</if>
+            <if test="returnQty != null">#{returnQty},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+            <if test="address != null">#{address},</if>
+            <if test="customerNo != null">#{customerNo},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleDeliveryProduct" parameterType="SaleDeliveryProduct">
+        update sale_delivery_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="saleDeliveryId != null">sale_delivery_id = #{saleDeliveryId},</if>
+            <if test="saleOrderId != null">sale_order_id = #{saleOrderId},</if>
+            <if test="saleOrderProductId != null">sale_order_product_id = #{saleOrderProductId},</if>
+            <if test="saleOrderDeliveryId != null">sale_order_delivery_id = #{saleOrderDeliveryId},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="freeQty != null">free_qty = #{freeQty},</if>
+            <if test="returnQty != null">return_qty = #{returnQty},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="customerNo != null">customer_no = #{customerNo},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSaleDeliveryProductById" parameterType="Long">
+        delete from sale_delivery_product where id = #{id}
+    </delete>
+
+    <delete id="deleteSaleDeliveryProductByIds" parameterType="String">
+        delete from sale_delivery_product where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

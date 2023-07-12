@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.sale.saleReturnProduct.mapper.SaleReturnProductMapper">
+    
+    <resultMap type="SaleReturnProduct" id="SaleReturnProductResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="saleReturnId"    column="sale_return_id"    />
+        <result property="saleDeliveryId"    column="sale_delivery_id"    />
+        <result property="saleDeliveryProductId"    column="sale_delivery_product_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="saleOrderDeliveryId"    column="sale_order_delivery_id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="returnType"    column="return_type"    />
+        <result property="returnRate"    column="return_rate"    />
+        <result property="qty"    column="qty"    />
+        <result property="price"    column="price"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="returnDate"    column="return_date"    />
+        <result property="address"    column="address"    />
+
+
+        <result property="customerName"    column="customer_name"    />
+        <result property="productName"    column="product_name"    />
+        <result property="saleDeliverySN"    column="sale_delivery_sn"    />
+        <result property="saleOrderSN"    column="sale_order_sn"    />
+        <result property="saleReturnSN"    column="sale_return_sn"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="deliveryQty"    column="delivery_qty"    />
+    </resultMap>
+
+    <sql id="selectSaleReturnProductVo">
+        select
+            p.product_name,c.customer_name,sd.serial_number sale_delivery_sn,so.serial_number sale_order_sn,sr.serial_number sale_return_sn,w.warehouse_name,
+            (select ifnull(sum(sdp1.qty),0) from sale_delivery_product sdp1 where sdp1.id = srp.sale_delivery_product_id) delivery_qty,
+            srp.id, srp.remark, srp.sale_return_id, srp.sale_delivery_id, srp.sale_delivery_product_id, srp.sale_order_id, srp.sale_order_product_id, srp.sale_order_delivery_id, srp.customer_id, srp.product_id, srp.return_type, srp.return_rate, srp.qty, srp.price, srp.tax_rate, srp.amount, srp.warehouse_id, srp.return_date, srp.address
+        from sale_return_product srp
+            left join config_customer c on c.id = srp.customer_id
+            left join config_product p on p.id = srp.product_id
+            left join sale_order so on so.id = srp.sale_order_id
+            left join sale_delivery sd on sd.id = srp.sale_delivery_id
+            left join sale_return sr on sr.id = srp.sale_return_id
+            left join config_warehouse w on w.id = srp.warehouse_id
+    </sql>
+
+    <select id="selectSaleReturnProductList" parameterType="SaleReturnProduct" resultMap="SaleReturnProductResult">
+        <include refid="selectSaleReturnProductVo"/>
+        <where>  
+            <if test="saleReturnId != null "> and srp.sale_return_id = #{saleReturnId}</if>
+            <if test="saleDeliveryId != null "> and srp.sale_delivery_id = #{saleDeliveryId}</if>
+            <if test="saleDeliveryProductId != null "> and srp.sale_delivery_product_id = #{saleDeliveryProductId}</if>
+            <if test="saleOrderId != null "> and srp.sale_order_id = #{saleOrderId}</if>
+            <if test="saleOrderProductId != null "> and srp.sale_order_product_id = #{saleOrderProductId}</if>
+            <if test="saleOrderDeliveryId != null "> and srp.sale_order_delivery_id = #{saleOrderDeliveryId}</if>
+            <if test="customerId != null "> and srp.customer_id = #{customerId}</if>
+            <if test="productId != null "> and srp.product_id = #{productId}</if>
+            <if test="returnType != null  and returnType != ''"> and srp.return_type = #{returnType}</if>
+            <if test="returnRate != null  and returnRate != ''"> and srp.return_rate = #{returnRate}</if>
+            <if test="qty != null "> and srp.qty = #{qty}</if>
+            <if test="price != null "> and srp.price = #{price}</if>
+            <if test="taxRate != null "> and srp.tax_rate = #{taxRate}</if>
+            <if test="amount != null "> and srp.amount = #{amount}</if>
+            <if test="warehouseId != null "> and srp.warehouse_id = #{warehouseId}</if>
+            <if test="returnDate != null "> and srp.return_date = #{returnDate}</if>
+            <if test="address != null  and address != ''"> and srp.address = #{address}</if>
+            <if test="saleCheckingId != null ">
+                and srp.sale_delivery_product_id in
+                (select pcm1.sale_delivery_product_id from sale_checking_product pcm1 where pcm1.sale_checking_id = #{saleCheckingId})
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectSaleReturnProductById" parameterType="Long" resultMap="SaleReturnProductResult">
+        <include refid="selectSaleReturnProductVo"/>
+        where srp.id = #{id}
+    </select>
+        
+    <insert id="insertSaleReturnProduct" parameterType="SaleReturnProduct" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sale_return_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="saleReturnId != null">sale_return_id,</if>
+            <if test="saleDeliveryId != null">sale_delivery_id,</if>
+            <if test="saleDeliveryProductId != null">sale_delivery_product_id,</if>
+            <if test="saleOrderId != null">sale_order_id,</if>
+            <if test="saleOrderProductId != null">sale_order_product_id,</if>
+            <if test="saleOrderDeliveryId != null">sale_order_delivery_id,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="returnType != null">return_type,</if>
+            <if test="returnRate != null">return_rate,</if>
+            <if test="qty != null">qty,</if>
+            <if test="price != null">price,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="amount != null">amount,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="returnDate != null">return_date,</if>
+            <if test="address != null">address,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="saleReturnId != null">#{saleReturnId},</if>
+            <if test="saleDeliveryId != null">#{saleDeliveryId},</if>
+            <if test="saleDeliveryProductId != null">#{saleDeliveryProductId},</if>
+            <if test="saleOrderId != null">#{saleOrderId},</if>
+            <if test="saleOrderProductId != null">#{saleOrderProductId},</if>
+            <if test="saleOrderDeliveryId != null">#{saleOrderDeliveryId},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="returnType != null">#{returnType},</if>
+            <if test="returnRate != null">#{returnRate},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="price != null">#{price},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="returnDate != null">#{returnDate},</if>
+            <if test="address != null">#{address},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleReturnProduct" parameterType="SaleReturnProduct">
+        update sale_return_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="saleReturnId != null">sale_return_id = #{saleReturnId},</if>
+            <if test="saleDeliveryId != null">sale_delivery_id = #{saleDeliveryId},</if>
+            <if test="saleDeliveryProductId != null">sale_delivery_product_id = #{saleDeliveryProductId},</if>
+            <if test="saleOrderId != null">sale_order_id = #{saleOrderId},</if>
+            <if test="saleOrderProductId != null">sale_order_product_id = #{saleOrderProductId},</if>
+            <if test="saleOrderDeliveryId != null">sale_order_delivery_id = #{saleOrderDeliveryId},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="returnType != null">return_type = #{returnType},</if>
+            <if test="returnRate != null">return_rate = #{returnRate},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="returnDate != null">return_date = #{returnDate},</if>
+            <if test="address != null">address = #{address},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSaleReturnProductById" parameterType="Long">
+        delete from sale_return_product where id = #{id}
+    </delete>
+
+    <delete id="deleteSaleReturnProductByIds" parameterType="String">
+        delete from sale_return_product where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

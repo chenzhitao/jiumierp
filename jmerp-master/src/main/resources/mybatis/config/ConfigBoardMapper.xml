@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configBoard.mapper.ConfigBoardMapper">
+    
+    <resultMap type="ConfigBoard" id="ConfigBoardResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="boardName"    column="board_name"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="shelvesNo"    column="shelves_no"    />
+        <result property="boardSize"    column="board_size"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="productName"    column="product_name"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+    </resultMap>
+
+    <sql id="selectConfigBoardVo">
+        select
+            c.customer_name, p.product_name,w.warehouse_name,
+            b.id, b.create_by, b.create_time, b.update_by, b.update_time, b.remark, b.status, b.
+            board_name, b.warehouse_id, b.shelves_no, b.board_size, b.customer_id, b.product_id
+        from config_board b
+            left join config_customer c on c.id = b.customer_id
+            left join config_product p on p.id = b.product_id
+            left join config_warehouse w on w.id = b.warehouse_id
+    </sql>
+
+    <select id="selectConfigBoardList" parameterType="ConfigBoard" resultMap="ConfigBoardResult">
+        <include refid="selectConfigBoardVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and b.status = #{status}</if>
+            <if test="boardName != null  and boardName != ''"> and b.board_name like concat('%', #{boardName}, '%')</if>
+            <if test="customerId != null "> and b.customer_id = #{customerId}</if>
+            <if test="productId != null "> and b.product_id = #{productId}</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigBoardById" parameterType="Long" resultMap="ConfigBoardResult">
+        <include refid="selectConfigBoardVo"/>
+        where b.id = #{id}
+    </select>
+        
+    <insert id="insertConfigBoard" parameterType="ConfigBoard" useGeneratedKeys="true" keyProperty="id">
+        insert into config_board
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="boardName != null and boardName != ''">board_name,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="shelvesNo != null">shelves_no,</if>
+            <if test="boardSize != null">board_size,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="productId != null">product_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="boardName != null and boardName != ''">#{boardName},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="shelvesNo != null">#{shelvesNo},</if>
+            <if test="boardSize != null">#{boardSize},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="productId != null">#{productId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigBoard" parameterType="ConfigBoard">
+        update config_board
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="boardName != null and boardName != ''">board_name = #{boardName},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="shelvesNo != null">shelves_no = #{shelvesNo},</if>
+            <if test="boardSize != null">board_size = #{boardSize},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigBoardById" parameterType="Long">
+        delete from config_board where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigBoardByIds" parameterType="String">
+        delete from config_board where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

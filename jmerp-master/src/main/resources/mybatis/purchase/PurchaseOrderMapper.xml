@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.purchase.purchaseOrder.mapper.PurchaseOrderMapper">
+    
+    <resultMap type="PurchaseOrder" id="PurchaseOrderResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="contact"    column="contact"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="buyerId"    column="buyer_id"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="purchaseOrderType"    column="purchase_order_type"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="settlementType"    column="settlement_type"    />
+        <result property="deliveryType"    column="delivery_type"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="deposit"    column="deposit"    />
+        <result property="depositDate"    column="deposit_date"    />
+
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="buyerName"    column="buyer_name"    />
+    </resultMap>
+
+    <sql id="selectPurchaseOrderVo">
+        select
+            s.supplier_name,e.employee_name buyer_name,
+            po.id, po.create_by, po.create_time, po.update_by, po.update_time, po.remark, po.status, po.approver, po.approval_time, po.approval_type, po.serial_number, po.supplier_id, po.contact, po.cell_phone, po.buyer_id, po.delivery_date, po.purchase_order_type, po.payment_type, po.settlement_type, po.delivery_type, po.tax_rate, po.amount, po.deposit, po.deposit_date
+        from purchase_order po
+            left join config_supplier s on s.id = po.supplier_id
+            left join config_employee e on e.id = po.buyer_id
+    </sql>
+
+    <select id="selectPurchaseOrderList" parameterType="PurchaseOrder" resultMap="PurchaseOrderResult">
+        <include refid="selectPurchaseOrderVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and po.status = #{status}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and po.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="supplierId != null "> and po.supplier_id = #{supplierId}</if>
+            <if test="contact != null  and contact != ''"> and po.contact = #{contact}</if>
+            <if test="buyerId != null "> and po.buyer_id = #{buyerId}</if>
+            <if test="purchaseOrderType != null  and purchaseOrderType != ''"> and po.purchase_order_type = #{purchaseOrderType}</if>
+            <if test="paymentType != null  and paymentType != ''"> and po.payment_type = #{paymentType}</if>
+            <if test="settlementType != null  and settlementType != ''"> and po.settlement_type = #{settlementType}</if>
+            <if test="deliveryType != null  and deliveryType != ''"> and po.delivery_type = #{deliveryType}</if>
+            <if test="params.beginDeliveryDate != null and params.beginDeliveryDate != '' ">
+                and date_sub(po.delivery_date,interval -1 day) <![CDATA[ > ]]> #{params.beginDeliveryDate}
+            </if>
+            <if test="params.endDeliveryDate != null and params.endDeliveryDate != ''">
+                and date_sub(po.delivery_date,interval 1 day) <![CDATA[ < ]]> #{params.endDeliveryDate}
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectPurchaseOrderById" parameterType="Long" resultMap="PurchaseOrderResult">
+        <include refid="selectPurchaseOrderVo"/>
+        where po.id = #{id}
+    </select>
+        
+    <insert id="insertPurchaseOrder" parameterType="PurchaseOrder" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into purchase_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            serial_number,
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="approver != null">approver,</if>
+            <if test="approvalTime != null">approval_time,</if>
+            <if test="approvalType != null">approval_type,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="contact != null">contact,</if>
+            <if test="cellPhone != null">cell_phone,</if>
+            <if test="buyerId != null">buyer_id,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+            <if test="purchaseOrderType != null">purchase_order_type,</if>
+            <if test="paymentType != null">payment_type,</if>
+            <if test="settlementType != null">settlement_type,</if>
+            <if test="deliveryType != null">delivery_type,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="amount != null">amount,</if>
+            <if test="deposit != null">deposit,</if>
+            <if test="depositDate != null">deposit_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            seq_nextval('CDD'),
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="approvalTime != null">#{approvalTime},</if>
+            <if test="approvalType != null">#{approvalType},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="contact != null">#{contact},</if>
+            <if test="cellPhone != null">#{cellPhone},</if>
+            <if test="buyerId != null">#{buyerId},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+            <if test="purchaseOrderType != null">#{purchaseOrderType},</if>
+            <if test="paymentType != null">#{paymentType},</if>
+            <if test="settlementType != null">#{settlementType},</if>
+            <if test="deliveryType != null">#{deliveryType},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="deposit != null">#{deposit},</if>
+            <if test="depositDate != null">#{depositDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePurchaseOrder" parameterType="PurchaseOrder">
+        update purchase_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="approvalTime != null">approval_time = #{approvalTime},</if>
+            <if test="approvalType != null">approval_type = #{approvalType},</if>
+            <if test="serialNumber != null and serialNumber != ''">serial_number = #{serialNumber},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="cellPhone != null">cell_phone = #{cellPhone},</if>
+            <if test="buyerId != null">buyer_id = #{buyerId},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="purchaseOrderType != null">purchase_order_type = #{purchaseOrderType},</if>
+            <if test="paymentType != null">payment_type = #{paymentType},</if>
+            <if test="settlementType != null">settlement_type = #{settlementType},</if>
+            <if test="deliveryType != null">delivery_type = #{deliveryType},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="deposit != null">deposit = #{deposit},</if>
+            <if test="depositDate != null">deposit_date = #{depositDate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePurchaseOrderById" parameterType="Long">
+        delete from purchase_order where id = #{id}
+    </delete>
+
+    <delete id="deletePurchaseOrderMaterialsById" parameterType="Long">
+        delete from purchase_order_materials where purchase_order_id = #{id}
+    </delete>
+
+    <delete id="deletePurchaseOrderByIds" parameterType="String">
+        delete from purchase_order where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

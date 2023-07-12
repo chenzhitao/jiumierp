@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.warehouse.warehouseInventory.mapper.WarehouseInventoryMapper">
+    
+    <resultMap type="WarehouseInventory" id="WarehouseInventoryResult">
+        <result property="id"    column="id"    />
+        <result property="ids"    column="ids"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="warehouseType"    column="warehouse_type"    />
+        <result property="productId"    column="product_id"    />
+        <result property="materialsId"    column="materials_id"    />
+        <result property="goodsName"    column="goods_name"    />
+        <result property="qty"    column="qty"    />
+        <result property="unusedQty"    column="unused_qty"    />
+
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="productName"    column="product_name"    />
+        <result property="materialsName"    column="materials_name"    />
+    </resultMap>
+
+    <sql id="selectWarehouseInventoryVo">
+        select
+            p.product_name,m.materials_name,w.warehouse_name,
+            wi.id, wi.create_by, wi.create_time, wi.update_by, wi.update_time, wi.remark, wi.status, wi.warehouse_id, wi.warehouse_type, wi.product_id, wi.materials_id, wi.goods_name, wi.qty, wi.unused_qty
+        from warehouse_inventory wi
+            left join config_product p on p.id = wi.product_id
+            left join config_warehouse w on w.id = wi.warehouse_id
+            left join config_materials m on m.id = wi.materials_id
+    </sql>
+
+    <select id="selectWarehouseInventoryList" parameterType="WarehouseInventory" resultMap="WarehouseInventoryResult">
+        <include refid="selectWarehouseInventoryVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and wi.status = #{status}</if>
+            <if test="warehouseId != null "> and wi.warehouse_id = #{warehouseId}</if>
+            <if test="warehouseType != null  and warehouseType != ''"> and wi.warehouse_type = #{warehouseType}</if>
+            <if test="productId != null "> and wi.product_id = #{productId}</if>
+            <if test="materialsId != null "> and wi.materials_id = #{materialsId}</if>
+            <if test="goodsName != null  and goodsName != ''"> and wi.goods_name like concat('%', #{goodsName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectWarehouseInventoryById" parameterType="Long" resultMap="WarehouseInventoryResult">
+        <include refid="selectWarehouseInventoryVo"/>
+        where wi.id = #{id}
+    </select>
+        
+    <insert id="insertWarehouseInventory" parameterType="WarehouseInventory" useGeneratedKeys="true" keyProperty="id">
+        insert into warehouse_inventory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="warehouseType != null">warehouse_type,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="materialsId != null">materials_id,</if>
+            <if test="goodsName != null">goods_name,</if>
+            <if test="qty != null">qty,</if>
+            <if test="unusedQty != null">unused_qty,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="warehouseType != null">#{warehouseType},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="materialsId != null">#{materialsId},</if>
+            <if test="goodsName != null">#{goodsName},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="unusedQty != null">#{unusedQty},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWarehouseInventory" parameterType="WarehouseInventory">
+        update warehouse_inventory
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="materialsId != null">materials_id = #{materialsId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="warehouseType != null">warehouse_type = #{warehouseType},</if>
+            <if test="goodsName != null">goods_name = #{goodsName},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="unusedQty != null">unused_qty = #{unusedQty},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWarehouseInventoryById" parameterType="Long">
+        delete from warehouse_inventory where id = #{id}
+    </delete>
+
+    <delete id="deleteWarehouseInventoryByIds" parameterType="String">
+        delete from warehouse_inventory where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="createEmptyWarehouseInventory" parameterType="WarehouseInventory" resultMap="WarehouseInventoryResult">
+        select
+            -1 id,
+            (select p.product_name from config_product p where p.id = #{productId}) product_name,
+            (select w.warehouse_name from config_warehouse w where w.id = #{warehouseId}) warehouse_name,
+            (select m.materials_name from config_materials m where m.id = #{materialsId}) materials_name,
+            (concat(
+                (select w.warehouse_name from config_warehouse w where w.id = #{warehouseId}),
+                (select m.materials_name from config_materials m where m.id = #{materialsId})
+            )) goods_name,
+            0 qty,
+            0 unused_qty,
+            'vaild' status
+        from dual
+    </select>
+
+    <select id="selectGroupInventory" parameterType="WarehouseInventory" resultMap="WarehouseInventoryResult">
+        SELECT
+            group_concat(wi.id) ids,
+            wi.status,
+            wi.warehouse_id,
+            wi.product_id,
+            wi.materials_id,
+            sum(wi.qty) qty
+        FROM
+            warehouse_inventory wi
+        GROUP BY
+            wi.status,
+            wi.warehouse_id,
+            wi.product_id,
+            wi.materials_id
+        HAVING
+            count(wi.id) > 1
+    </select>
+
+</mapper>

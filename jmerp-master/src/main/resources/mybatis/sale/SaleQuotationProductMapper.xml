@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.sale.saleQuotationProduct.mapper.SaleQuotationProductMapper">
+    
+    <resultMap type="SaleQuotationProduct" id="SaleQuotationProductResult">
+        <result property="id"    column="id"    />
+        <result property="saleQuotationId"    column="sale_quotation_id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="quotationTemplateId"    column="quotation_template_id"    />
+        <result property="productionTemplateId"    column="production_template_id"    />
+
+        <result property="customerName"    column="customer_name"    />
+        <result property="productName"    column="product_name"    />
+        <result property="quotationTemplateName"    column="quotation_template_name"    />
+        <result property="productionTemplateName"    column="production_template_name"    />
+        <result property="sizeLong"    column="size_long"    />
+        <result property="sizeWidth"    column="size_width"    />
+        <result property="sizeHeight"    column="size_height"    />
+        <result property="quotationTemplateProcessArr"    column="quotation_template_process_arr"    />
+        <result property="quotationTemplateMaterialsArr"    column="quotation_template_materials_arr"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="qty"    column="qty"    />
+    </resultMap>
+
+    <sql id="selectSaleQuotationProductVo">
+        select
+            c.customer_name,p.product_name,qt.template_name quotation_template_name,pt.template_name production_template_name,
+            p.size_long,p.size_width,p.size_height,
+            (select group_concat(p.process_name) from config_quotation_template_process qt2 left join config_process p on p.id = qt2.process_id where qt2.quotation_template_id = qt.id) quotation_template_process_arr,
+            (select group_concat(m.materials_name) from config_quotation_template_materials qt2 left join config_materials m on m.id = qt2.materials_id where qt2.quotation_template_id = qt.id) quotation_template_materials_arr,
+            sqp.id, sqp.sale_quotation_id, sqp.customer_id, sqp.product_id, sqp.quotation_template_id,sqp.production_template_id
+        from sale_quotation_product sqp
+            left join config_customer c on c.id = sqp.customer_id
+            left join config_product p on p.id = sqp.product_id
+            left join config_quotation_template qt on qt.id = sqp.quotation_template_id
+            left join config_production_template pt on pt.id = sqp.production_template_id
+    </sql>
+
+    <select id="selectSaleQuotationProductList" parameterType="SaleQuotationProduct" resultMap="SaleQuotationProductResult">
+        <include refid="selectSaleQuotationProductVo"/>
+        <where>  
+            <if test="saleQuotationId != null "> and sqp.sale_quotation_id = #{saleQuotationId}</if>
+            <if test="customerId != null "> and sqp.customer_id = #{customerId}</if>
+            <if test="productId != null "> and sqp.product_id = #{productId}</if>
+            <if test="quotationTemplateId != null "> and sqp.quotation_template_id = #{quotationTemplateId}</if>
+            <if test="productionTemplateId != null "> and sqp.production_template_id = #{productionTemplateId}</if>
+        </where>
+    </select>
+
+    <select id="selectMultProductList" parameterType="SaleQuotationProduct" resultMap="SaleQuotationProductResult">
+        SELECT
+            x.ids,
+            x.serial_number,
+            x.qty,
+            x.customer_id,
+            x.product_id,
+            p.product_name,
+            c.customer_name
+        FROM
+            (
+                SELECT
+                    concat(sq.id, '_', qp.id, '_', qm.id) ids,
+                    sq.serial_number,
+                    sq.customer_id,
+                    qp.product_id,
+                    qm.qty
+                FROM
+                    sale_quotation_product qp,
+                    sale_quotation_mult qm,
+                    sale_quotation sq
+                WHERE
+                    customer_permission(#{rzyUserId},sq.customer_id) = 'Y'
+                AND sq.status = 'normal'
+                AND sq.id = qp.sale_quotation_id
+                AND sq.id = qm.sale_quotation_id
+                AND qp.id not in (select sop.sale_quotation_product_id from sale_order_product sop where sop.sale_quotation_product_id is not null)
+        <if test="productId != null "> AND qp.product_id = #{productId}</if>
+        <if test="customerId != null "> AND qp.customer_id = #{customerId}</if>
+        <if test="serialNumber != null  and serialNumber != ''"> AND sq.serial_number LIKE concat('%', #{serialNumber}, '%')</if>
+            ) x
+        LEFT JOIN config_customer c ON c.id = x.customer_id
+        LEFT JOIN config_product p ON p.id = x.product_id
+    </select>
+    
+    <select id="selectSaleQuotationProductById" parameterType="Long" resultMap="SaleQuotationProductResult">
+        <include refid="selectSaleQuotationProductVo"/>
+        where sqp.id = #{id}
+    </select>
+        
+    <insert id="insertSaleQuotationProduct" parameterType="SaleQuotationProduct" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sale_quotation_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="saleQuotationId != null">sale_quotation_id,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="quotationTemplateId != null">quotation_template_id,</if>
+            <if test="productionTemplateId != null">production_template_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="saleQuotationId != null">#{saleQuotationId},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="quotationTemplateId != null">#{quotationTemplateId},</if>
+            <if test="productionTemplateId != null">#{productionTemplateId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleQuotationProduct" parameterType="SaleQuotationProduct">
+        update sale_quotation_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="saleQuotationId != null">sale_quotation_id = #{saleQuotationId},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="quotationTemplateId != null">quotation_template_id = #{quotationTemplateId},</if>
+            <if test="productionTemplateId != null">production_template_id = #{productionTemplateId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSaleQuotationProductById" parameterType="Long">
+        delete from sale_quotation_product where id = #{id}
+    </delete>
+
+    <delete id="deleteSaleQuotationProductByIds" parameterType="String">
+        delete from sale_quotation_product where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configProductionTemplateProcess.mapper.ConfigProductionTemplateProcessMapper">
+    
+    <resultMap type="ConfigProductionTemplateProcess" id="ConfigProductionTemplateProcessResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="productionTemplateId"    column="production_template_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="times"    column="times"    />
+        <result property="valuationType"    column="valuation_type"    />
+        <result property="isOutsource"    column="is_outsource"    />
+        <result property="isWithMaterials"    column="is_with_materials"    />
+        <result property="outsourcePrice"    column="outsource_price"    />
+        <result property="price"    column="price"    />
+        <result property="equipmentId"    column="equipment_id"    />
+        <result property="lossRate"    column="loss_rate"    />
+        <result property="lossQty"    column="loss_qty"    />
+        <result property="processOrder"    column="process_order"    />
+
+        <result property="processName"    column="process_name"    />
+        <result property="equipmentName"    column="equipment_name"    />
+        <result property="productionTemplateName"    column="production_template_name"    />
+        <result property="isTimeCount"    column="is_time_count"    />
+    </resultMap>
+
+    <sql id="selectConfigProductionTemplateProcessVo">
+        select
+            cp.process_name,e.equipment_name,ptp.process_order,qt.template_name production_template_name,ptp.is_time_count,
+            ptp.id, ptp.remark, ptp.production_template_id, ptp.process_id, ptp.times, ptp.valuation_type, ptp.is_outsource, ptp.is_with_materials, ptp.outsource_price, ptp.price, ptp.equipment_id, ptp.loss_rate, ptp.loss_qty
+        from config_production_template_process ptp
+            left join config_process cp on cp.id = ptp.process_id
+            left join config_equipment e on e.id = ptp.equipment_id
+            left join config_production_template qt on qt.id = ptp.production_template_id
+    </sql>
+
+    <select id="selectConfigProductionTemplateProcessList" parameterType="ConfigProductionTemplateProcess" resultMap="ConfigProductionTemplateProcessResult">
+        <include refid="selectConfigProductionTemplateProcessVo"/>
+        <where>  
+            <if test="productionTemplateId != null "> and ptp.production_template_id = #{productionTemplateId}</if>
+            <if test="processId != null "> and ptp.process_id = #{processId}</if>
+            <if test="times != null "> and ptp.times = #{times}</if>
+            <if test="valuationType != null  and valuationType != ''"> and ptp.valuation_type = #{valuationType}</if>
+            <if test="isOutsource != null  and isOutsource != ''"> and ptp.is_outsource = #{isOutsource}</if>
+            <if test="isWithMaterials != null  and isWithMaterials != ''"> and ptp.is_with_materials = #{isWithMaterials}</if>
+            <if test="outsourcePrice != null "> and ptp.outsource_price = #{outsourcePrice}</if>
+            <if test="price != null "> and ptp.price = #{price}</if>
+            <if test="equipmentId != null "> and ptp.equipment_id = #{equipmentId}</if>
+            <if test="lossRate != null "> and ptp.loss_rate = #{lossRate}</if>
+            <if test="lossQty != null "> and ptp.loss_qty = #{lossQty}</if>
+            <if test="ids != null "> and ptp.production_template_id in (${ids})</if>
+            <if test="isTimeCount != null "> and ptp.cqtp.is_time_count = #{isTimeCount}</if>
+        </where>
+        order by ptp.process_order, ptp.id desc
+    </select>
+    
+    <select id="selectConfigProductionTemplateProcessById" parameterType="Long" resultMap="ConfigProductionTemplateProcessResult">
+        <include refid="selectConfigProductionTemplateProcessVo"/>
+        where ptp.id = #{id}
+    </select>
+        
+    <insert id="insertConfigProductionTemplateProcess" parameterType="ConfigProductionTemplateProcess" useGeneratedKeys="true" keyProperty="id">
+        insert into config_production_template_process
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="productionTemplateId != null">production_template_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="times != null">times,</if>
+            <if test="valuationType != null">valuation_type,</if>
+            <if test="isOutsource != null">is_outsource,</if>
+            <if test="isWithMaterials != null">is_with_materials,</if>
+            <if test="outsourcePrice != null">outsource_price,</if>
+            <if test="price != null">price,</if>
+            <if test="equipmentId != null">equipment_id,</if>
+            <if test="lossRate != null">loss_rate,</if>
+            <if test="lossQty != null">loss_qty,</if>
+            <if test="processOrder != null">process_order,</if>
+            <if test="isTimeCount != null">is_time_count,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="productionTemplateId != null">#{productionTemplateId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="times != null">#{times},</if>
+            <if test="valuationType != null">#{valuationType},</if>
+            <if test="isOutsource != null">#{isOutsource},</if>
+            <if test="isWithMaterials != null">#{isWithMaterials},</if>
+            <if test="outsourcePrice != null">#{outsourcePrice},</if>
+            <if test="price != null">#{price},</if>
+            <if test="equipmentId != null">#{equipmentId},</if>
+            <if test="lossRate != null">#{lossRate},</if>
+            <if test="lossQty != null">#{lossQty},</if>
+            <if test="processOrder != null">#{processOrder},</if>
+            <if test="isTimeCount != null">#{isTimeCount},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigProductionTemplateProcess" parameterType="ConfigProductionTemplateProcess">
+        update config_production_template_process
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="productionTemplateId != null">production_template_id = #{productionTemplateId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="times != null">times = #{times},</if>
+            <if test="valuationType != null">valuation_type = #{valuationType},</if>
+            <if test="isOutsource != null">is_outsource = #{isOutsource},</if>
+            <if test="isWithMaterials != null">is_with_materials = #{isWithMaterials},</if>
+            <if test="outsourcePrice != null">outsource_price = #{outsourcePrice},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="equipmentId != null">equipment_id = #{equipmentId},</if>
+            <if test="lossRate != null">loss_rate = #{lossRate},</if>
+            <if test="lossQty != null">loss_qty = #{lossQty},</if>
+            <if test="processOrder != null">process_order = #{processOrder},</if>
+            <if test="processOrder != null">is_time_count = #{isTimeCount},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigProductionTemplateProcessById" parameterType="Long">
+        delete from config_production_template_process where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigProductionTemplateProcessByIds" parameterType="String">
+        delete from config_production_template_process where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

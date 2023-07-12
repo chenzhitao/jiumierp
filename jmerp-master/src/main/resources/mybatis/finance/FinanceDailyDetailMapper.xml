@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.finance.financeDailyDetail.mapper.FinanceDailyDetailMapper">
+    
+    <resultMap type="FinanceDailyDetail" id="FinanceDailyDetailResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="financeDailyId"    column="finance_daily_id"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="produceScheduleId"    column="produce_schedule_id"    />
+        <result property="teamId"    column="team_id"    />
+        <result property="financeStandardId"    column="finance_standard_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="jobContent"    column="job_content"    />
+        <result property="allocationType"    column="allocation_type"    />
+        <result property="valuationType"    column="valuation_type"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="workTime"    column="work_time"    />
+        <result property="qty"    column="qty"    />
+        <result property="price"    column="price"    />
+        <result property="amount"    column="amount"    />
+
+        <result property="produceOrderSN"    column="produce_order_sn"    />
+        <result property="produceScheduleSN"    column="produce_schedule_sn"    />
+        <result property="teamName"    column="team_name"    />
+        <result property="processName"    column="process_name"    />
+        <result property="productName"    column="product_name"    />
+        <result property="financeDailySN"    column="finance_daily_sn"    />
+        <result property="financeStandardName"    column="job_content"    />
+        <result property="isSplit"    column="is_split"    />
+    </resultMap>
+
+    <sql id="selectFinanceDailyDetailVo">
+        select
+            pd1.serial_number produce_order_sn,ps.serial_number produce_schedule_sn,fd.serial_number finance_daily_sn,cp.product_name,co.process_name,t.team_name,fdd.job_content,
+            (select if(count(*)=0,'Y','N') from finance_daily_detail_employee fdde1 where fdde1.finance_daily_detail_id = fdd.id and fdde1.employee_price = 0) is_split,
+            fdd.id, fdd.remark, fdd.finance_daily_id, fdd.produce_order_id, fdd.produce_schedule_id, fdd.team_id, fdd.finance_standard_id, fdd.process_id, fdd.product_id, fdd.job_content, fdd.allocation_type, fdd.valuation_type, fdd.start_time, fdd.end_time, fdd.work_time, fdd.qty, fdd.price, fdd.amount
+        from finance_daily_detail fdd
+            left join config_product cp on cp.id = fdd.product_id
+            left join config_process co on co.id = fdd.process_id
+            left join produce_order pd1 on pd1.id = fdd.produce_order_id
+            left join produce_schedule ps on ps.id = fdd.produce_schedule_id
+            left join config_team t on t.id = fdd.team_id
+            left join finance_daily fd on fd.id = fdd.finance_daily_id
+            left join finance_standard fs on fs.id = fdd.finance_standard_id
+    </sql>
+
+    <select id="selectFinanceDailyDetailList" parameterType="FinanceDailyDetail" resultMap="FinanceDailyDetailResult">
+        <include refid="selectFinanceDailyDetailVo"/>
+        <where>  
+            <if test="financeDailyId != null "> and fdd.finance_daily_id = #{financeDailyId}</if>
+            <if test="produceOrderId != null "> and fdd.produce_order_id = #{produceOrderId}</if>
+            <if test="produceScheduleId != null "> and fdd.produce_schedule_id = #{produceScheduleId}</if>
+            <if test="teamId != null "> and fdd.team_id = #{teamId}</if>
+            <if test="financeStandardId != null "> and fdd.finance_standard_id = #{financeStandardId}</if>
+            <if test="processId != null "> and fdd.process_id = #{processId}</if>
+            <if test="productId != null "> and fdd.product_id = #{productId}</if>
+            <if test="jobContent != null  and jobContent != ''"> and fdd.job_content = #{jobContent}</if>
+            <if test="allocationType != null  and allocationType != ''"> and fdd.allocation_type = #{allocationType}</if>
+            <if test="valuationType != null  and valuationType != ''"> and fdd.valuation_type = #{valuationType}</if>
+            <if test="startTime != null "> and fdd.start_time = #{startTime}</if>
+            <if test="endTime != null "> and fdd.end_time = #{endTime}</if>
+            <if test="workTime != null "> and fdd.work_time = #{workTime}</if>
+            <if test="qty != null "> and fdd.qty = #{qty}</if>
+            <if test="price != null "> and fdd.price = #{price}</if>
+            <if test="amount != null "> and fdd.amount = #{amount}</if>
+        </where>
+    </select>
+    
+    <select id="selectFinanceDailyDetailById" parameterType="Long" resultMap="FinanceDailyDetailResult">
+        <include refid="selectFinanceDailyDetailVo"/>
+        where fdd.id = #{id}
+    </select>
+        
+    <insert id="insertFinanceDailyDetail" parameterType="FinanceDailyDetail" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into finance_daily_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="financeDailyId != null">finance_daily_id,</if>
+            <if test="produceOrderId != null">produce_order_id,</if>
+            <if test="produceScheduleId != null">produce_schedule_id,</if>
+            <if test="teamId != null">team_id,</if>
+            <if test="financeStandardId != null">finance_standard_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="jobContent != null">job_content,</if>
+            <if test="allocationType != null">allocation_type,</if>
+            <if test="valuationType != null">valuation_type,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="workTime != null">work_time,</if>
+            <if test="qty != null">qty,</if>
+            <if test="price != null">price,</if>
+            <if test="amount != null">amount,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="financeDailyId != null">#{financeDailyId},</if>
+            <if test="produceOrderId != null">#{produceOrderId},</if>
+            <if test="produceScheduleId != null">#{produceScheduleId},</if>
+            <if test="teamId != null">#{teamId},</if>
+            <if test="financeStandardId != null">#{financeStandardId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="jobContent != null">#{jobContent},</if>
+            <if test="allocationType != null">#{allocationType},</if>
+            <if test="valuationType != null">#{valuationType},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="workTime != null">#{workTime},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="price != null">#{price},</if>
+            <if test="amount != null">#{amount},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFinanceDailyDetail" parameterType="FinanceDailyDetail">
+        update finance_daily_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="financeDailyId != null">finance_daily_id = #{financeDailyId},</if>
+            <if test="produceOrderId != null">produce_order_id = #{produceOrderId},</if>
+            <if test="produceScheduleId != null">produce_schedule_id = #{produceScheduleId},</if>
+            <if test="teamId != null">team_id = #{teamId},</if>
+            <if test="financeStandardId != null">finance_standard_id = #{financeStandardId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="jobContent != null">job_content = #{jobContent},</if>
+            <if test="allocationType != null">allocation_type = #{allocationType},</if>
+            <if test="valuationType != null">valuation_type = #{valuationType},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="workTime != null">work_time = #{workTime},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="amount != null">amount = #{amount},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFinanceDailyDetailById" parameterType="Long">
+        delete from finance_daily_detail where id = #{id}
+    </delete>
+
+    <delete id="deleteFinanceDailyDetailByIds" parameterType="String">
+        delete from finance_daily_detail where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

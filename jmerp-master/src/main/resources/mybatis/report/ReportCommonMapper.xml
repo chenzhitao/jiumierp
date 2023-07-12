@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.report.reportCommon.mapper.ReportCommonMapper">
+    
+    <resultMap type="ReportCommon" id="ReportCommonResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <resultMap type="ReportPurchaseIncoming" id="ReportPurchaseIncomingResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+
+        <result property="materialsId"    column="materials_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="qty"    column="qty"    />
+        <result property="deliveryQty"    column="delivery_qty"    />
+        <result property="qtyStatus"    column="qty_status"    />
+
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="materialsName"    column="materials_name"    />
+    </resultMap>
+
+    <resultMap type="ReportProductionFinancial" id="ReportProductionFinancialResult">
+        <result property="produceDate"    column="produce_date"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="equipmentName"    column="equipment_name"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="frontColor"    column="front_color"    />
+        <result property="backColor"    column="back_color"    />
+        <result property="frontSpot"    column="front_spot"    />
+        <result property="backSpot"    column="back_spot"    />
+        <result property="qty"    column="qty"    />
+        <result property="chargeAmount"    column="charge_amount"    />
+        <result property="remark"    column="remark"    />
+        <result property="materialsName"    column="materials_name"    />
+        <result property="customerMaterialNo"    column="customer_material_no"    />
+        <result property="customerNo"    column="customer_no"    />
+        <result property="productName"    column="product_name"    />
+        <result property="cuttingSizeLong"    column="cutting_size_long"    />
+        <result property="cuttingSizeWidth"    column="cutting_size_width"    />
+        <result property="cuttingSize"    column="cutting_size"    />
+        <result property="printType"    column="print_type"    />
+        <result property="workTeam"    column="work_team"    />
+        <result property="colorRequire"    column="color_require"    />
+        <result property="extraAmount"    column="extra_cost"    />
+        <result property="extraCostInfo"    column="extra_cost_info"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="alias"    column="alias"    />
+        <result property="customerOrder"    column="customer_order"    />
+    </resultMap>
+
+    <sql id="selectReportCommonVo">
+        select id, create_by, create_time, update_by, update_time, remark, status from report_common
+    </sql>
+
+    <select id="selectReportCommonList" parameterType="ReportCommon" resultMap="ReportCommonResult">
+        <include refid="selectReportCommonVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectReportCommonById" parameterType="Long" resultMap="ReportCommonResult">
+        <include refid="selectReportCommonVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertReportCommon" parameterType="ReportCommon" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into report_common
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateReportCommon" parameterType="ReportCommon">
+        update report_common
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteReportPurchaseIncomingById" parameterType="Long">
+        delete from report_common where id = #{id}
+    </delete>
+
+    <delete id="deleteReportCommonByIds" parameterType="String">
+        delete from report_common where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="purchaseIncomingQtyList" parameterType="ReportCommon" resultMap="ReportPurchaseIncomingResult">
+        select
+            x1.materials_id,
+            x1.supplier_id,
+            x1.delivery_date,
+            x1.qty,
+            x1.delivery_qty,
+            (CASE
+                WHEN x1.delivery_qty = 0 THEN 'E'
+                WHEN x1.delivery_qty <![CDATA[ < ]]> x1.qty THEN 'N'
+                WHEN x1.delivery_qty <![CDATA[ >= ]]> x1.qty THEN 'Y'
+                ELSE 'X'
+            END ) qty_status
+        from (
+            select
+                pom.materials_id,pom.supplier_id,pom.delivery_date, pom.qty,
+                (select ifnull(sum(pdm.qty),0) from purchase_delivery_materials pdm where pdm.purchase_order_materials_id = pom.id) delivery_qty
+            from purchase_order_materials pom
+            <where>
+                <if test="materialsId != null "> and pom.materials_id = #{materialsId}</if>
+                <if test="supplierId != null"> and pom.supplier_id = #{supplierId}</if>
+                <if test="params.beginDeliveryDate != null and params.beginDeliveryDate != '' ">
+                    and date_sub(pom.delivery_date,interval -1 day) <![CDATA[ > ]]> #{params.beginDeliveryDate}
+                </if>
+                <if test="params.endDeliveryDate != null and params.endDeliveryDate != ''">
+                    and date_sub(pom.delivery_date,interval 1 day) <![CDATA[ < ]]> #{params.endDeliveryDate}
+                </if>
+            </where>
+        ) x1
+    </select>
+
+    <select id="purchaseIncomingList" parameterType="ReportCommon" resultMap="ReportPurchaseIncomingResult">
+        SELECT
+            pom.materials_id,
+            pom.supplier_id,
+            m.materials_name,
+            s.supplier_name,
+            min(pom.delivery_date) delivery_date
+        FROM
+            purchase_order_materials pom
+        left join config_supplier s on s.id = pom.supplier_id
+        left join config_materials m on m.id = pom.materials_id
+        GROUP BY
+            pom.materials_id,
+            pom.supplier_id
+        HAVING
+            1 = 1
+            <if test="materialsId != null "> and materials_id = #{materialsId}</if>
+            <if test="supplierId != null"> and supplier_id = #{supplierId}</if>
+            <if test="params.beginDeliveryDate != null and params.beginDeliveryDate != '' ">
+                and date_sub(delivery_date,interval -1 day) <![CDATA[ > ]]> #{params.beginDeliveryDate}
+            </if>
+            <if test="params.endDeliveryDate != null and params.endDeliveryDate != ''">
+                and date_sub(delivery_date,interval 1 day) <![CDATA[ < ]]> #{params.endDeliveryDate}
+            </if>
+        ORDER BY
+            min(pom.delivery_date)
+    </select>
+
+    <select id="productionFinancialList" parameterType="ReportCommon" resultMap="ReportProductionFinancialResult">
+        SELECT
+        pop.produce_order_id,
+        po.produce_date,
+        po.create_time,
+        po.serial_number,
+        po.customer_order,
+        cr.customer_material_no,
+        cc.customer_name,
+        cr.product_name,
+        pop.alias,
+        (select group_concat(cm.materials_name) from config_materials cm where cm.id in
+        (select pom.materials_id from produce_order_materials pom where pom.produce_order_id = po.id)
+        ) materials_name,
+        concat(pop.cutting_size_long,'*',pop.cutting_size_width) cutting_size,
+        po.print_type,
+        po.front_color,
+        po.back_color,
+        po.front_spot,
+        po.back_spot,
+        po.color_require,
+        pop.out_qty qty,
+        pop.charge_amount,
+        po.extra_cost,
+        REPLACE(REPLACE(po.extra_cost_info,'@A02',',费用:'),'@A01','; ') extra_cost_info,
+        (select ct1.team_name from produce_schedule_process psp1
+        LEFT JOIN produce_schedule ps1 on ps1.id = psp1.produce_schedule_id
+        LEFT JOIN config_team ct1 on ct1.id = ps1.team_id
+        where psp1.produce_order_process_id = pop.id LIMIT 1
+        ) work_team,
+        ce.equipment_name,
+        po.remark
+        FROM produce_order_process pop
+        LEFT JOIN produce_order po ON po.id = pop.produce_order_id
+        LEFT JOIN config_customer cc ON cc.id = po.customer_id
+        LEFT JOIN config_process cp ON cp.id = pop.process_id
+        LEFT JOIN config_product cr ON cr.id = po.product_id
+        LEFT JOIN produce_order_materials pom ON pom.produce_order_id = po.product_id
+        LEFT JOIN config_equipment ce ON ce.id = pop.equipment_id
+        where cp.process_type = 'ys' and po.status != 'delete'
+        <if test="params.beginProduceDate != null and params.beginProduceDate != '' ">
+            and date_sub(po.produce_date,interval -1 day) <![CDATA[ > ]]> #{params.beginProduceDate}
+        </if>
+        <if test="params.endProduceDate != null and params.endProduceDate != ''">
+            and date_sub(po.produce_date,interval 1 day) <![CDATA[ < ]]> #{params.endProduceDate}
+        </if>
+        <if test="customerName != null  and customerName != ''"> and cc.customer_name like concat('%', #{customerName}, '%')</if>
+        <if test="serialNumber != null  and serialNumber != ''"> and po.serial_number like concat('%', #{serialNumber}, '%')</if>
+        <if test="equipmentId != null"> and ce.id = #{equipmentId}</if>
+        order by po.produce_date desc,po.id desc,pop.id
+    </select>
+
+
+
+
+</mapper>

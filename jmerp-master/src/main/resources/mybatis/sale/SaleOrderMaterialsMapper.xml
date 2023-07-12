@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.sale.saleOrderMaterials.mapper.SaleOrderMaterialsMapper">
+    
+    <resultMap type="SaleOrderMaterials" id="SaleOrderMaterialsResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="materialsId"    column="materials_id"    />
+        <result property="qty"    column="qty"    />
+        <result property="returnQty"    column="return_qty"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="materialsName"    column="materials_name"    />
+    </resultMap>
+
+    <sql id="selectSaleOrderMaterialsVo">
+        select
+            w.warehouse_name,m.materials_name,s.supplier_name,
+            om.id, om.remark, om.sale_order_id, om.customer_id, om.materials_id, om.qty,om.return_qty, om.supplier_id, om.delivery_date, om.warehouse_id
+        from sale_order_materials om
+            left join config_warehouse w on w.id = om.warehouse_id
+            left join config_materials m on m.id = om.materials_id
+            left join config_supplier s on s.id = om.supplier_id
+    </sql>
+
+    <select id="selectSaleOrderMaterialsList" parameterType="SaleOrderMaterials" resultMap="SaleOrderMaterialsResult">
+        <include refid="selectSaleOrderMaterialsVo"/>
+        <where>  
+            <if test="saleOrderId != null "> and om.sale_order_id = #{saleOrderId}</if>
+            <if test="customerId != null "> and om.customer_id = #{customerId}</if>
+            <if test="materialsId != null "> and om.materials_id = #{materialsId}</if>
+            <if test="qty != null "> and om.qty = #{qty}</if>
+            <if test="supplierId != null "> and om.supplier_id = #{supplierId}</if>
+            <if test="deliveryDate != null "> and om.delivery_date = #{deliveryDate}</if>
+            <if test="warehouseId != null "> and om.warehouse_id = #{warehouseId}</if>
+        </where>
+    </select>
+    
+    <select id="selectSaleOrderMaterialsById" parameterType="Long" resultMap="SaleOrderMaterialsResult">
+        <include refid="selectSaleOrderMaterialsVo"/>
+        where om.id = #{id}
+    </select>
+        
+    <insert id="insertSaleOrderMaterials" parameterType="SaleOrderMaterials" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sale_order_materials
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="saleOrderId != null">sale_order_id,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="materialsId != null">materials_id,</if>
+            <if test="qty != null">qty,</if>
+            <if test="returnQty != null">return_qty,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="saleOrderId != null">#{saleOrderId},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="materialsId != null">#{materialsId},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="returnQty != null">#{returnQty},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleOrderMaterials" parameterType="SaleOrderMaterials">
+        update sale_order_materials
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="saleOrderId != null">sale_order_id = #{saleOrderId},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="materialsId != null">materials_id = #{materialsId},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="returnQty != null">return_qty = #{returnQty},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSaleOrderMaterialsById" parameterType="Long">
+        delete from sale_order_materials where id = #{id}
+    </delete>
+
+    <delete id="deleteSaleOrderMaterialsByIds" parameterType="String">
+        delete from sale_order_materials where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

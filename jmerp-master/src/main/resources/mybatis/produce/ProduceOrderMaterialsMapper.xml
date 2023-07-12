@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.produce.produceOrderMaterials.mapper.ProduceOrderMaterialsMapper">
+    
+    <resultMap type="ProduceOrderMaterials" id="ProduceOrderMaterialsResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="produceOrderProductId"    column="produce_order_product_id"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="productionTemplateId"    column="production_template_id"    />
+        <result property="productionTemplateProcessId"    column="production_template_process_id"    />
+        <result property="materialsId"    column="materials_id"    />
+        <result property="cutterDieId"    column="cutter_die_id"    />
+        <result property="boardId"    column="board_id"    />
+        <result property="isGetProcessQty"    column="is_get_process_qty"    />
+        <result property="baseRate"    column="base_rate"    />
+        <result property="lossRate"    column="loss_rate"    />
+        <result property="lossQty"    column="loss_qty"    />
+        <result property="qty"    column="qty"    />
+        <result property="returnQty"    column="return_qty"    />
+
+        <result property="processName"    column="process_name"    />
+        <result property="materialsName"    column="materials_name"    />
+        <result property="materialsName2"    column="materials_name2"    />
+        <result property="cutterDieName"    column="cutter_die_name"    />
+        <result property="boardName"    column="board_name"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="produceOrderSN"    column="produce_order_sn"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="sizeLong"    column="size_long"    />
+        <result property="sizeWidth"    column="size_width"    />
+        <result property="purchasePrice"    column="purchase_price"    />
+        <result property="warehouseQty"    column="warehouse_qty"    />
+        <result property="requestCount"    column="request_count"    />
+        <result property="sizeLong"    column="size_long"    />
+        <result property="sizeWidth"    column="size_width"    />
+
+        <result property="processSizeLong"    column="process_size_long"    />
+        <result property="processSizeWidth"    column="process_size_width"    />
+        <result property="longSystem"    column="long_system"    />
+        <result property="alias"    column="alias"    />
+        <result property="inQty"    column="in_qty"    />
+        <result property="cuttingSizeLong"    column="cutting_size_long"    />
+        <result property="cuttingSizeWidth"    column="cutting_size_width"    />
+        <result property="requirements"    column="requirements"    />
+    </resultMap>
+
+    <sql id="selectProduceOrderMaterialsVo">
+        select
+               om.process_size_long,om.process_size_width,om.long_system,om.alias,
+            cp.process_name,m.materials_name,cd.cutter_die_name,b.board_name,w.warehouse_name,om.warehouse_id,
+            concat(m.materials_name,'(',m.size_long,'*', m.size_width,')') materials_name2,m.size_long, m.size_width,
+            om.return_qty, om.id, om.remark, om.produce_order_product_id, om.produce_order_id, om.sale_order_product_id, om.sale_order_id, om.product_id, om.process_id, om.production_template_id, om.production_template_process_id, om.materials_id, om.cutter_die_id, om.board_id, om.is_get_process_qty, om.base_rate, om.loss_rate, om.loss_qty, om.qty
+        from produce_order_materials om
+            left join config_process cp on cp.id = om.process_id
+            left join config_materials m on m.id = om.materials_id
+            left join config_cutter_die cd on cd.id = om.cutter_die_id
+            left join config_board b on b.id = om.board_id
+            left join config_warehouse w on w.id = om.warehouse_id
+    </sql>
+
+    <select id="selectProduceOrderMaterialsList" parameterType="ProduceOrderMaterials" resultMap="ProduceOrderMaterialsResult">
+        <include refid="selectProduceOrderMaterialsVo"/>
+        <where>  
+            <if test="produceOrderProductId != null "> and om.produce_order_product_id = #{produceOrderProductId}</if>
+            <if test="produceOrderId != null "> and om.produce_order_id = #{produceOrderId}</if>
+            <if test="saleOrderProductId != null "> and om.sale_order_product_id = #{saleOrderProductId}</if>
+            <if test="saleOrderId != null "> and om.sale_order_id = #{saleOrderId}</if>
+            <if test="productId != null "> and om.product_id = #{productId}</if>
+            <if test="processId != null "> and om.process_id = #{processId}</if>
+            <if test="productionTemplateId != null "> and om.production_template_id = #{productionTemplateId}</if>
+            <if test="productionTemplateProcessId != null "> and om.production_template_process_id = #{productionTemplateProcessId}</if>
+            <if test="materialsId != null "> and om.materials_id = #{materialsId}</if>
+            <if test="cutterDieId != null "> and om.cutter_die_id = #{cutterDieId}</if>
+            <if test="boardId != null "> and om.board_id = #{boardId}</if>
+            <if test="isGetProcessQty != null  and isGetProcessQty != ''"> and om.is_get_process_qty = #{isGetProcessQty}</if>
+            <if test="baseRate != null "> and om.base_rate = #{baseRate}</if>
+            <if test="lossRate != null "> and om.loss_rate = #{lossRate}</if>
+            <if test="lossQty != null "> and om.loss_qty = #{lossQty}</if>
+            <if test="qty != null "> and om.qty = #{qty}</if>
+            <if test="warehouseId != null "> and om.warehouse_id = #{warehouseId}</if>
+        </where>
+    </select>
+
+    <select id="selectProduceOrderMaterialsListByOrderId" parameterType="ProduceOrderMaterials" resultMap="ProduceOrderMaterialsResult">
+        SELECT
+            cm.materials_name,
+            cm.size_long,
+            cm.size_width,
+            pop.in_qty,
+            pop.cutting_size_long,
+            pop.cutting_size_width,
+            pop.requirements
+        FROM
+            produce_order_process pop
+                LEFT JOIN produce_order_materials pom ON pom.produce_order_id = pop.produce_order_id
+                LEFT JOIN config_materials cm ON pom.materials_id = cm.id
+                LEFT JOIN config_process cp ON cp.id = pop.process_id
+        WHERE 1 = 1
+          AND cp.process_name = '切纸'
+          AND (pom.alias = pop.alias or pom.alias is null or pom.alias is null)
+          AND pop.produce_order_id = pom.produce_order_id
+          AND pop.produce_order_id = #{produceOrderId}
+    </select>
+
+    <select id="selectProduceOrderMaterialsListForPurchase" parameterType="ProduceOrderMaterials" resultMap="ProduceOrderMaterialsResult">
+        select
+            om.id,po.serial_number produce_order_sn,m.materials_name,s.supplier_name,m.size_long,m.size_width,m.purchase_price,om.qty,
+            ifnull((select sum(wi.qty) from warehouse_inventory wi where wi.materials_id = om.materials_id),0) warehouse_qty,
+            (select count(*) from purchase_request pr2 where pr2.produce_order_materials_id = om.id) request_count,om.alias
+        from produce_order_materials om
+            left join produce_order po on po.id = om.produce_order_id
+            left join config_materials m on m.id = om.materials_id
+            left join config_supplier s on s.id = m.supplier_id
+        <where>
+            po.status = 'normal'
+            and om.id not in (select pr.produce_order_materials_id from purchase_request pr,produce_order_materials om where pr.produce_order_materials_id = om.id and pr.qty <![CDATA[ >= ]]> om.qty and pr.status = 'normal')
+            <if test="materialsId != null "> and om.materials_id = #{materialsId}</if>
+            <if test="produceOrderSN != null "> and po.serial_number like concat('%', #{produceOrderSN}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectProduceOrderMaterialsById" parameterType="Long" resultMap="ProduceOrderMaterialsResult">
+        <include refid="selectProduceOrderMaterialsVo"/>
+        where om.id = #{id}
+    </select>
+        
+    <insert id="insertProduceOrderMaterials" parameterType="ProduceOrderMaterials" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into produce_order_materials
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="produceOrderProductId != null">produce_order_product_id,</if>
+            <if test="produceOrderId != null">produce_order_id,</if>
+            <if test="saleOrderProductId != null">sale_order_product_id,</if>
+            <if test="saleOrderId != null">sale_order_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="productionTemplateId != null">production_template_id,</if>
+            <if test="productionTemplateProcessId != null">production_template_process_id,</if>
+            <if test="materialsId != null">materials_id,</if>
+            <if test="cutterDieId != null">cutter_die_id,</if>
+            <if test="boardId != null">board_id,</if>
+            <if test="isGetProcessQty != null">is_get_process_qty,</if>
+            <if test="baseRate != null">base_rate,</if>
+            <if test="lossRate != null">loss_rate,</if>
+            <if test="lossQty != null">loss_qty,</if>
+            <if test="qty != null">qty,</if>
+            <if test="returnQty != null">return_qty,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="processSizeLong != null">process_size_long,</if>
+            <if test="processSizeWidth != null">process_size_width,</if>
+            <if test="longSystem != null">long_system,</if>
+            <if test="alias != null">alias,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="produceOrderProductId != null">#{produceOrderProductId},</if>
+            <if test="produceOrderId != null">#{produceOrderId},</if>
+            <if test="saleOrderProductId != null">#{saleOrderProductId},</if>
+            <if test="saleOrderId != null">#{saleOrderId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="productionTemplateId != null">#{productionTemplateId},</if>
+            <if test="productionTemplateProcessId != null">#{productionTemplateProcessId},</if>
+            <if test="materialsId != null">#{materialsId},</if>
+            <if test="cutterDieId != null">#{cutterDieId},</if>
+            <if test="boardId != null">#{boardId},</if>
+            <if test="isGetProcessQty != null">#{isGetProcessQty},</if>
+            <if test="baseRate != null">#{baseRate},</if>
+            <if test="lossRate != null">#{lossRate},</if>
+            <if test="lossQty != null">#{lossQty},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="returnQty != null">#{returnQty},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="processSizeLong != null">#{processSizeLong},</if>
+            <if test="processSizeWidth != null">#{processSizeWidth},</if>
+            <if test="longSystem != null">#{longSystem},</if>
+            <if test="alias != null">#{alias},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProduceOrderMaterials" parameterType="ProduceOrderMaterials">
+        update produce_order_materials
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="produceOrderProductId != null">produce_order_product_id = #{produceOrderProductId},</if>
+            <if test="produceOrderId != null">produce_order_id = #{produceOrderId},</if>
+            <if test="saleOrderProductId != null">sale_order_product_id = #{saleOrderProductId},</if>
+            <if test="saleOrderId != null">sale_order_id = #{saleOrderId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="productionTemplateId != null">production_template_id = #{productionTemplateId},</if>
+            <if test="productionTemplateProcessId != null">production_template_process_id = #{productionTemplateProcessId},</if>
+            <if test="materialsId != null">materials_id = #{materialsId},</if>
+            <if test="cutterDieId != null">cutter_die_id = #{cutterDieId},</if>
+            <if test="boardId != null">board_id = #{boardId},</if>
+            <if test="isGetProcessQty != null">is_get_process_qty = #{isGetProcessQty},</if>
+            <if test="baseRate != null">base_rate = #{baseRate},</if>
+            <if test="lossRate != null">loss_rate = #{lossRate},</if>
+            <if test="lossQty != null">loss_qty = #{lossQty},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="returnQty != null">return_qty = #{returnQty},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="processSizeLong != null">process_size_long = #{processSizeLong},</if>
+            <if test="processSizeWidth != null">process_size_width = #{processSizeWidth},</if>
+            <if test="longSystem != null">long_system = #{longSystem},</if>
+            <if test="alias != null">alias = #{alias},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProduceOrderMaterialsById" parameterType="Long">
+        delete from produce_order_materials where id = #{id}
+    </delete>
+
+    <delete id="deleteProduceOrderMaterialsByIds" parameterType="String">
+        delete from produce_order_materials where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

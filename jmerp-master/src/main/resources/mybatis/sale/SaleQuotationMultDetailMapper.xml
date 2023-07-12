@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.sale.saleQuotationMultDetail.mapper.SaleQuotationMultDetailMapper">
+    
+    <resultMap type="SaleQuotationMultDetail" id="SaleQuotationMultDetailResult">
+        <result property="id"    column="id"    />
+        <result property="saleQuotationId"    column="sale_quotation_id"    />
+        <result property="saleQuotationMultId"    column="sale_quotation_mult_id"    />
+        <result property="saleQuotationProductId"    column="sale_quotation_product_id"    />
+        <result property="saleQuotationProcessId"    column="sale_quotation_process_id"    />
+        <result property="saleQuotationMaterialsId"    column="sale_quotation_materials_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="materialsId"    column="materials_id"    />
+        <result property="inQty"    column="in_qty"    />
+        <result property="outQty"    column="out_qty"    />
+        <result property="processOrder"    column="process_order"    />
+        <result property="quotationTemplateId"    column="quotation_template_id"    />
+
+        <result property="productName"    column="product_name"    />
+        <result property="productType"    column="product_type"    />
+        <result property="processName"    column="process_name"    />
+        <result property="materialsName"    column="materials_name"    />
+        <result property="processPrice"    column="process_price"    />
+        <result property="materialsPrice"    column="materials_price"    />
+        <result property="calculateLog"    column="calculate_log"    />
+        <result property="isAreaCalculate"    column="is_area_calculate"    />
+        <result property="materialsSizeLong"    column="materials_size_long"    />
+        <result property="materialsSizeWidth"    column="materials_size_width"    />
+    </resultMap>
+
+    <sql id="selectSaleQuotationMultDetailVo">
+        select id, sale_quotation_id, sale_quotation_mult_id, sale_quotation_product_id, sale_quotation_process_id, sale_quotation_materials_id, product_id, process_id, materials_id, in_qty, out_qty, process_order,quotation_template_id,calculate_log from sale_quotation_mult_detail
+    </sql>
+
+    <sql id="selectSaleQuotationMultDetailVo2">
+        select
+            m.materials_name,m.is_area_calculate,cp.process_name,p.product_name,p.product_type,sqp.price process_price,sqm.price materials_price,sqmd.calculate_log,
+            sqmd.id, sqmd.sale_quotation_id, sqmd.sale_quotation_mult_id, sqmd.sale_quotation_product_id, sqmd.sale_quotation_process_id,
+            sqmd.sale_quotation_materials_id,m.size_long materials_size_long,m.size_width materials_size_width,
+            sqmd.product_id, sqmd.process_id, sqmd.materials_id, sqmd.in_qty, sqmd.out_qty, sqmd.process_order,sqmd.quotation_template_id
+        from sale_quotation_mult_detail sqmd
+            left join config_product p on p.id = sqmd.product_id
+            left join config_process cp on cp.id = sqmd.process_id
+            left join config_materials m on m.id = sqmd.materials_id
+            left join sale_quotation_process sqp on sqp.id = sqmd.sale_quotation_process_id
+            left join sale_quotation_materials sqm on sqm.id = sqmd.sale_quotation_materials_id
+    </sql>
+
+    <select id="selectSaleQuotationMultDetailList" parameterType="SaleQuotationMultDetail" resultMap="SaleQuotationMultDetailResult">
+        <include refid="selectSaleQuotationMultDetailVo"/>
+        <where>  
+            <if test="saleQuotationId != null "> and sale_quotation_id = #{saleQuotationId}</if>
+            <if test="saleQuotationMultId != null "> and sale_quotation_mult_id = #{saleQuotationMultId}</if>
+            <if test="saleQuotationProductId != null "> and sale_quotation_product_id = #{saleQuotationProductId}</if>
+            <if test="saleQuotationProcessId != null "> and sale_quotation_process_id = #{saleQuotationProcessId}</if>
+            <if test="saleQuotationMaterialsId != null "> and sale_quotation_materials_id = #{saleQuotationMaterialsId}</if>
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="processId != null "> and process_id = #{processId}</if>
+            <if test="materialsId != null "> and materials_id = #{materialsId}</if>
+            <if test="inQty != null "> and in_qty = #{inQty}</if>
+            <if test="outQty != null "> and out_qty = #{outQty}</if>
+            <if test="processOrder != null "> and process_order = #{processOrder}</if>
+            <if test="quotationTemplateId != null "> and quotation_template_id = #{quotationTemplateId}</if>
+        </where>
+    </select>
+
+    <select id="selectSaleQuotationMultDetail2List" parameterType="SaleQuotationMultDetail" resultMap="SaleQuotationMultDetailResult">
+        <include refid="selectSaleQuotationMultDetailVo2"/>
+        <where>
+            <if test="saleQuotationId != null "> and sqmd.sale_quotation_id = #{saleQuotationId}</if>
+            <if test="saleQuotationMultId != null "> and sqmd.sale_quotation_mult_id = #{saleQuotationMultId}</if>
+            <if test="saleQuotationProductId != null "> and sqmd.sale_quotation_product_id = #{saleQuotationProductId}</if>
+            <if test="saleQuotationProcessId != null "> and sqmd.sale_quotation_process_id = #{saleQuotationProcessId}</if>
+            <if test="saleQuotationMaterialsId != null "> and sqmd.sale_quotation_materials_id = #{saleQuotationMaterialsId}</if>
+            <if test="productId != null "> and sqmd.product_id = #{productId}</if>
+            <if test="processId != null "> and sqmd.process_id = #{processId}</if>
+            <if test="materialsId != null "> and sqmd.materials_id = #{materialsId}</if>
+            <if test="inQty != null "> and sqmd.in_qty = #{inQty}</if>
+            <if test="outQty != null "> and sqmd.out_qty = #{outQty}</if>
+            <if test="processOrder != null "> and sqmd.process_order = #{processOrder}</if>
+            <if test="quotationTemplateId != null "> and sqmd.quotation_template_id = #{quotationTemplateId}</if>
+            <if test="rzyValue1 != null and rzyValue1 == 'process' "> and sqmd.sale_quotation_process_id is not null</if>
+            <if test="rzyValue1 != null and rzyValue1 == 'materials' "> and sqmd.sale_quotation_materials_id is not null</if>
+        </where>
+        order by process_order
+    </select>
+    
+    <select id="selectSaleQuotationMultDetailById" parameterType="Long" resultMap="SaleQuotationMultDetailResult">
+        <include refid="selectSaleQuotationMultDetailVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSaleQuotationMultDetail" parameterType="SaleQuotationMultDetail" useGeneratedKeys="true" keyProperty="id">
+        insert into sale_quotation_mult_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="saleQuotationId != null">sale_quotation_id,</if>
+            <if test="saleQuotationMultId != null">sale_quotation_mult_id,</if>
+            <if test="saleQuotationProductId != null">sale_quotation_product_id,</if>
+            <if test="saleQuotationProcessId != null">sale_quotation_process_id,</if>
+            <if test="saleQuotationMaterialsId != null">sale_quotation_materials_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="materialsId != null">materials_id,</if>
+            <if test="inQty != null">in_qty,</if>
+            <if test="outQty != null">out_qty,</if>
+            <if test="processOrder != null">process_order,</if>
+            <if test="quotationTemplateId != null">quotation_template_id,</if>
+            <if test="calculateLog != null">calculate_log,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="saleQuotationId != null">#{saleQuotationId},</if>
+            <if test="saleQuotationMultId != null">#{saleQuotationMultId},</if>
+            <if test="saleQuotationProductId != null">#{saleQuotationProductId},</if>
+            <if test="saleQuotationProcessId != null">#{saleQuotationProcessId},</if>
+            <if test="saleQuotationMaterialsId != null">#{saleQuotationMaterialsId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="materialsId != null">#{materialsId},</if>
+            <if test="inQty != null">#{inQty},</if>
+            <if test="outQty != null">#{outQty},</if>
+            <if test="processOrder != null">#{processOrder},</if>
+            <if test="quotationTemplateId != null">#{quotationTemplateId},</if>
+            <if test="calculateLog != null">#{calculateLog},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleQuotationMultDetail" parameterType="SaleQuotationMultDetail">
+        update sale_quotation_mult_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="saleQuotationId != null">sale_quotation_id = #{saleQuotationId},</if>
+            <if test="saleQuotationMultId != null">sale_quotation_mult_id = #{saleQuotationMultId},</if>
+            <if test="saleQuotationProductId != null">sale_quotation_product_id = #{saleQuotationProductId},</if>
+            <if test="saleQuotationProcessId != null">sale_quotation_process_id = #{saleQuotationProcessId},</if>
+            <if test="saleQuotationMaterialsId != null">sale_quotation_materials_id = #{saleQuotationMaterialsId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="materialsId != null">materials_id = #{materialsId},</if>
+            <if test="inQty != null">in_qty = #{inQty},</if>
+            <if test="outQty != null">out_qty = #{outQty},</if>
+            <if test="processOrder != null">process_order = #{processOrder},</if>
+            <if test="quotationTemplateId != null">quotation_template_id = #{quotationTemplateId},</if>
+            <if test="calculateLog != null">calculate_log = #{calculateLog},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSaleQuotationMultDetailById" parameterType="Long">
+        delete from sale_quotation_mult_detail where id = #{id}
+    </delete>
+
+    <delete id="deleteSaleQuotationMultDetailByIds" parameterType="String">
+        delete from sale_quotation_mult_detail where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteSaleQuotationMultDetailBySaleQuotationId" parameterType="Long">
+        delete from sale_quotation_mult_detail where sale_quotation_id = #{id}
+    </delete>
+
+    <select id="getLinkProcessQty" resultType="Integer">
+        SELECT
+            sum(sqmd.out_qty) out_qty
+        FROM
+            sale_quotation_mult_detail sqmd,
+            sale_quotation_materials qm
+        WHERE
+            sqmd.process_id = qm.process_id
+            AND sqmd.sale_quotation_id = qm.sale_quotation_id
+            AND sqmd.sale_quotation_product_id = qm.sale_quotation_product_id
+            AND qm.id = #{saleQuotationMaterialsId}
+            AND sqmd.sale_quotation_mult_id = #{saleQuotationMultId}
+    </select>
+
+</mapper>

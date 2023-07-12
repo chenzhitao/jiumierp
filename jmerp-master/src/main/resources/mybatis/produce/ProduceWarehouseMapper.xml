@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.produce.produceWarehouse.mapper.ProduceWarehouseMapper">
+    
+    <resultMap type="ProduceWarehouse" id="ProduceWarehouseResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="qty"    column="qty"    />
+        <result property="warehouseDate"    column="warehouse_date"    />
+    </resultMap>
+
+    <sql id="selectProduceWarehouseVo">
+        select id, create_by, create_time, update_by, update_time, remark, status, produce_order_id, qty, warehouse_date from produce_warehouse
+    </sql>
+
+    <select id="selectProduceWarehouseList" parameterType="ProduceWarehouse" resultMap="ProduceWarehouseResult">
+        <include refid="selectProduceWarehouseVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="produceOrderId != null "> and produce_order_id = #{produceOrderId}</if>
+            <if test="qty != null "> and qty = #{qty}</if>
+            <if test="warehouseDate != null "> and warehouse_date = #{warehouseDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectProduceWarehouseById" parameterType="Long" resultMap="ProduceWarehouseResult">
+        <include refid="selectProduceWarehouseVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProduceWarehouse" parameterType="ProduceWarehouse" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into produce_warehouse
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="produceOrderId != null">produce_order_id,</if>
+            <if test="qty != null">qty,</if>
+            <if test="warehouseDate != null">warehouse_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="produceOrderId != null">#{produceOrderId},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="warehouseDate != null">#{warehouseDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProduceWarehouse" parameterType="ProduceWarehouse">
+        update produce_warehouse
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="produceOrderId != null">produce_order_id = #{produceOrderId},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="warehouseDate != null">warehouse_date = #{warehouseDate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProduceWarehouseById" parameterType="Long">
+        delete from produce_warehouse where id = #{id}
+    </delete>
+
+    <delete id="deleteProduceWarehouseByIds" parameterType="String">
+        delete from produce_warehouse where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

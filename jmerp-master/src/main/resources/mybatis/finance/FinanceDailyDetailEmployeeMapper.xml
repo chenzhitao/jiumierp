@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.finance.financeDailyDetailEmployee.mapper.FinanceDailyDetailEmployeeMapper">
+    
+    <resultMap type="FinanceDailyDetailEmployee" id="FinanceDailyDetailEmployeeResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="financeDailyId"    column="finance_daily_id"    />
+        <result property="financeDailyDetailId"    column="finance_daily_detail_id"    />
+        <result property="employeeId"    column="employee_id"    />
+        <result property="price"    column="price"    />
+        <result property="employeePrice"    column="employee_price"    />
+        <result property="employeeScale"    column="employee_scale"    />
+        <result property="processOrder"    column="process_order"    />
+        <result property="employeeName"    column="employee_name"    />
+    </resultMap>
+
+    <resultMap type="FinanceDailyDetailEmployeeWage" id="FinanceDailyDetailEmployeeWageResult">
+        <result property="id"    column="id"    />
+        <result property="employeeName"    column="employee_name"    />
+        <result property="employeeId"    column="employee_id"    />
+        <result property="thisAmount"    column="this_amount"    />
+        <result property="thisPrice"    column="this_price"    />
+        <result property="teamName"    column="team_name"    />
+        <result property="teamId"    column="team_id"    />
+        <result property="produceScheduleSN"    column="produce_schedule_sn"    />
+        <result property="produceScheduleId"    column="produce_schedule_id"    />
+        <result property="dailyDate"    column="daily_date"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="workTime"    column="work_time"    />
+        <result property="qty"    column="qty"    />
+        <result property="price"    column="price"    />
+        <result property="amount"    column="amount"    />
+        <result property="processName"    column="process_name"    />
+        <result property="processId"    column="process_id"    />
+        <result property="jobContent"    column="job_content"    />
+        <result property="valuationType"    column="valuation_type"    />
+        <result property="financeDailyId"    column="finance_daily_id"    />
+        <result property="financeDailySN"    column="finance_daily_sn"    />
+        <result property="financeDailyDetailId"    column="finance_daily_detail_id"    />
+
+    </resultMap>
+
+    <sql id="selectFinanceDailyDetailEmployeeVo">
+        select
+            e.employee_name,
+            fdde.id, fdde.remark, fdde.finance_daily_id, fdde.finance_daily_detail_id, fdde.employee_id, fdde.price, fdde.employee_price, fdde.employee_scale, fdde.process_order
+        from finance_daily_detail_employee fdde
+            left join config_employee e on e.id = fdde.employee_id
+    </sql>
+
+    <select id="selectFinanceDailyDetailEmployeeList" parameterType="FinanceDailyDetailEmployee" resultMap="FinanceDailyDetailEmployeeResult">
+        <include refid="selectFinanceDailyDetailEmployeeVo"/>
+        <where>  
+            <if test="financeDailyId != null "> and fdde.finance_daily_id = #{financeDailyId}</if>
+            <if test="financeDailyDetailId != null "> and fdde.finance_daily_detail_id = #{financeDailyDetailId}</if>
+            <if test="employeeId != null "> and fdde.employee_id = #{employeeId}</if>
+            <if test="price != null "> and fdde.price = #{price}</if>
+            <if test="employeePrice != null "> and fdde.employee_price = #{employeePrice}</if>
+            <if test="employeeScale != null "> and fdde.employee_scale = #{employeeScale}</if>
+            <if test="processOrder != null "> and fdde.process_order = #{processOrder}</if>
+        </where>
+        order by fdde.process_order
+    </select>
+
+
+    
+    <select id="selectFinanceDailyDetailEmployeeById" parameterType="Long" resultMap="FinanceDailyDetailEmployeeResult">
+        <include refid="selectFinanceDailyDetailEmployeeVo"/>
+        where fdde.id = #{id}
+    </select>
+        
+    <insert id="insertFinanceDailyDetailEmployee" parameterType="FinanceDailyDetailEmployee" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into finance_daily_detail_employee
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="financeDailyId != null">finance_daily_id,</if>
+            <if test="financeDailyDetailId != null">finance_daily_detail_id,</if>
+            <if test="employeeId != null">employee_id,</if>
+            <if test="price != null">price,</if>
+            <if test="employeePrice != null">employee_price,</if>
+            <if test="employeeScale != null">employee_scale,</if>
+            <if test="processOrder != null">process_order,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="financeDailyId != null">#{financeDailyId},</if>
+            <if test="financeDailyDetailId != null">#{financeDailyDetailId},</if>
+            <if test="employeeId != null">#{employeeId},</if>
+            <if test="price != null">#{price},</if>
+            <if test="employeePrice != null">#{employeePrice},</if>
+            <if test="employeeScale != null">#{employeeScale},</if>
+            <if test="processOrder != null">#{processOrder},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFinanceDailyDetailEmployee" parameterType="FinanceDailyDetailEmployee">
+        update finance_daily_detail_employee
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="financeDailyId != null">finance_daily_id = #{financeDailyId},</if>
+            <if test="financeDailyDetailId != null">finance_daily_detail_id = #{financeDailyDetailId},</if>
+            <if test="employeeId != null">employee_id = #{employeeId},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="employeePrice != null">employee_price = #{employeePrice},</if>
+            <if test="employeeScale != null">employee_scale = #{employeeScale},</if>
+            <if test="processOrder != null">process_order = #{processOrder},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFinanceDailyDetailEmployeeById" parameterType="Long">
+        delete from finance_daily_detail_employee where id = #{id}
+    </delete>
+
+    <delete id="deleteFinanceDailyDetailEmployeeByIds" parameterType="String">
+        delete from finance_daily_detail_employee where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectFinanceDailyDetailEmployeeWageList" parameterType="FinanceDailyDetailEmployeeWage" resultMap="FinanceDailyDetailEmployeeWageResult">
+        select
+            fdde.id,
+            e1.employee_name,
+            fdde.employee_id,
+            (fdde.employee_price*fdd1.qty) this_amount,
+            fdde.employee_price this_price,
+            t1.team_name,
+            fdd1.team_id,
+            ps1.serial_number produce_schedule_sn,
+            fdd1.produce_schedule_id,
+            fd1.daily_date,
+            fdd1.start_time,
+            fdd1.end_time,
+            fdd1.work_time,
+            fdd1.qty,
+            fdd1.price,
+            fdd1.amount,
+            cp1.process_name,
+            fdd1.process_id,
+            fdd1.job_content,
+            fdd1.valuation_type,
+            fd1.id finance_daily_id,
+            fd1.serial_number finance_daily_sn,
+            fdd1.id finance_daily_detail_id
+         from finance_daily_detail_employee fdde
+            left join finance_daily fd1 on fd1.id = fdde.finance_daily_id
+            left join finance_daily_detail fdd1 on fdd1.id = fdde.finance_daily_detail_id
+            left join config_employee e1 on e1.id = fdde.employee_id
+            left join config_team t1 on t1.id = fdd1.team_id
+            left join produce_schedule ps1 on ps1.id = fdd1.produce_schedule_id
+            left join config_process cp1 on cp1.id = fdd1.process_id
+        <where>
+            <if test="status != null  and status != ''"> and fd1.status = #{status}</if>
+            <if test="employeeId != null "> and fdde.employee_id = #{employeeId}</if>
+            <if test="teamId != null "> and fdd1.team_id = #{teamId}</if>
+            <if test="params.beginDailyDate != null and params.beginDailyDate != ''"><!-- 开始时间检索 -->
+                and date_format(fdd1.start_time,'%y%m%d') &gt;= date_format(#{params.beginDailyDate},'%y%m%d')
+            </if>
+            <if test="params.endDailyDate != null and params.endDailyDate != ''"><!-- 结束时间检索 -->
+                and date_format(fdd1.end_time,'%y%m%d') &lt;= date_format(#{params.endDailyDate},'%y%m%d')
+            </if>
+        </where>
+        order by fd1.daily_date,fdd1.start_time
+    </select>
+
+</mapper>

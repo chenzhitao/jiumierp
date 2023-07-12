@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.purchase.purchaseDeliveryMaterials.mapper.PurchaseDeliveryMaterialsMapper">
+    
+    <resultMap type="PurchaseDeliveryMaterials" id="PurchaseDeliveryMaterialsResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="purchaseDeliveryId"    column="purchase_delivery_id"    />
+        <result property="purchaseOrderId"    column="purchase_order_id"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="produceOrderMaterialsId"    column="produce_order_materials_id"    />
+        <result property="purchaseOrderMaterialsId"    column="purchase_order_materials_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="purchaseRequestId"    column="purchase_request_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="materialsId"    column="materials_id"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="orgPrice"    column="org_price"    />
+        <result property="price"    column="price"    />
+        <result property="sizeLong"    column="size_long"    />
+        <result property="sizeWidth"    column="size_width"    />
+        <result property="qty"    column="qty"    />
+        <result property="returnQty"    column="return_qty"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="requirements"    column="requirements"    />
+        <result property="address"    column="address"    />
+
+        <result property="materialsName"    column="materials_name"    />
+        <result property="purchaseOrderSN"    column="purchase_order_sn"    />
+        <result property="purchaseRequestSN"    column="purchase_request_sn"    />
+        <result property="produceOrderSN"    column="produce_order_sn"    />
+        <result property="purchaseDeliverySN"    column="purchase_delivery_sn"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="materialsSize"    column="materials_size"    />
+    </resultMap>
+
+    <sql id="selectPurchaseDeliveryMaterialsVo">
+        select
+            m.materials_name,pu.serial_number purchase_order_sn,pr.serial_number purchase_request_sn,po.serial_number produce_order_sn,pd.serial_number purchase_delivery_sn,
+            pdm.supplier_id,s.supplier_name,w.warehouse_name,pdm.purchase_order_materials_id,concat(pdm.size_long, '*', pdm.size_width) materials_size,
+            pdm.id, pdm.remark, pdm.purchase_delivery_id, pdm.purchase_order_id, pdm.produce_order_id, pdm.produce_order_materials_id, pdm.sale_order_id, pdm.sale_order_product_id, pdm.purchase_request_id, pdm.product_id, pdm.process_id, pdm.materials_id, pdm.warehouse_id, pdm.org_price, pdm.price, pdm.size_long, pdm.size_width, pdm.qty, pdm.return_qty, pdm.tax_rate, pdm.amount, pdm.delivery_date, pdm.requirements, pdm.address
+        from purchase_delivery_materials pdm
+            left join config_supplier s on s.id = pdm.supplier_id
+            left join config_materials m on m.id = pdm.materials_id
+            left join config_warehouse w on w.id = pdm.warehouse_id
+            left join purchase_order pu on pu.id = pdm.purchase_order_id
+            left join purchase_request pr on pr.id = pdm.purchase_request_id
+            left join produce_order po on po.id = pdm.produce_order_id
+            left join purchase_delivery pd on pd.id = pdm.purchase_delivery_id
+    </sql>
+
+    <select id="selectPurchaseDeliveryMaterialsList" parameterType="PurchaseDeliveryMaterials" resultMap="PurchaseDeliveryMaterialsResult">
+        <include refid="selectPurchaseDeliveryMaterialsVo"/>
+        <where>  
+            <if test="purchaseDeliveryId != null "> and pdm.purchase_delivery_id = #{purchaseDeliveryId}</if>
+            <if test="purchaseOrderId != null "> and pdm.purchase_order_id = #{purchaseOrderId}</if>
+            <if test="produceOrderId != null "> and pdm.produce_order_id = #{produceOrderId}</if>
+            <if test="produceOrderMaterialsId != null "> and pdm.produce_order_materials_id = #{produceOrderMaterialsId}</if>
+            <if test="saleOrderId != null "> and pdm.sale_order_id = #{saleOrderId}</if>
+            <if test="saleOrderProductId != null "> and pdm.sale_order_product_id = #{saleOrderProductId}</if>
+            <if test="purchaseRequestId != null "> and pdm.purchase_request_id = #{purchaseRequestId}</if>
+            <if test="productId != null "> and pdm.product_id = #{productId}</if>
+            <if test="processId != null "> and pdm.process_id = #{processId}</if>
+            <if test="materialsId != null "> and pdm.materials_id = #{materialsId}</if>
+            <if test="supplierId != null "> and pdm.supplier_id = #{supplierId}</if>
+            <if test="warehouseId != null "> and pdm.warehouse_id = #{warehouseId}</if>
+            <if test="orgPrice != null "> and pdm.org_price = #{orgPrice}</if>
+            <if test="price != null "> and pdm.price = #{price}</if>
+            <if test="sizeLong != null "> and pdm.size_long = #{sizeLong}</if>
+            <if test="sizeWidth != null "> and pdm.size_width = #{sizeWidth}</if>
+            <if test="qty != null "> and pdm.qty = #{qty}</if>
+            <if test="returnQty != null "> and pdm.return_qty = #{returnQty}</if>
+            <if test="taxRate != null "> and pdm.tax_rate = #{taxRate}</if>
+            <if test="amount != null "> and pdm.amount = #{amount}</if>
+            <if test="deliveryDate != null "> and pdm.delivery_date = #{deliveryDate}</if>
+            <if test="requirements != null  and requirements != ''"> and pdm.requirements = #{requirements}</if>
+            <if test="address != null  and address != ''"> and pdm.address = #{address}</if>
+            <if test="purchaseOrderMaterialsId != null "> and pdm.purchase_order_materials_id = #{purchaseOrderMaterialsId}</if>
+            <if test="rzyValue1 != null and rzyValue1 == 'purchase' ">
+                and pdm.qty <![CDATA[ > ]]> (select ifnull(sum(prm.return_qty),0) from purchase_return_materials prm where prm.purchase_delivery_materials_id = pdm.id)
+                and pdm.purchase_delivery_id in (select pd2.id from purchase_delivery pd2 where pd2.status = 'normal')
+            </if>
+            <if test="rzyValue1 != null and rzyValue1 == 'checking' ">
+                and pdm.purchase_delivery_id in (select pd2.id from purchase_delivery pd2 where pd2.status = 'normal')
+                and pdm.id not in (select pcm1.purchase_delivery_materials_id from purchase_checking_materials pcm1 where pcm1.purchase_delivery_materials_id is not null)
+            </if>
+            <if test="purchaseCheckingId != null ">
+                and pdm.id in (select pcm1.purchase_delivery_materials_id from purchase_checking_materials pcm1 where pcm1.purchase_checking_id = #{purchaseCheckingId})
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectPurchaseDeliveryMaterialsById" parameterType="Long" resultMap="PurchaseDeliveryMaterialsResult">
+        <include refid="selectPurchaseDeliveryMaterialsVo"/>
+        where pdm.id = #{id}
+    </select>
+        
+    <insert id="insertPurchaseDeliveryMaterials" parameterType="PurchaseDeliveryMaterials" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into purchase_delivery_materials
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="purchaseDeliveryId != null">purchase_delivery_id,</if>
+            <if test="purchaseOrderId != null">purchase_order_id,</if>
+            <if test="produceOrderId != null">produce_order_id,</if>
+            <if test="produceOrderMaterialsId != null">produce_order_materials_id,</if>
+            <if test="saleOrderId != null">sale_order_id,</if>
+            <if test="saleOrderProductId != null">sale_order_product_id,</if>
+            <if test="purchaseRequestId != null">purchase_request_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="materialsId != null">materials_id,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="orgPrice != null">org_price,</if>
+            <if test="price != null">price,</if>
+            <if test="sizeLong != null">size_long,</if>
+            <if test="sizeWidth != null">size_width,</if>
+            <if test="qty != null">qty,</if>
+            <if test="returnQty != null">return_qty,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="amount != null">amount,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+            <if test="requirements != null">requirements,</if>
+            <if test="address != null">address,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="purchaseOrderMaterialsId != null">purchase_order_materials_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="purchaseDeliveryId != null">#{purchaseDeliveryId},</if>
+            <if test="purchaseOrderId != null">#{purchaseOrderId},</if>
+            <if test="produceOrderId != null">#{produceOrderId},</if>
+            <if test="produceOrderMaterialsId != null">#{produceOrderMaterialsId},</if>
+            <if test="saleOrderId != null">#{saleOrderId},</if>
+            <if test="saleOrderProductId != null">#{saleOrderProductId},</if>
+            <if test="purchaseRequestId != null">#{purchaseRequestId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="materialsId != null">#{materialsId},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="orgPrice != null">#{orgPrice},</if>
+            <if test="price != null">#{price},</if>
+            <if test="sizeLong != null">#{sizeLong},</if>
+            <if test="sizeWidth != null">#{sizeWidth},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="returnQty != null">#{returnQty},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+            <if test="requirements != null">#{requirements},</if>
+            <if test="address != null">#{address},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="purchaseOrderMaterialsId != null">#{purchaseOrderMaterialsId},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePurchaseDeliveryMaterials" parameterType="PurchaseDeliveryMaterials">
+        update purchase_delivery_materials
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="purchaseDeliveryId != null">purchase_delivery_id = #{purchaseDeliveryId},</if>
+            <if test="purchaseOrderId != null">purchase_order_id = #{purchaseOrderId},</if>
+            <if test="produceOrderId != null">produce_order_id = #{produceOrderId},</if>
+            <if test="produceOrderMaterialsId != null">produce_order_materials_id = #{produceOrderMaterialsId},</if>
+            <if test="saleOrderId != null">sale_order_id = #{saleOrderId},</if>
+            <if test="saleOrderProductId != null">sale_order_product_id = #{saleOrderProductId},</if>
+            <if test="purchaseRequestId != null">purchase_request_id = #{purchaseRequestId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="materialsId != null">materials_id = #{materialsId},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="orgPrice != null">org_price = #{orgPrice},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="sizeLong != null">size_long = #{sizeLong},</if>
+            <if test="sizeWidth != null">size_width = #{sizeWidth},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="returnQty != null">return_qty = #{returnQty},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="requirements != null">requirements = #{requirements},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="purchaseOrderMaterialsId != null">purchase_order_materials_id = #{purchaseOrderMaterialsId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePurchaseDeliveryMaterialsById" parameterType="Long">
+        delete from purchase_delivery_materials where id = #{id}
+    </delete>
+
+    <delete id="deletePurchaseDeliveryMaterialsByIds" parameterType="String">
+        delete from purchase_delivery_materials where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

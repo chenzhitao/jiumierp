@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.purchase.purchaseReturn.mapper.PurchaseReturnMapper">
+    
+    <resultMap type="PurchaseReturn" id="PurchaseReturnResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="contact"    column="contact"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="buyerId"    column="buyer_id"    />
+        <result property="returnDate"    column="return_date"    />
+        <result property="purchaseOrderType"    column="purchase_order_type"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="settlementType"    column="settlement_type"    />
+        <result property="deliveryType"    column="delivery_type"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="buyerName"    column="buyer_name"    />
+    </resultMap>
+
+    <resultMap type="PurchaseReturnExport" id="PurchaseReturnExportResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="contact"    column="contact"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="buyerId"    column="buyer_id"    />
+        <result property="returnDate"    column="return_date"    />
+        <result property="purchaseOrderType"    column="purchase_order_type"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="settlementType"    column="settlement_type"    />
+        <result property="deliveryType"    column="delivery_type"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="buyerName"    column="buyer_name"    />
+
+        <result property="purchaseReturnId"    column="purchase_return_id"    />
+        <result property="purchaseDeliveryId"    column="purchase_delivery_id"    />
+        <result property="purchaseDeliveryMaterialsId"    column="purchase_delivery_materials_id"    />
+        <result property="purchaseOrderId"    column="purchase_order_id"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="produceOrderMaterialsId"    column="produce_order_materials_id"    />
+        <result property="purchaseRequestId"    column="purchase_request_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="materialsId"    column="materials_id"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="returnRate"    column="return_rate"    />
+        <result property="returnType"    column="return_type"    />
+        <result property="returnDate"    column="return_date"    />
+        <result property="price"    column="price"    />
+        <result property="sizeLong"    column="size_long"    />
+        <result property="sizeWidth"    column="size_width"    />
+        <result property="qty"    column="qty"    />
+        <result property="returnQty"    column="return_qty"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="requirements"    column="requirements"    />
+        <result property="address"    column="address"    />
+
+        <result property="materialsName"    column="materials_name"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+    </resultMap>
+
+    <sql id="selectPurchaseReturnVo">
+        select
+            s.supplier_name,e.employee_name buyer_name,
+            re.id, re.create_by, re.create_time, re.update_by, re.update_time, re.remark, re.status, re.approver, re.approval_time, re.approval_type, re.serial_number, re.supplier_id, re.contact, re.cell_phone, re.buyer_id, re.return_date, re.purchase_order_type, re.payment_type, re.settlement_type, re.delivery_type, re.tax_rate, re.amount
+        from purchase_return re
+            left join config_supplier s on s.id = re.supplier_id
+            left join config_employee e on e.id = re.buyer_id
+    </sql>
+
+    <select id="selectPurchaseReturnList" parameterType="PurchaseReturn" resultMap="PurchaseReturnResult">
+        <include refid="selectPurchaseReturnVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and re.status = #{status}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and re.serial_number = #{serialNumber}</if>
+            <if test="supplierId != null "> and re.supplier_id = #{supplierId}</if>
+            <if test="buyerId != null "> and re.buyer_id = #{buyerId}</if>
+            <if test="purchaseOrderType != null  and purchaseOrderType != ''"> and re.purchase_order_type = #{purchaseOrderType}</if>
+            <if test="paymentType != null  and paymentType != ''"> and re.payment_type = #{paymentType}</if>
+            <if test="settlementType != null  and settlementType != ''"> and re.settlement_type = #{settlementType}</if>
+            <if test="deliveryType != null  and deliveryType != ''"> and re.delivery_type = #{deliveryType}</if>
+            <if test="params.beginDeliveryDate != null and params.beginDeliveryDate != '' ">
+                and date_sub(po.delivery_date,interval -1 day) <![CDATA[ > ]]> #{params.beginDeliveryDate}
+            </if>
+            <if test="params.endDeliveryDate != null and params.endDeliveryDate != ''">
+                and date_sub(po.delivery_date,interval 1 day) <![CDATA[ < ]]> #{params.endDeliveryDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPurchaseReturnExportList" parameterType="PurchaseReturn" resultMap="PurchaseReturnExportResult">
+        select
+            s.supplier_name,m.materials_name,w.warehouse_name,e.employee_name buyer_name,
+            concat(m.size_long, '*', m.size_width) materials_size,
+            prm.id, prm.supplier_id, prm.remark, prm.purchase_return_id, prm.purchase_delivery_id, prm.purchase_delivery_materials_id, prm.purchase_order_id, prm.produce_order_id, prm.produce_order_materials_id, prm.purchase_request_id, prm.sale_order_id, prm.sale_order_product_id, prm.product_id, prm.process_id, prm.materials_id, prm.warehouse_id, prm.return_rate, prm.return_type, prm.return_date, prm.price, prm.size_long, prm.size_width, prm.qty, prm.return_qty, prm.tax_rate, prm.amount, prm.requirements, prm.address,
+            re.status,re.serial_number, re.supplier_id, re.contact, re.cell_phone, re.buyer_id, re.return_date, re.purchase_order_type, re.payment_type, re.settlement_type, re.delivery_type
+        from purchase_return_materials prm
+            left join purchase_return re on re.id = prm.purchase_return_id
+            left join config_supplier s on s.id = prm.supplier_id
+            left join config_materials m on m.id = prm.materials_id
+            left join config_warehouse w on w.id = prm.warehouse_id
+            left join config_employee e on e.id = re.buyer_id
+        <where>
+            <if test="status != null  and status != ''"> and re.status = #{status}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and re.serial_number = #{serialNumber}</if>
+            <if test="supplierId != null "> and re.supplier_id = #{supplierId}</if>
+            <if test="buyerId != null "> and re.buyer_id = #{buyerId}</if>
+            <if test="purchaseOrderType != null  and purchaseOrderType != ''"> and re.purchase_order_type = #{purchaseOrderType}</if>
+            <if test="paymentType != null  and paymentType != ''"> and re.payment_type = #{paymentType}</if>
+            <if test="settlementType != null  and settlementType != ''"> and re.settlement_type = #{settlementType}</if>
+            <if test="deliveryType != null  and deliveryType != ''"> and re.delivery_type = #{deliveryType}</if>
+            <if test="params.beginDeliveryDate != null and params.beginDeliveryDate != '' ">
+                and date_sub(po.delivery_date,interval -1 day) <![CDATA[ > ]]> #{params.beginDeliveryDate}
+            </if>
+            <if test="params.endDeliveryDate != null and params.endDeliveryDate != ''">
+                and date_sub(po.delivery_date,interval 1 day) <![CDATA[ < ]]> #{params.endDeliveryDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPurchaseReturnById" parameterType="Long" resultMap="PurchaseReturnResult">
+        <include refid="selectPurchaseReturnVo"/>
+        where re.id = #{id}
+    </select>
+        
+    <insert id="insertPurchaseReturn" parameterType="PurchaseReturn" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into purchase_return
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            serial_number,
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="approver != null">approver,</if>
+            <if test="approvalTime != null">approval_time,</if>
+            <if test="approvalType != null">approval_type,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="contact != null">contact,</if>
+            <if test="cellPhone != null">cell_phone,</if>
+            <if test="buyerId != null">buyer_id,</if>
+            <if test="returnDate != null">return_date,</if>
+            <if test="purchaseOrderType != null">purchase_order_type,</if>
+            <if test="paymentType != null">payment_type,</if>
+            <if test="settlementType != null">settlement_type,</if>
+            <if test="deliveryType != null">delivery_type,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="amount != null">amount,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            seq_nextval('CTH'),
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="approvalTime != null">#{approvalTime},</if>
+            <if test="approvalType != null">#{approvalType},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="contact != null">#{contact},</if>
+            <if test="cellPhone != null">#{cellPhone},</if>
+            <if test="buyerId != null">#{buyerId},</if>
+            <if test="returnDate != null">#{returnDate},</if>
+            <if test="purchaseOrderType != null">#{purchaseOrderType},</if>
+            <if test="paymentType != null">#{paymentType},</if>
+            <if test="settlementType != null">#{settlementType},</if>
+            <if test="deliveryType != null">#{deliveryType},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="amount != null">#{amount},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePurchaseReturn" parameterType="PurchaseReturn">
+        update purchase_return
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="approvalTime != null">approval_time = #{approvalTime},</if>
+            <if test="approvalType != null">approval_type = #{approvalType},</if>
+            <if test="serialNumber != null and serialNumber != ''">serial_number = #{serialNumber},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="cellPhone != null">cell_phone = #{cellPhone},</if>
+            <if test="buyerId != null">buyer_id = #{buyerId},</if>
+            <if test="returnDate != null">return_date = #{returnDate},</if>
+            <if test="purchaseOrderType != null">purchase_order_type = #{purchaseOrderType},</if>
+            <if test="paymentType != null">payment_type = #{paymentType},</if>
+            <if test="settlementType != null">settlement_type = #{settlementType},</if>
+            <if test="deliveryType != null">delivery_type = #{deliveryType},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePurchaseReturnById" parameterType="Long">
+        delete from purchase_return where id = #{id}
+    </delete>
+
+    <delete id="deletePurchaseReturnMaterialsById" parameterType="Long">
+        delete from purchase_return_materials where purchase_return_id = #{id}
+    </delete>
+
+    <delete id="deletePurchaseReturnByIds" parameterType="String">
+        delete from purchase_return where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

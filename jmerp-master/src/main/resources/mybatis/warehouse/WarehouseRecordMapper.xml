@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.warehouse.warehouseRecord.mapper.WarehouseRecordMapper">
+    
+    <resultMap type="WarehouseRecord" id="WarehouseRecordResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="materialsId"    column="materials_id"    />
+        <result property="recordSource"    column="record_source"    />
+        <result property="qty"    column="qty"    />
+
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="productName"    column="product_name"    />
+        <result property="materialsName"    column="materials_name"    />
+        <result property="recordTime"    column="record_time"    />
+    </resultMap>
+
+    <sql id="selectWarehouseRecordVo">
+        select
+            p.product_name,m.materials_name,w.warehouse_name,wi.create_time record_time,
+            wi.id, wi.create_by, wi.create_time, wi.update_by, wi.update_time, wi.remark, wi.status, wi.warehouse_id, wi.product_id, wi.materials_id, wi.record_source, wi.qty
+        from warehouse_record wi
+            left join config_product p on p.id = wi.product_id
+            left join config_warehouse w on w.id = wi.warehouse_id
+            left join config_materials m on m.id = wi.materials_id
+    </sql>
+
+    <select id="selectWarehouseRecordList" parameterType="WarehouseRecord" resultMap="WarehouseRecordResult">
+        <include refid="selectWarehouseRecordVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and wi.status = #{status}</if>
+            <if test="warehouseId != null "> and wi.warehouse_id = #{warehouseId}</if>
+            <if test="productId != null "> and wi.product_id = #{productId}</if>
+            <if test="materialsId != null "> and wi.materials_id = #{materialsId}</if>
+            <if test="recordSource != null  and recordSource != ''"> and wi.record_source = #{recordSource}</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' ">
+                and date_sub(wi.create_time,interval -1 day) <![CDATA[ > ]]> #{params.beginCreateTime}
+            </if>
+            <if test="params.endCreateTime != null and params.endCreateTime != ''">
+                and date_sub(wi.create_time,interval 1 day) <![CDATA[ < ]]> #{params.endCreateTime}
+            </if>
+        </where>
+        order by wi.create_time desc
+    </select>
+    
+    <select id="selectWarehouseRecordById" parameterType="Long" resultMap="WarehouseRecordResult">
+        <include refid="selectWarehouseRecordVo"/>
+        where wi.id = #{id}
+    </select>
+        
+    <insert id="insertWarehouseRecord" parameterType="WarehouseRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into warehouse_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="materialsId != null">materials_id,</if>
+            <if test="recordSource != null">record_source,</if>
+            <if test="qty != null">qty,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="materialsId != null">#{materialsId},</if>
+            <if test="recordSource != null">#{recordSource},</if>
+            <if test="qty != null">#{qty},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWarehouseRecord" parameterType="WarehouseRecord">
+        update warehouse_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="materialsId != null">materials_id = #{materialsId},</if>
+            <if test="recordSource != null">record_source = #{recordSource},</if>
+            <if test="qty != null">qty = #{qty},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWarehouseRecordById" parameterType="Long">
+        delete from warehouse_record where id = #{id}
+    </delete>
+
+    <delete id="deleteWarehouseRecordByIds" parameterType="String">
+        delete from warehouse_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

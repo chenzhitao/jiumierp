@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.produce.produceOrder.mapper.ProduceOrderMapper">
+    
+    <resultMap type="ProduceOrder" id="ProduceOrderResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="produceStatus"    column="produce_status"    />
+        <result property="isComplete"    column="is_complete"    />
+        <result property="isJoint"    column="is_joint"    />
+        <result property="isOutsource"    column="is_outsource"    />
+        <result property="produceOrderType"    column="produce_order_type"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="produceDate"    column="produce_date"    />
+        <result property="requirements"    column="requirements"    />
+        <result property="qty"    column="qty"    />
+        <result property="warehouseQty"    column="warehouse_qty"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="productType"    column="product_type"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="customerMaterialNo"    column="customer_material_no"    />
+        <result property="productionUnit"    column="production_unit"    />
+        <result property="sizeLong"    column="size_long"    />
+        <result property="sizeWidth"    column="size_width"    />
+        <result property="sizeHeight"    column="size_height"    />
+        <result property="opensizeLong"    column="opensize_long"    />
+        <result property="opensizeWidth"    column="opensize_width"    />
+        <result property="area"    column="area"    />
+        <result property="materialsId"    column="materials_id"    />
+        <result property="productImg"    column="product_img"    />
+        <result property="productionTemplateId"    column="production_template_id"    />
+        <result property="workLong"    column="work_long"    />
+        <result property="workWidth"    column="work_width"    />
+        <result property="isBigPanel"    column="is_big_panel"    />
+        <result property="isSpecialPaper"    column="is_special_paper"    />
+        <result property="printSheetQty"    column="print_sheet_qty"    />
+        <result property="printSheetSumQty"    column="print_sheet_sum_qty"    />
+        <result property="puzzleQty"    column="puzzle_qty"    />
+        <result property="formeQty"    column="forme_qty"    />
+        <result property="printType"    column="print_type"    />
+        <result property="gaugeType"    column="gauge_type"    />
+        <result property="isButtom"    column="is_buttom"    />
+        <result property="frontSpot"    column="front_spot"    />
+        <result property="backSpot"    column="back_spot"    />
+        <result property="frontColor"    column="front_color"    />
+        <result property="backColor"    column="back_color"    />
+        <result property="cartonShapeId"    column="carton_shape_id"    />
+        <result property="corrugatedId"    column="corrugated_id"    />
+        <result property="paperFormulaId"    column="paper_formula_id"    />
+        <result property="cartonSizeType"    column="carton_size_type"    />
+        <result property="holePattern"    column="hole_pattern"    />
+        <result property="wireType"    column="wire_type"    />
+        <result property="wireDeep"    column="wire_deep"    />
+        <result property="crossWise"    column="cross_wise"    />
+        <result property="verticalWise"    column="vertical_wise"    />
+        <result property="productionSize"    column="production_size"    />
+        <result property="errorRange"    column="error_range"    />
+        <result property="printTechnologyType"    column="print_technology_type"    />
+        <result property="printTimes"    column="print_times"    />
+        <result property="plateQty"    column="plate_qty"    />
+        <result property="dieWarehouseId"    column="die_warehouse_id"    />
+        <result property="dieShelvesNo"    column="die_shelves_no"    />
+        <result property="printDirection"    column="print_direction"    />
+        <result property="isAquatone"    column="is_aquatone"    />
+
+        <result property="productName"    column="product_name"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="materialsName"    column="materials_name"    />
+        <result property="productionTemplateName"    column="production_template_name"    />
+        <result property="cartonShapeName"    column="carton_shape_name"    />
+        <result property="corrugatedName"    column="corrugated_name"    />
+        <result property="paperFormulaName"    column="paper_formula_name"    />
+        <result property="dieWarehouseName"    column="die_warehouse_name"    />
+        <result property="isInbound"    column="is_inbound"    />
+        <result property="colorRequire"    column="color_require"    />
+        <result property="chargeAmount"    column="charge_amount"    />
+
+        <result property="bleedLongLeft"    column="bleed_long_left"    />
+        <result property="bleedLongRight"    column="bleed_long_right"    />
+        <result property="bleedWidthLeft"    column="bleed_width_left"    />
+        <result property="bleedWidthRight"    column="bleed_width_right"    />
+        <result property="saleOrderSN"    column="sale_order_sn"    />
+        <result property="extraCost"    column="extra_cost"    />
+        <result property="extraCostInfo"    column="extra_cost_info"    />
+        <result property="customerOrder"    column="customer_order"    />
+        <result property="productParentName"    column="product_parent_name"    />
+        <result property="productType"    column="product_type"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+    </resultMap>
+
+    <sql id="selectProduceOrderVo">
+        select
+            po.color_require,po.charge_amount,po.bleed_long_left,po.bleed_long_right,po.bleed_width_left,po.bleed_width_right,so.serial_number sale_order_sn,po.extra_cost,po.extra_cost_info,
+            p.product_name,c.customer_name,m.materials_name,qt.template_name production_template_name,cs.carton_shape_name,co.corrugated_name,pf.paper_formula_name,w.warehouse_name die_warehouse_name,
+
+            po.id, po.create_by, po.create_time, po.update_by, po.update_time, po.remark, po.status, po.approver, po.approval_time, po.approval_type, po.serial_number, po.produce_status, po.is_complete, po.is_joint, po.is_outsource, po.produce_order_type, po.delivery_date, po.produce_date, po.requirements, po.qty, po.warehouse_qty, po.sale_order_product_id, po.sale_order_id, po.product_id, po.product_type, po.customer_id, po.customer_material_no, po.production_unit, po.size_long, po.size_width, po.size_height, po.opensize_long, po.opensize_width, po.area, po.materials_id, po.product_img, po.production_template_id, po.work_long, po.work_width, po.is_big_panel, po.is_special_paper, po.print_sheet_qty, po.print_sheet_sum_qty, po.puzzle_qty, po.forme_qty, po.print_type, po.gauge_type, po.is_buttom, po.front_spot, po.back_spot, po.front_color, po.back_color, po.carton_shape_id, po.corrugated_id, po.paper_formula_id, po.carton_size_type, po.hole_pattern, po.wire_type, po.wire_deep, po.cross_wise, po.vertical_wise, po.production_size, po.error_range, po.print_technology_type, po.print_times, po.plate_qty, po.die_warehouse_id, po.die_shelves_no, po.print_direction, po.is_aquatone,
+               po.customer_order
+        from produce_order po
+            left join sale_order so on so.id = po.sale_order_id
+            left join config_product p on p.id = po.product_id
+            left join config_customer c on c.id = po.customer_id
+            left join config_materials m on m.id = po.materials_id
+            left join config_production_template qt on qt.id = po.production_template_id
+            left join config_carton_shape cs on cs.id = po.carton_shape_id
+            left join config_corrugated co on co.id = po.corrugated_id
+            left join config_paper_formula pf on pf.id = po.paper_formula_id
+            left join config_warehouse w on w.id = po.die_warehouse_id
+    </sql>
+
+    <sql id="selectProduceOrderPartVo">
+        select
+           po.id,po.product_id, po.product_name,po.product_type,po.product_parent_name,po.produce_order_id,po.color_require,
+           po.work_long, po.work_width, po.is_big_panel, po.is_special_paper, po.print_sheet_qty, po.print_sheet_sum_qty, po.puzzle_qty, po.forme_qty,
+           po.print_type, po.gauge_type, po.is_buttom, po.front_spot, po.back_spot, po.front_color, po.back_color, po.carton_shape_id, po.corrugated_id,
+           po.paper_formula_id, po.carton_size_type, po.hole_pattern, po.wire_type, po.wire_deep, po.cross_wise, po.vertical_wise, po.production_size, po.error_range,
+           po.print_technology_type, po.print_times, po.plate_qty, po.die_warehouse_id, po.die_shelves_no, po.print_direction, po.is_aquatone,
+           cs.carton_shape_name,co.corrugated_name,pf.paper_formula_name,w.warehouse_name die_warehouse_name
+        from produce_order_part po
+            left join config_carton_shape cs on cs.id = po.carton_shape_id
+            left join config_corrugated co on co.id = po.corrugated_id
+            left join config_paper_formula pf on pf.id = po.paper_formula_id
+            left join config_warehouse w on w.id = po.die_warehouse_id
+    </sql>
+
+    <select id="selectProduceOrderList" parameterType="ProduceOrder" resultMap="ProduceOrderResult">
+        <include refid="selectProduceOrderVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and po.status = #{status}</if>
+            <if test="status == null  or status == ''"> and po.status != 'delete'</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and po.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="produceStatus != null  and produceStatus != ''"> and po.produce_status = #{produceStatus}</if>
+            <if test="produceOrderType != null  and produceOrderType != ''"> and po.produce_order_type = #{produceOrderType}</if>
+            <if test="productId != null "> and po.product_id = #{productId}</if>
+            <if test="customerId != null "> and po.customer_id = #{customerId}</if>
+            <if test="customerMaterialNo != null  and customerMaterialNo != ''"> and po.customer_material_no like concat('%', #{customerMaterialNo}, '%')</if>
+            <if test="params.beginProduceDate != null and params.beginProduceDate != ''"><!-- 开始时间检索 -->
+                and date_format(po.produce_date,'%y%m%d') &gt;= date_format(#{params.beginProduceDate},'%y%m%d')
+            </if>
+            <if test="params.endProduceDate != null and params.endProduceDate != ''"><!-- 结束时间检索 -->
+                and date_format(po.produce_date,'%y%m%d') &lt;= date_format(#{params.endProduceDate},'%y%m%d')
+            </if>
+            <if test="productName != null  and productName != ''">
+                and po.product_id in (select cp.id from config_product cp where cp.product_name like concat('%', #{productName}, '%'))
+            </if>
+            <if test="customerName != null  and customerName != ''">
+                and po.customer_id in (select cc.id from config_customer cc where cc.customer_name like concat('%', #{customerName}, '%'))
+            </if>
+            <if test="saleOrderId != null "> and po.sale_order_id = #{saleOrderId}</if>
+        </where>
+    </select>
+
+    <select id="selectProduceOrderIsInbound" parameterType="ProduceOrder" resultType="String">
+        select if(count(*)=0,'Y','N') is_inbound from produce_order_process pop2 where pop2.produce_order_id = #{id} and pop2.produce_status != 'warehouse'
+    </select>
+
+    <select id="selectProduceOrderPartList" parameterType="ProduceOrder" resultMap="ProduceOrderResult">
+        <include refid="selectProduceOrderPartVo"/>
+        where po.produce_order_id = #{produceOrderId}
+    </select>
+    
+    <select id="selectProduceOrderById" parameterType="Long" resultMap="ProduceOrderResult">
+        <include refid="selectProduceOrderVo"/>
+        where po.id = #{id}
+    </select>
+
+    <select id="selectProduceOrderPartById" parameterType="Long" resultMap="ProduceOrderResult">
+        <include refid="selectProduceOrderPartVo"/>
+        where po.id = #{id}
+    </select>
+
+    <select id="selectProduceOrderPartListByPartIds" parameterType="Long" resultMap="ProduceOrderResult">
+        <include refid="selectProduceOrderPartVo"/>
+        where po.id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+        
+    <insert id="insertProduceOrder" parameterType="ProduceOrder" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into produce_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            serial_number,
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="approver != null">approver,</if>
+            <if test="approvalTime != null">approval_time,</if>
+            <if test="approvalType != null">approval_type,</if>
+            <if test="produceStatus != null">produce_status,</if>
+            <if test="isComplete != null">is_complete,</if>
+            <if test="isJoint != null">is_joint,</if>
+            <if test="isOutsource != null">is_outsource,</if>
+            <if test="produceOrderType != null">produce_order_type,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+            <if test="produceDate != null">produce_date,</if>
+            <if test="requirements != null">requirements,</if>
+            <if test="qty != null">qty,</if>
+            <if test="warehouseQty != null">warehouse_qty,</if>
+            <if test="saleOrderProductId != null">sale_order_product_id,</if>
+            <if test="saleOrderId != null">sale_order_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="productType != null">product_type,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="customerMaterialNo != null">customer_material_no,</if>
+            <if test="productionUnit != null">production_unit,</if>
+            <if test="sizeLong != null">size_long,</if>
+            <if test="sizeWidth != null">size_width,</if>
+            <if test="sizeHeight != null">size_height,</if>
+            <if test="opensizeLong != null">opensize_long,</if>
+            <if test="opensizeWidth != null">opensize_width,</if>
+            <if test="area != null">area,</if>
+            <if test="materialsId != null">materials_id,</if>
+            <if test="productImg != null">product_img,</if>
+            <if test="productionTemplateId != null">production_template_id,</if>
+            <if test="workLong != null">work_long,</if>
+            <if test="workWidth != null">work_width,</if>
+            <if test="isBigPanel != null">is_big_panel,</if>
+            <if test="isSpecialPaper != null">is_special_paper,</if>
+            <if test="printSheetQty != null">print_sheet_qty,</if>
+            <if test="printSheetSumQty != null">print_sheet_sum_qty,</if>
+            <if test="puzzleQty != null">puzzle_qty,</if>
+            <if test="formeQty != null">forme_qty,</if>
+            <if test="printType != null">print_type,</if>
+            <if test="gaugeType != null">gauge_type,</if>
+            <if test="isButtom != null">is_buttom,</if>
+            <if test="frontSpot != null">front_spot,</if>
+            <if test="backSpot != null">back_spot,</if>
+            <if test="frontColor != null">front_color,</if>
+            <if test="backColor != null">back_color,</if>
+            <if test="cartonShapeId != null">carton_shape_id,</if>
+            <if test="corrugatedId != null">corrugated_id,</if>
+            <if test="paperFormulaId != null">paper_formula_id,</if>
+            <if test="cartonSizeType != null">carton_size_type,</if>
+            <if test="holePattern != null">hole_pattern,</if>
+            <if test="wireType != null">wire_type,</if>
+            <if test="wireDeep != null">wire_deep,</if>
+            <if test="crossWise != null">cross_wise,</if>
+            <if test="verticalWise != null">vertical_wise,</if>
+            <if test="productionSize != null">production_size,</if>
+            <if test="errorRange != null">error_range,</if>
+            <if test="printTechnologyType != null">print_technology_type,</if>
+            <if test="printTimes != null">print_times,</if>
+            <if test="plateQty != null">plate_qty,</if>
+            <if test="dieWarehouseId != null">die_warehouse_id,</if>
+            <if test="dieShelvesNo != null">die_shelves_no,</if>
+            <if test="printDirection != null">print_direction,</if>
+            <if test="isAquatone != null">is_aquatone,</if>
+            <if test="colorRequire != null">color_require,</if>
+            <if test="chargeAmount != null">charge_amount,</if>
+            <if test="bleedLongLeft  != null">bleed_long_left ,</if>
+            <if test="bleedLongRight  != null">bleed_long_right ,</if>
+            <if test="bleedWidthLeft  != null">bleed_width_left ,</if>
+            <if test="bleedWidthRight  != null">bleed_width_right ,</if>
+            <if test="extraCostInfo  != null">extra_cost_info ,</if>
+            <if test="extraCost  != null">extra_cost ,</if>
+            <if test="customerOrder  != null">customer_order ,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            produce_seq_nextval('RZ'),
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="approvalTime != null">#{approvalTime},</if>
+            <if test="approvalType != null">#{approvalType},</if>
+            <if test="produceStatus != null">#{produceStatus},</if>
+            <if test="isComplete != null">#{isComplete},</if>
+            <if test="isJoint != null">#{isJoint},</if>
+            <if test="isOutsource != null">#{isOutsource},</if>
+            <if test="produceOrderType != null">#{produceOrderType},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+            <if test="produceDate != null">#{produceDate},</if>
+            <if test="requirements != null">#{requirements},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="warehouseQty != null">#{warehouseQty},</if>
+            <if test="saleOrderProductId != null">#{saleOrderProductId},</if>
+            <if test="saleOrderId != null">#{saleOrderId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="productType != null">#{productType},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="customerMaterialNo != null">#{customerMaterialNo},</if>
+            <if test="productionUnit != null">#{productionUnit},</if>
+            <if test="sizeLong != null">#{sizeLong},</if>
+            <if test="sizeWidth != null">#{sizeWidth},</if>
+            <if test="sizeHeight != null">#{sizeHeight},</if>
+            <if test="opensizeLong != null">#{opensizeLong},</if>
+            <if test="opensizeWidth != null">#{opensizeWidth},</if>
+            <if test="area != null">#{area},</if>
+            <if test="materialsId != null">#{materialsId},</if>
+            <if test="productImg != null">#{productImg},</if>
+            <if test="productionTemplateId != null">#{productionTemplateId},</if>
+            <if test="workLong != null">#{workLong},</if>
+            <if test="workWidth != null">#{workWidth},</if>
+            <if test="isBigPanel != null">#{isBigPanel},</if>
+            <if test="isSpecialPaper != null">#{isSpecialPaper},</if>
+            <if test="printSheetQty != null">#{printSheetQty},</if>
+            <if test="printSheetSumQty != null">#{printSheetSumQty},</if>
+            <if test="puzzleQty != null">#{puzzleQty},</if>
+            <if test="formeQty != null">#{formeQty},</if>
+            <if test="printType != null">#{printType},</if>
+            <if test="gaugeType != null">#{gaugeType},</if>
+            <if test="isButtom != null">#{isButtom},</if>
+            <if test="frontSpot != null">#{frontSpot},</if>
+            <if test="backSpot != null">#{backSpot},</if>
+            <if test="frontColor != null">#{frontColor},</if>
+            <if test="backColor != null">#{backColor},</if>
+            <if test="cartonShapeId != null">#{cartonShapeId},</if>
+            <if test="corrugatedId != null">#{corrugatedId},</if>
+            <if test="paperFormulaId != null">#{paperFormulaId},</if>
+            <if test="cartonSizeType != null">#{cartonSizeType},</if>
+            <if test="holePattern != null">#{holePattern},</if>
+            <if test="wireType != null">#{wireType},</if>
+            <if test="wireDeep != null">#{wireDeep},</if>
+            <if test="crossWise != null">#{crossWise},</if>
+            <if test="verticalWise != null">#{verticalWise},</if>
+            <if test="productionSize != null">#{productionSize},</if>
+            <if test="errorRange != null">#{errorRange},</if>
+            <if test="printTechnologyType != null">#{printTechnologyType},</if>
+            <if test="printTimes != null">#{printTimes},</if>
+            <if test="plateQty != null">#{plateQty},</if>
+            <if test="dieWarehouseId != null">#{dieWarehouseId},</if>
+            <if test="dieShelvesNo != null">#{dieShelvesNo},</if>
+            <if test="printDirection != null">#{printDirection},</if>
+            <if test="isAquatone != null">#{isAquatone},</if>
+            <if test="colorRequire != null">#{colorRequire},</if>
+            <if test="chargeAmount != null">#{chargeAmount},</if>
+            <if test="bleedLongLeft  != null">#{bleedLongLeft},</if>
+            <if test="bleedLongRight  != null">#{bleedLongRight},</if>
+            <if test="bleedWidthLeft  != null">#{bleedWidthLeft},</if>
+            <if test="bleedWidthRight  != null">#{bleedWidthRight},</if>
+            <if test="extraCostInfo  != null">#{extraCostInfo},</if>
+            <if test="extraCost  != null">#{extraCost},</if>
+            <if test="customerOrder  != null">#{customerOrder},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertProduceOrderPart" parameterType="ProduceOrder" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into produce_order_part
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="workLong != null">work_long,</if>
+            <if test="workWidth != null">work_width,</if>
+            <if test="isBigPanel != null">is_big_panel,</if>
+            <if test="isSpecialPaper != null">is_special_paper,</if>
+            <if test="printSheetQty != null">print_sheet_qty,</if>
+            <if test="printSheetSumQty != null">print_sheet_sum_qty,</if>
+            <if test="puzzleQty != null">puzzle_qty,</if>
+            <if test="formeQty != null">forme_qty,</if>
+            <if test="printType != null">print_type,</if>
+            <if test="gaugeType != null">gauge_type,</if>
+            <if test="isButtom != null">is_buttom,</if>
+            <if test="frontSpot != null">front_spot,</if>
+            <if test="backSpot != null">back_spot,</if>
+            <if test="frontColor != null">front_color,</if>
+            <if test="backColor != null">back_color,</if>
+            <if test="cartonShapeId != null">carton_shape_id,</if>
+            <if test="corrugatedId != null">corrugated_id,</if>
+            <if test="paperFormulaId != null">paper_formula_id,</if>
+            <if test="cartonSizeType != null">carton_size_type,</if>
+            <if test="holePattern != null">hole_pattern,</if>
+            <if test="wireType != null">wire_type,</if>
+            <if test="wireDeep != null">wire_deep,</if>
+            <if test="crossWise != null">cross_wise,</if>
+            <if test="verticalWise != null">vertical_wise,</if>
+            <if test="productionSize != null">production_size,</if>
+            <if test="errorRange != null">error_range,</if>
+            <if test="printTechnologyType != null">print_technology_type,</if>
+            <if test="printTimes != null">print_times,</if>
+            <if test="plateQty != null">plate_qty,</if>
+            <if test="dieWarehouseId != null">die_warehouse_id,</if>
+            <if test="dieShelvesNo != null">die_shelves_no,</if>
+            <if test="printDirection != null">print_direction,</if>
+            <if test="isAquatone != null">is_aquatone,</if>
+            <if test="produceOrderId != null">produce_order_id,</if>
+            <if test="productName != null">product_name,</if>
+            <if test="productType != null">product_type,</if>
+            <if test="productParentName != null">product_parent_name,</if>
+            <if test="colorRequire != null">color_require,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="workLong != null">#{workLong},</if>
+            <if test="workWidth != null">#{workWidth},</if>
+            <if test="isBigPanel != null">#{isBigPanel},</if>
+            <if test="isSpecialPaper != null">#{isSpecialPaper},</if>
+            <if test="printSheetQty != null">#{printSheetQty},</if>
+            <if test="printSheetSumQty != null">#{printSheetSumQty},</if>
+            <if test="puzzleQty != null">#{puzzleQty},</if>
+            <if test="formeQty != null">#{formeQty},</if>
+            <if test="printType != null">#{printType},</if>
+            <if test="gaugeType != null">#{gaugeType},</if>
+            <if test="isButtom != null">#{isButtom},</if>
+            <if test="frontSpot != null">#{frontSpot},</if>
+            <if test="backSpot != null">#{backSpot},</if>
+            <if test="frontColor != null">#{frontColor},</if>
+            <if test="backColor != null">#{backColor},</if>
+            <if test="cartonShapeId != null">#{cartonShapeId},</if>
+            <if test="corrugatedId != null">#{corrugatedId},</if>
+            <if test="paperFormulaId != null">#{paperFormulaId},</if>
+            <if test="cartonSizeType != null">#{cartonSizeType},</if>
+            <if test="holePattern != null">#{holePattern},</if>
+            <if test="wireType != null">#{wireType},</if>
+            <if test="wireDeep != null">#{wireDeep},</if>
+            <if test="crossWise != null">#{crossWise},</if>
+            <if test="verticalWise != null">#{verticalWise},</if>
+            <if test="productionSize != null">#{productionSize},</if>
+            <if test="errorRange != null">#{errorRange},</if>
+            <if test="printTechnologyType != null">#{printTechnologyType},</if>
+            <if test="printTimes != null">#{printTimes},</if>
+            <if test="plateQty != null">#{plateQty},</if>
+            <if test="dieWarehouseId != null">#{dieWarehouseId},</if>
+            <if test="dieShelvesNo != null">#{dieShelvesNo},</if>
+            <if test="printDirection != null">#{printDirection},</if>
+            <if test="isAquatone != null">#{isAquatone},</if>
+            <if test="produceOrderId != null">#{produceOrderId},</if>
+            <if test="productName != null">#{productName},</if>
+            <if test="productType != null">#{productType},</if>
+            <if test="productParentName != null">#{productParentName},</if>
+            <if test="colorRequire != null">#{colorRequire},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProduceOrder" parameterType="ProduceOrder">
+        update produce_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="approvalTime != null">approval_time = #{approvalTime},</if>
+            <if test="approvalType != null">approval_type = #{approvalType},</if>
+            <if test="serialNumber != null and serialNumber != ''">serial_number = #{serialNumber},</if>
+            <if test="produceStatus != null">produce_status = #{produceStatus},</if>
+            <if test="isComplete != null">is_complete = #{isComplete},</if>
+            <if test="isJoint != null">is_joint = #{isJoint},</if>
+            <if test="isOutsource != null">is_outsource = #{isOutsource},</if>
+            <if test="produceOrderType != null">produce_order_type = #{produceOrderType},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="produceDate != null">produce_date = #{produceDate},</if>
+            <if test="requirements != null">requirements = #{requirements},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="warehouseQty != null">warehouse_qty = #{warehouseQty},</if>
+            <if test="saleOrderProductId != null">sale_order_product_id = #{saleOrderProductId},</if>
+            <if test="saleOrderId != null">sale_order_id = #{saleOrderId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="productType != null">product_type = #{productType},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="customerMaterialNo != null">customer_material_no = #{customerMaterialNo},</if>
+            <if test="productionUnit != null">production_unit = #{productionUnit},</if>
+            <if test="sizeLong != null">size_long = #{sizeLong},</if>
+            <if test="sizeWidth != null">size_width = #{sizeWidth},</if>
+            <if test="sizeHeight != null">size_height = #{sizeHeight},</if>
+            <if test="opensizeLong != null">opensize_long = #{opensizeLong},</if>
+            <if test="opensizeWidth != null">opensize_width = #{opensizeWidth},</if>
+            <if test="area != null">area = #{area},</if>
+            <if test="materialsId != null">materials_id = #{materialsId},</if>
+            <if test="productImg != null">product_img = #{productImg},</if>
+            <if test="productionTemplateId != null">production_template_id = #{productionTemplateId},</if>
+            <if test="workLong != null">work_long = #{workLong},</if>
+            <if test="workWidth != null">work_width = #{workWidth},</if>
+            <if test="isBigPanel != null">is_big_panel = #{isBigPanel},</if>
+            <if test="isSpecialPaper != null">is_special_paper = #{isSpecialPaper},</if>
+            <if test="printSheetQty != null">print_sheet_qty = #{printSheetQty},</if>
+            <if test="printSheetSumQty != null">print_sheet_sum_qty = #{printSheetSumQty},</if>
+            <if test="puzzleQty != null">puzzle_qty = #{puzzleQty},</if>
+            <if test="formeQty != null">forme_qty = #{formeQty},</if>
+            <if test="printType != null">print_type = #{printType},</if>
+            <if test="gaugeType != null">gauge_type = #{gaugeType},</if>
+            <if test="isButtom != null">is_buttom = #{isButtom},</if>
+            <if test="frontSpot != null">front_spot = #{frontSpot},</if>
+            <if test="backSpot != null">back_spot = #{backSpot},</if>
+            <if test="frontColor != null">front_color = #{frontColor},</if>
+            <if test="backColor != null">back_color = #{backColor},</if>
+            <if test="cartonShapeId != null">carton_shape_id = #{cartonShapeId},</if>
+            <if test="corrugatedId != null">corrugated_id = #{corrugatedId},</if>
+            <if test="paperFormulaId != null">paper_formula_id = #{paperFormulaId},</if>
+            <if test="cartonSizeType != null">carton_size_type = #{cartonSizeType},</if>
+            <if test="holePattern != null">hole_pattern = #{holePattern},</if>
+            <if test="wireType != null">wire_type = #{wireType},</if>
+            <if test="wireDeep != null">wire_deep = #{wireDeep},</if>
+            <if test="crossWise != null">cross_wise = #{crossWise},</if>
+            <if test="verticalWise != null">vertical_wise = #{verticalWise},</if>
+            <if test="productionSize != null">production_size = #{productionSize},</if>
+            <if test="errorRange != null">error_range = #{errorRange},</if>
+            <if test="printTechnologyType != null">print_technology_type = #{printTechnologyType},</if>
+            <if test="printTimes != null">print_times = #{printTimes},</if>
+            <if test="plateQty != null">plate_qty = #{plateQty},</if>
+            <if test="dieWarehouseId != null">die_warehouse_id = #{dieWarehouseId},</if>
+            <if test="dieShelvesNo != null">die_shelves_no = #{dieShelvesNo},</if>
+            <if test="printDirection != null">print_direction = #{printDirection},</if>
+            <if test="isAquatone != null">is_aquatone = #{isAquatone},</if>
+            <if test="colorRequire != null">color_require = #{colorRequire},</if>
+            <if test="chargeAmount != null">charge_amount = #{chargeAmount},</if>
+            <if test="bleedLongLeft  != null">bleed_long_left  = #{bleedLongLeft},</if>
+            <if test="bleedLongRight  != null"> bleed_long_right  = #{bleedLongRight},</if>
+            <if test="bleedWidthLeft  != null">bleed_width_left   = #{bleedWidthLeft},</if>
+            <if test="bleedWidthRight  != null">bleed_width_right   = #{bleedWidthRight},</if>
+            <if test="extraCostInfo  != null">extra_cost_info   = #{extraCostInfo},</if>
+            <if test="extraCost  != null">extra_cost   = #{extraCost},</if>
+            <if test="customerOrder  != null">customer_order   = #{customerOrder},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateProduceOrderPart" parameterType="ProduceOrder">
+        update produce_order_part
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="workLong != null">work_long = #{workLong},</if>
+            <if test="workWidth != null">work_width = #{workWidth},</if>
+            <if test="isBigPanel != null">is_big_panel = #{isBigPanel},</if>
+            <if test="isSpecialPaper != null">is_special_paper = #{isSpecialPaper},</if>
+            <if test="printSheetQty != null">print_sheet_qty = #{printSheetQty},</if>
+            <if test="printSheetSumQty != null">print_sheet_sum_qty = #{printSheetSumQty},</if>
+            <if test="puzzleQty != null">puzzle_qty = #{puzzleQty},</if>
+            <if test="formeQty != null">forme_qty = #{formeQty},</if>
+            <if test="printType != null">print_type = #{printType},</if>
+            <if test="gaugeType != null">gauge_type = #{gaugeType},</if>
+            <if test="isButtom != null">is_buttom = #{isButtom},</if>
+            <if test="frontSpot != null">front_spot = #{frontSpot},</if>
+            <if test="backSpot != null">back_spot = #{backSpot},</if>
+            <if test="frontColor != null">front_color = #{frontColor},</if>
+            <if test="backColor != null">back_color = #{backColor},</if>
+            <if test="cartonShapeId != null">carton_shape_id = #{cartonShapeId},</if>
+            <if test="corrugatedId != null">corrugated_id = #{corrugatedId},</if>
+            <if test="paperFormulaId != null">paper_formula_id = #{paperFormulaId},</if>
+            <if test="cartonSizeType != null">carton_size_type = #{cartonSizeType},</if>
+            <if test="holePattern != null">hole_pattern = #{holePattern},</if>
+            <if test="wireType != null">wire_type = #{wireType},</if>
+            <if test="wireDeep != null">wire_deep = #{wireDeep},</if>
+            <if test="crossWise != null">cross_wise = #{crossWise},</if>
+            <if test="verticalWise != null">vertical_wise = #{verticalWise},</if>
+            <if test="productionSize != null">production_size = #{productionSize},</if>
+            <if test="errorRange != null">error_range = #{errorRange},</if>
+            <if test="printTechnologyType != null">print_technology_type = #{printTechnologyType},</if>
+            <if test="printTimes != null">print_times = #{printTimes},</if>
+            <if test="plateQty != null">plate_qty = #{plateQty},</if>
+            <if test="dieWarehouseId != null">die_warehouse_id = #{dieWarehouseId},</if>
+            <if test="dieShelvesNo != null">die_shelves_no = #{dieShelvesNo},</if>
+            <if test="printDirection != null">print_direction = #{printDirection},</if>
+            <if test="isAquatone != null">is_aquatone = #{isAquatone},</if>
+            <if test="produceOrderId != null">produce_order_id = #{produceOrderId},</if>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="productType != null">product_type = #{productType},</if>
+            <if test="productParentName != null">product_parent_name = #{productParentName},</if>
+            <if test="colorRequire != null">color_require = #{colorRequire},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProduceOrderById" parameterType="Long">
+        delete from produce_order where id = #{id}
+    </delete>
+
+    <delete id="deleteProduceOrderProcessById" parameterType="Long">
+        delete from produce_order_process where produce_order_id = #{id}
+    </delete>
+
+    <delete id="deleteProduceOrderMaterialsById" parameterType="Long">
+        delete from produce_order_materials where produce_order_id = #{id}
+    </delete>
+
+    <delete id="deleteProduceOrderPartByPartId" parameterType="Long">
+        delete from produce_order_part where id = #{id}
+    </delete>
+
+    <delete id="deleteProduceOrderByIds" parameterType="String">
+        delete from produce_order where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteProduceOrderPartsByIds" parameterType="String">
+        delete from produce_order_part where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configQuotationTemplateMaterials.mapper.ConfigQuotationTemplateMaterialsMapper">
+    
+    <resultMap type="ConfigQuotationTemplateMaterials" id="ConfigQuotationTemplateMaterialsResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="quotationTemplateId"    column="quotation_template_id"    />
+        <result property="materialsId"    column="materials_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="formulaId"    column="formula_id"    />
+        <result property="times"    column="times"    />
+        <result property="price"    column="price"    />
+        <result property="isGetProcessQty"    column="is_get_process_qty"    />
+        <result property="lossRate"    column="loss_rate"    />
+        <result property="lossQty"    column="loss_qty"    />
+
+        <result property="materialsName"    column="materials_name"    />
+        <result property="processName"    column="process_name"    />
+        <result property="formulaName"    column="formula_name"    />
+        <result property="quotationTemplateName"    column="quotation_template_name"    />
+    </resultMap>
+
+    <sql id="selectConfigQuotationTemplateMaterialsVo">
+        select
+            m.materials_name,cp.process_name,f.formula_name,qt.template_name quotation_template_name,
+            cqtm.id, cqtm.remark, cqtm.quotation_template_id, cqtm.materials_id, cqtm.process_id, cqtm.formula_id, cqtm.times, cqtm.price, cqtm.is_get_process_qty, cqtm.loss_rate, cqtm.loss_qty
+        from config_quotation_template_materials cqtm
+            left join config_materials m on m.id = cqtm.materials_id
+            left join config_formula f on f.id = cqtm.formula_id
+            left join config_process cp on cp.id = cqtm.process_id
+            left join config_quotation_template qt on qt.id = cqtm.quotation_template_id
+    </sql>
+
+    <select id="selectConfigQuotationTemplateMaterialsList" parameterType="ConfigQuotationTemplateMaterials" resultMap="ConfigQuotationTemplateMaterialsResult">
+        <include refid="selectConfigQuotationTemplateMaterialsVo"/>
+        <where>  
+            <if test="quotationTemplateId != null "> and cqtm.quotation_template_id = #{quotationTemplateId}</if>
+            <if test="materialsId != null "> and cqtm.materials_id = #{materialsId}</if>
+            <if test="processId != null "> and cqtm.process_id = #{processId}</if>
+            <if test="formulaId != null "> and cqtm.formula_id = #{formulaId}</if>
+            <if test="ids != null "> and cqtm.quotation_template_id in (${ids})</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigQuotationTemplateMaterialsById" parameterType="Long" resultMap="ConfigQuotationTemplateMaterialsResult">
+        <include refid="selectConfigQuotationTemplateMaterialsVo"/>
+        where cqtm.id = #{id}
+    </select>
+        
+    <insert id="insertConfigQuotationTemplateMaterials" parameterType="ConfigQuotationTemplateMaterials" useGeneratedKeys="true" keyProperty="id">
+        insert into config_quotation_template_materials
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="quotationTemplateId != null">quotation_template_id,</if>
+            <if test="materialsId != null">materials_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="formulaId != null">formula_id,</if>
+            <if test="times != null">times,</if>
+            <if test="price != null">price,</if>
+            <if test="isGetProcessQty != null">is_get_process_qty,</if>
+            <if test="lossRate != null">loss_rate,</if>
+            <if test="lossQty != null">loss_qty,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="quotationTemplateId != null">#{quotationTemplateId},</if>
+            <if test="materialsId != null">#{materialsId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="formulaId != null">#{formulaId},</if>
+            <if test="times != null">#{times},</if>
+            <if test="price != null">#{price},</if>
+            <if test="isGetProcessQty != null">#{isGetProcessQty},</if>
+            <if test="lossRate != null">#{lossRate},</if>
+            <if test="lossQty != null">#{lossQty},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigQuotationTemplateMaterials" parameterType="ConfigQuotationTemplateMaterials">
+        update config_quotation_template_materials
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="quotationTemplateId != null">quotation_template_id = #{quotationTemplateId},</if>
+            <if test="materialsId != null">materials_id = #{materialsId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="formulaId != null">formula_id = #{formulaId},</if>
+            <if test="times != null">times = #{times},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="isGetProcessQty != null">is_get_process_qty = #{isGetProcessQty},</if>
+            <if test="lossRate != null">loss_rate = #{lossRate},</if>
+            <if test="lossQty != null">loss_qty = #{lossQty},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigQuotationTemplateMaterialsById" parameterType="Long">
+        delete from config_quotation_template_materials where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigQuotationTemplateMaterialsByIds" parameterType="String">
+        delete from config_quotation_template_materials where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

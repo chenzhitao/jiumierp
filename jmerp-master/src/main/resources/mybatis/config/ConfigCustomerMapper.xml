@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configCustomer.mapper.ConfigCustomerMapper">
+    
+    <resultMap type="ConfigCustomer" id="ConfigCustomerResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="customerIndustry"    column="customer_industry"    />
+        <result property="salesmanId"    column="salesman_id"    />
+        <result property="salesmanName"    column="salesman_name"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="settlementType"    column="settlement_type"    />
+        <result property="deliveryType"    column="delivery_type"    />
+        <result property="contact"    column="contact"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="taxName"    column="tax_name"    />
+        <result property="address"    column="address"    />
+    </resultMap>
+
+    <sql id="selectConfigCustomerVo">
+        select
+            c.id, c.create_by, c.create_time, c.update_by, c.update_time, c.remark, c.status,
+            c.customer_name, c.customer_industry, c.salesman_id, c.payment_type, c.settlement_type,
+            c.delivery_type, c.contact, c.tax_rate, c.address ,
+            e.employee_name salesman_name,
+            t.tax_name
+        from config_customer c
+            left join config_employee e on e.id = c.salesman_id
+            left join config_tax t on t.tax_rate = c.tax_rate
+    </sql>
+
+    <select id="selectConfigCustomerList" parameterType="ConfigCustomer" resultMap="ConfigCustomerResult">
+        <include refid="selectConfigCustomerVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and c.status = #{status}</if>
+            <if test="customerName != null  and customerName != ''"> and c.customer_name like concat('%', #{customerName}, '%')</if>
+            <if test="salesmanId != null "> and c.salesman_id = #{salesmanId}</if>
+            <if test="paymentType != null  and paymentType != ''"> and c.payment_type = #{paymentType}</if>
+            <if test="settlementType != null  and settlementType != ''"> and c.settlement_type = #{settlementType}</if>
+            <if test="deliveryType != null  and deliveryType != ''"> and c.delivery_type = #{deliveryType}</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigCustomerById" parameterType="Long" resultMap="ConfigCustomerResult">
+        <include refid="selectConfigCustomerVo"/>
+        where c.id = #{id}
+    </select>
+        
+    <insert id="insertConfigCustomer" parameterType="ConfigCustomer">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into config_customer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="customerName != null and customerName != ''">customer_name,</if>
+            <if test="customerIndustry != null">customer_industry,</if>
+            <if test="salesmanId != null">salesman_id,</if>
+            <if test="paymentType != null">payment_type,</if>
+            <if test="settlementType != null">settlement_type,</if>
+            <if test="deliveryType != null">delivery_type,</if>
+            <if test="contact != null">contact,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="address != null">address,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="customerName != null and customerName != ''">#{customerName},</if>
+            <if test="customerIndustry != null">#{customerIndustry},</if>
+            <if test="salesmanId != null">#{salesmanId},</if>
+            <if test="paymentType != null">#{paymentType},</if>
+            <if test="settlementType != null">#{settlementType},</if>
+            <if test="deliveryType != null">#{deliveryType},</if>
+            <if test="contact != null">#{contact},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="address != null">#{address},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigCustomer" parameterType="ConfigCustomer">
+        update config_customer
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="customerName != null and customerName != ''">customer_name = #{customerName},</if>
+            <if test="customerIndustry != null">customer_industry = #{customerIndustry},</if>
+            <if test="salesmanId != null">salesman_id = #{salesmanId},</if>
+            <if test="paymentType != null">payment_type = #{paymentType},</if>
+            <if test="settlementType != null">settlement_type = #{settlementType},</if>
+            <if test="deliveryType != null">delivery_type = #{deliveryType},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="address != null">address = #{address},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigCustomerById" parameterType="Long">
+        delete from config_customer where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigCustomerByIds" parameterType="String">
+        delete from config_customer where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

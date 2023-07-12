@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configFormula.mapper.ConfigFormulaMapper">
+    
+    <resultMap type="ConfigFormula" id="ConfigFormulaResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="formulaName"    column="formula_name"    />
+        <result property="productType"    column="product_type"    />
+        <result property="formulaDesc"    column="formula_desc"    />
+        <result property="formulaType"    column="formula_type"    />
+        <result property="isCustom"    column="is_custom"    />
+        <result property="formulaIcon"    column="formula_icon"    />
+        <result property="customFormulaCode"    column="custom_formula_code"    />
+        <result property="extraLong"    column="extra_long"    />
+        <result property="extraWidth"    column="extra_width"    />
+        <result property="extraHeight"    column="extra_height"    />
+        <result property="extraOpenLong"    column="extra_open_long"    />
+        <result property="extraOpenWidth"    column="extra_open_width"    />
+        <result property="sideSize"    column="side_size"    />
+        <result property="hangingSize"    column="hanging_size"    />
+        <result property="dispenseSize"    column="dispense_size"    />
+        <result property="stickSize"    column="stick_size"    />
+        <result property="areaFormula"    column="area_formula"    />
+        <result property="openLongFormula"    column="open_long_formula"    />
+        <result property="openWidthFormula"    column="open_width_formula"    />
+        <result property="baseTimes"    column="base_times"    />
+        <result property="basePrice"    column="base_price"    />
+        <result property="minPrice"    column="min_price"    />
+        <result property="maxPrice"    column="max_price"    />
+        <result property="priceBottom"    column="price_bottom"    />
+        <result property="priceCeiling"    column="price_ceiling"    />
+        <result property="minUnitQty"    column="min_unit_qty"    />
+        <result property="baseMinQty"    column="base_min_qty"    />
+        <result property="coefficientQty"    column="coefficient_qty"    />
+        <result property="discountTimes"    column="discount_times"    />
+        <result property="discountQty"    column="discount_qty"    />
+        <result property="extraPrice"    column="extra_price"    />
+        <result property="extraTimes"    column="extra_times"    />
+        <result property="baseRate"    column="base_rate"    />
+        <result property="lossRate"    column="loss_rate"    />
+        <result property="baseQtyArr"    column="base_qty_arr"    />
+        <result property="lossQtyArr"    column="loss_qty_arr"    />
+    </resultMap>
+
+    <sql id="selectConfigFormulaVo">
+        select
+            id, create_by, create_time, update_by, update_time, remark, status,
+            formula_name, product_type, formula_desc, formula_type, is_custom, formula_icon,
+            custom_formula_code, extra_long, extra_width, extra_height, extra_open_long,
+            extra_open_width, side_size, hanging_size, dispense_size, stick_size, area_formula,
+            base_times, base_price, min_price, max_price, price_bottom, price_ceiling,
+            min_unit_qty, base_min_qty, coefficient_qty, discount_times, discount_qty, extra_price,
+            extra_times, base_rate, loss_rate, base_qty_arr, loss_qty_arr, open_long_formula ,open_width_formula
+        from config_formula
+    </sql>
+
+    <select id="selectConfigFormulaList" parameterType="ConfigFormula" resultMap="ConfigFormulaResult">
+        <include refid="selectConfigFormulaVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="formulaName != null  and formulaName != ''"> and formula_name like concat('%', #{formulaName}, '%')</if>
+            <if test="productType != null  and productType != ''"> and product_type = #{productType}</if>
+            <if test="formulaType != null  and formulaType != ''"> and formula_type = #{formulaType}</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigFormulaById" parameterType="Long" resultMap="ConfigFormulaResult">
+        <include refid="selectConfigFormulaVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertConfigFormula" parameterType="ConfigFormula" useGeneratedKeys="true" keyProperty="id">
+        insert into config_formula
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="formulaName != null and formulaName != ''">formula_name,</if>
+            <if test="productType != null">product_type,</if>
+            <if test="formulaDesc != null">formula_desc,</if>
+            <if test="formulaType != null and formulaType != ''">formula_type,</if>
+            <if test="isCustom != null">is_custom,</if>
+            <if test="formulaIcon != null">formula_icon,</if>
+            <if test="customFormulaCode != null">custom_formula_code,</if>
+            <if test="extraLong != null">extra_long,</if>
+            <if test="extraWidth != null">extra_width,</if>
+            <if test="extraHeight != null">extra_height,</if>
+            <if test="extraOpenLong != null">extra_open_long,</if>
+            <if test="extraOpenWidth != null">extra_open_width,</if>
+            <if test="sideSize != null">side_size,</if>
+            <if test="hangingSize != null">hanging_size,</if>
+            <if test="dispenseSize != null">dispense_size,</if>
+            <if test="stickSize != null">stick_size,</if>
+            <if test="areaFormula != null">area_formula,</if>
+            <if test="baseTimes != null">base_times,</if>
+            <if test="basePrice != null">base_price,</if>
+            <if test="minPrice != null">min_price,</if>
+            <if test="maxPrice != null">max_price,</if>
+            <if test="priceBottom != null">price_bottom,</if>
+            <if test="priceCeiling != null">price_ceiling,</if>
+            <if test="minUnitQty != null">min_unit_qty,</if>
+            <if test="baseMinQty != null">base_min_qty,</if>
+            <if test="coefficientQty != null">coefficient_qty,</if>
+            <if test="discountTimes != null">discount_times,</if>
+            <if test="discountQty != null">discount_qty,</if>
+            <if test="extraPrice != null">extra_price,</if>
+            <if test="extraTimes != null">extra_times,</if>
+            <if test="baseRate != null">base_rate,</if>
+            <if test="lossRate != null">loss_rate,</if>
+            <if test="baseQtyArr != null">base_qty_arr,</if>
+            <if test="lossQtyArr != null">loss_qty_arr,</if>
+            <if test="openLongFormula != null">open_long_formula,</if>
+            <if test="openWidthFormula != null">open_width_formula,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="formulaName != null and formulaName != ''">#{formulaName},</if>
+            <if test="productType != null">#{productType},</if>
+            <if test="formulaDesc != null">#{formulaDesc},</if>
+            <if test="formulaType != null and formulaType != ''">#{formulaType},</if>
+            <if test="isCustom != null">#{isCustom},</if>
+            <if test="formulaIcon != null">#{formulaIcon},</if>
+            <if test="customFormulaCode != null">#{customFormulaCode},</if>
+            <if test="extraLong != null">#{extraLong},</if>
+            <if test="extraWidth != null">#{extraWidth},</if>
+            <if test="extraHeight != null">#{extraHeight},</if>
+            <if test="extraOpenLong != null">#{extraOpenLong},</if>
+            <if test="extraOpenWidth != null">#{extraOpenWidth},</if>
+            <if test="sideSize != null">#{sideSize},</if>
+            <if test="hangingSize != null">#{hangingSize},</if>
+            <if test="dispenseSize != null">#{dispenseSize},</if>
+            <if test="stickSize != null">#{stickSize},</if>
+            <if test="areaFormula != null">#{areaFormula},</if>
+            <if test="baseTimes != null">#{baseTimes},</if>
+            <if test="basePrice != null">#{basePrice},</if>
+            <if test="minPrice != null">#{minPrice},</if>
+            <if test="maxPrice != null">#{maxPrice},</if>
+            <if test="priceBottom != null">#{priceBottom},</if>
+            <if test="priceCeiling != null">#{priceCeiling},</if>
+            <if test="minUnitQty != null">#{minUnitQty},</if>
+            <if test="baseMinQty != null">#{baseMinQty},</if>
+            <if test="coefficientQty != null">#{coefficientQty},</if>
+            <if test="discountTimes != null">#{discountTimes},</if>
+            <if test="discountQty != null">#{discountQty},</if>
+            <if test="extraPrice != null">#{extraPrice},</if>
+            <if test="extraTimes != null">#{extraTimes},</if>
+            <if test="baseRate != null">#{baseRate},</if>
+            <if test="lossRate != null">#{lossRate},</if>
+            <if test="baseQtyArr != null">#{baseQtyArr},</if>
+            <if test="lossQtyArr != null">#{lossQtyArr},</if>
+            <if test="openLongFormula != null">#{openLongFormula},</if>
+            <if test="openWidthFormula != null">#{openWidthFormula},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigFormula" parameterType="ConfigFormula">
+        update config_formula
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="formulaName != null and formulaName != ''">formula_name = #{formulaName},</if>
+            <if test="productType != null">product_type = #{productType},</if>
+            <if test="formulaDesc != null">formula_desc = #{formulaDesc},</if>
+            <if test="formulaType != null and formulaType != ''">formula_type = #{formulaType},</if>
+            <if test="isCustom != null">is_custom = #{isCustom},</if>
+            <if test="formulaIcon != null">formula_icon = #{formulaIcon},</if>
+            <if test="customFormulaCode != null">custom_formula_code = #{customFormulaCode},</if>
+            <if test="extraLong != null">extra_long = #{extraLong},</if>
+            <if test="extraWidth != null">extra_width = #{extraWidth},</if>
+            <if test="extraHeight != null">extra_height = #{extraHeight},</if>
+            <if test="extraOpenLong != null">extra_open_long = #{extraOpenLong},</if>
+            <if test="extraOpenWidth != null">extra_open_width = #{extraOpenWidth},</if>
+            <if test="sideSize != null">side_size = #{sideSize},</if>
+            <if test="hangingSize != null">hanging_size = #{hangingSize},</if>
+            <if test="dispenseSize != null">dispense_size = #{dispenseSize},</if>
+            <if test="stickSize != null">stick_size = #{stickSize},</if>
+            <if test="areaFormula != null">area_formula = #{areaFormula},</if>
+            <if test="baseTimes != null">base_times = #{baseTimes},</if>
+            <if test="basePrice != null">base_price = #{basePrice},</if>
+            <if test="minPrice != null">min_price = #{minPrice},</if>
+            <if test="maxPrice != null">max_price = #{maxPrice},</if>
+            <if test="priceBottom != null">price_bottom = #{priceBottom},</if>
+            <if test="priceCeiling != null">price_ceiling = #{priceCeiling},</if>
+            <if test="minUnitQty != null">min_unit_qty = #{minUnitQty},</if>
+            <if test="baseMinQty != null">base_min_qty = #{baseMinQty},</if>
+            <if test="coefficientQty != null">coefficient_qty = #{coefficientQty},</if>
+            <if test="discountTimes != null">discount_times = #{discountTimes},</if>
+            <if test="discountQty != null">discount_qty = #{discountQty},</if>
+            <if test="extraPrice != null">extra_price = #{extraPrice},</if>
+            <if test="extraTimes != null">extra_times = #{extraTimes},</if>
+            <if test="baseRate != null">base_rate = #{baseRate},</if>
+            <if test="lossRate != null">loss_rate = #{lossRate},</if>
+            <if test="baseQtyArr != null">base_qty_arr = #{baseQtyArr},</if>
+            <if test="lossQtyArr != null">loss_qty_arr = #{lossQtyArr},</if>
+            <if test="openLongFormula != null">open_long_formula = #{openLongFormula},</if>
+            <if test="openWidthFormula != null">open_width_formula = #{openWidthFormula},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigFormulaById" parameterType="Long">
+        delete from config_formula where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigFormulaByIds" parameterType="String">
+        delete from config_formula where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

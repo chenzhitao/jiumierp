@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.sale.saleQuotationProcess.mapper.SaleQuotationProcessMapper">
+    
+    <resultMap type="SaleQuotationProcess" id="SaleQuotationProcessResult">
+        <result property="id"    column="id"    />
+        <result property="saleQuotationId"    column="sale_quotation_id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="saleQuotationProductId"    column="sale_quotation_product_id"    />
+        <result property="quotationTemplateId"    column="quotation_template_id"    />
+        <result property="quotationTemplateProcessId"    column="quotation_template_process_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="formulaId"    column="formula_id"    />
+        <result property="times"    column="times"    />
+        <result property="price"    column="price"    />
+        <result property="equipmentId"    column="equipment_id"    />
+        <result property="lossRate"    column="loss_rate"    />
+        <result property="lossQty"    column="loss_qty"    />
+        <result property="processOrder"    column="process_order"    />
+        <result property="isTimeCount"    column="is_time_count"    />
+
+        <result property="productName"    column="product_name"    />
+        <result property="processName"    column="process_name"    />
+        <result property="formulaName"    column="formula_name"    />
+    </resultMap>
+
+    <sql id="selectSaleQuotationProcessVo">
+        select
+            p.product_name,cf.formula_name,cp.process_name,
+            sqp.is_time_count, sqp.id, sqp.sale_quotation_id, sqp.customer_id, sqp.sale_quotation_product_id, sqp.quotation_template_id, sqp.quotation_template_process_id,
+            sqp.product_id, sqp.process_id, sqp.formula_id, sqp.times, sqp.price, sqp.equipment_id, sqp.loss_rate, sqp.loss_qty, sqp.process_order
+        from sale_quotation_process sqp
+            left join config_product p on p.id = sqp.product_id
+            left join config_formula cf on cf.id = sqp.formula_id
+            left join config_process cp on cp.id = sqp.process_id
+    </sql>
+
+    <select id="selectSaleQuotationProcessList" parameterType="SaleQuotationProcess" resultMap="SaleQuotationProcessResult">
+        <include refid="selectSaleQuotationProcessVo"/>
+        <where>  
+            <if test="saleQuotationId != null "> and sqp.sale_quotation_id = #{saleQuotationId}</if>
+            <if test="customerId != null "> and sqp.customer_id = #{customerId}</if>
+            <if test="saleQuotationProductId != null "> and sqp.sale_quotation_product_id = #{saleQuotationProductId}</if>
+            <if test="quotationTemplateId != null "> and sqp.quotation_template_id = #{quotationTemplateId}</if>
+            <if test="quotationTemplateProcessId != null "> and sqp.quotation_template_process_id = #{quotationTemplateProcessId}</if>
+            <if test="productId != null "> and sqp.product_id = #{productId}</if>
+            <if test="processId != null "> and sqp.process_id = #{processId}</if>
+            <if test="formulaId != null "> and sqp.formula_id = #{formulaId}</if>
+            <if test="times != null "> and sqp.times = #{times}</if>
+            <if test="price != null "> and sqp.price = #{price}</if>
+            <if test="equipmentId != null "> and sqp.equipment_id = #{equipmentId}</if>
+            <if test="lossRate != null "> and sqp.loss_rate = #{lossRate}</if>
+            <if test="lossQty != null "> and sqp.loss_qty = #{lossQty}</if>
+            <if test="processOrder != null "> and sqp.process_order = #{processOrder}</if>
+            <if test="isTimeCount != null "> and sqp.is_time_count = #{isTimeCount}</if>
+        </where>
+        order by sqp.product_id,sqp.process_order
+    </select>
+    
+    <select id="selectSaleQuotationProcessById" parameterType="Long" resultMap="SaleQuotationProcessResult">
+        <include refid="selectSaleQuotationProcessVo"/>
+        where sqp.id = #{id}
+    </select>
+        
+    <insert id="insertSaleQuotationProcess" parameterType="SaleQuotationProcess" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sale_quotation_process
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="saleQuotationId != null">sale_quotation_id,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="saleQuotationProductId != null">sale_quotation_product_id,</if>
+            <if test="quotationTemplateId != null">quotation_template_id,</if>
+            <if test="quotationTemplateProcessId != null">quotation_template_process_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="formulaId != null">formula_id,</if>
+            <if test="times != null">times,</if>
+            <if test="price != null">price,</if>
+            <if test="equipmentId != null">equipment_id,</if>
+            <if test="lossRate != null">loss_rate,</if>
+            <if test="lossQty != null">loss_qty,</if>
+            <if test="processOrder != null">process_order,</if>
+            <if test="isTimeCount != null">is_time_count,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="saleQuotationId != null">#{saleQuotationId},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="saleQuotationProductId != null">#{saleQuotationProductId},</if>
+            <if test="quotationTemplateId != null">#{quotationTemplateId},</if>
+            <if test="quotationTemplateProcessId != null">#{quotationTemplateProcessId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="formulaId != null">#{formulaId},</if>
+            <if test="times != null">#{times},</if>
+            <if test="price != null">#{price},</if>
+            <if test="equipmentId != null">#{equipmentId},</if>
+            <if test="lossRate != null">#{lossRate},</if>
+            <if test="lossQty != null">#{lossQty},</if>
+            <if test="processOrder != null">#{processOrder},</if>
+            <if test="isTimeCount != null">#{isTimeCount},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleQuotationProcess" parameterType="SaleQuotationProcess">
+        update sale_quotation_process
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="saleQuotationId != null">sale_quotation_id = #{saleQuotationId},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="saleQuotationProductId != null">sale_quotation_product_id = #{saleQuotationProductId},</if>
+            <if test="quotationTemplateId != null">quotation_template_id = #{quotationTemplateId},</if>
+            <if test="quotationTemplateProcessId != null">quotation_template_process_id = #{quotationTemplateProcessId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="formulaId != null">formula_id = #{formulaId},</if>
+            <if test="times != null">times = #{times},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="equipmentId != null">equipment_id = #{equipmentId},</if>
+            <if test="lossRate != null">loss_rate = #{lossRate},</if>
+            <if test="lossQty != null">loss_qty = #{lossQty},</if>
+            <if test="processOrder != null">process_order = #{processOrder},</if>
+            <if test="isTimeCount != null">is_time_count = #{isTimeCount},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSaleQuotationProcessById" parameterType="Long">
+        delete from sale_quotation_process where id = #{id}
+    </delete>
+
+    <delete id="deleteSaleQuotationProcessByProductId" parameterType="Long">
+        delete from sale_quotation_process where sale_quotation_product_id = #{id}
+    </delete>
+
+    <delete id="deleteSaleQuotationProcessByTempId" parameterType="Long">
+        delete from sale_quotation_process where quotation_template_id = #{id}
+    </delete>
+
+    <delete id="deleteSaleQuotationProcessByIds" parameterType="String">
+        delete from sale_quotation_process where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteSaleQuotationProcessByProductIds" parameterType="String">
+        delete from sale_quotation_process where sale_quotation_product_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteSaleQuotationProcessByTempIds" parameterType="String">
+        delete from sale_quotation_process where quotation_template_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

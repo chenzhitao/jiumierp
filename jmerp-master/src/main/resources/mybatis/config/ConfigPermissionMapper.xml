@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configPermission.mapper.ConfigPermissionMapper">
+    
+    <resultMap type="ConfigPermission" id="ConfigPermissionResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="loginDate"    column="login_date"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="customerCount"    column="customer_count"    />
+        <result property="supplierCount"    column="supplier_count"    />
+    </resultMap>
+
+    <sql id="selectConfigPermissionVo">
+        select id, create_by, create_time, update_by, update_time, remark, status, user_id, customer_id, supplier_id from config_permission
+    </sql>
+
+    <select id="selectConfigUserPermissionList" parameterType="ConfigPermission" resultMap="ConfigPermissionResult">
+        select
+            (select count(*) from config_permission p where p.user_id = u.user_id and p.customer_id is not null) customer_count,
+            (select count(*) from config_permission p where p.user_id = u.user_id and p.supplier_id is not null) supplier_count,
+            u.user_id,
+            concat(u.user_name,' (',u.login_name,') ') user_name,
+            u.login_date
+        from sys_user u
+        <where>
+            <if test="userId != null "> and u.user_id = #{userId}</if>
+            <if test="userName != null "> and (u.user_name like concat('%', #{userName}, '%') or u.login_name like concat('%', #{userName}, '%'))</if>
+        </where>
+    </select>
+
+    <select id="selectConfigPermissionList" parameterType="ConfigPermission" resultMap="ConfigPermissionResult">
+        <include refid="selectConfigPermissionVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="customerId != null "> and customer_id = #{customerId}</if>
+            <if test="supplierId != null "> and supplier_id = #{supplierId}</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigPermissionById" parameterType="Long" resultMap="ConfigPermissionResult">
+        <include refid="selectConfigPermissionVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertConfigPermission" parameterType="ConfigPermission" useGeneratedKeys="true" keyProperty="id">
+        insert into config_permission
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="supplierId != null">supplier_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigPermission" parameterType="ConfigPermission">
+        update config_permission
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigPermissionById" parameterType="Long">
+        delete from config_permission where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigPermissionByIds" parameterType="String">
+        delete from config_permission where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteConfigPermissionByUserId" parameterType="Long">
+        delete from config_permission where user_id = #{userId}
+    </delete>
+
+
+</mapper>

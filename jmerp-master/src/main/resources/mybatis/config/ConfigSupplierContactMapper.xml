@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configSupplierContact.mapper.ConfigSupplierContactMapper">
+    
+    <resultMap type="ConfigSupplierContact" id="ConfigSupplierContactResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="isDefault"    column="is_default"    />
+        <result property="contactName"    column="contact_name"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="email"    column="email"    />
+        <result property="qqNo"    column="qq_no"    />
+        <result property="wechat"    column="wechat"    />
+        <result property="invoiceUnit"    column="invoice_unit"    />
+        <result property="address"    column="address"    />
+    </resultMap>
+
+    <sql id="selectConfigSupplierContactVo">
+        select id, remark, status, supplier_id, is_default, contact_name, cell_phone, email, qq_no, wechat, invoice_unit, address from config_supplier_contact
+    </sql>
+
+    <select id="selectConfigSupplierContactList" parameterType="ConfigSupplierContact" resultMap="ConfigSupplierContactResult">
+        <include refid="selectConfigSupplierContactVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="supplierId != null "> and supplier_id = #{supplierId}</if>
+            <if test="isDefault != null  and isDefault != ''"> and is_default = #{isDefault}</if>
+            <if test="contactName != null  and contactName != ''"> and contact_name like concat('%', #{contactName}, '%')</if>
+            <if test="cellPhone != null  and cellPhone != ''"> and cell_phone like concat('%', #{cellPhone}, '%')</if>
+            <if test="email != null  and email != ''"> and email like concat('%', #{email}, '%')</if>
+            <if test="qqNo != null  and qqNo != ''"> and qq_no like concat('%', #{qqNo}, '%')</if>
+            <if test="wechat != null  and wechat != ''"> and wechat like concat('%', #{wechat}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigSupplierContactById" parameterType="Long" resultMap="ConfigSupplierContactResult">
+        <include refid="selectConfigSupplierContactVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertConfigSupplierContact" parameterType="ConfigSupplierContact" useGeneratedKeys="true" keyProperty="id">
+        insert into config_supplier_contact
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="isDefault != null">is_default,</if>
+            <if test="contactName != null and contactName != ''">contact_name,</if>
+            <if test="cellPhone != null">cell_phone,</if>
+            <if test="email != null">email,</if>
+            <if test="qqNo != null">qq_no,</if>
+            <if test="wechat != null">wechat,</if>
+            <if test="invoiceUnit != null">invoice_unit,</if>
+            <if test="address != null">address,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="isDefault != null">#{isDefault},</if>
+            <if test="contactName != null and contactName != ''">#{contactName},</if>
+            <if test="cellPhone != null">#{cellPhone},</if>
+            <if test="email != null">#{email},</if>
+            <if test="qqNo != null">#{qqNo},</if>
+            <if test="wechat != null">#{wechat},</if>
+            <if test="invoiceUnit != null">#{invoiceUnit},</if>
+            <if test="address != null">#{address},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigSupplierContact" parameterType="ConfigSupplierContact">
+        update config_supplier_contact
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="isDefault != null">is_default = #{isDefault},</if>
+            <if test="contactName != null and contactName != ''">contact_name = #{contactName},</if>
+            <if test="cellPhone != null">cell_phone = #{cellPhone},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="qqNo != null">qq_no = #{qqNo},</if>
+            <if test="wechat != null">wechat = #{wechat},</if>
+            <if test="invoiceUnit != null">invoice_unit = #{invoiceUnit},</if>
+            <if test="address != null">address = #{address},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigSupplierContactById" parameterType="Long">
+        delete from config_supplier_contact where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigSupplierContactByIds" parameterType="String">
+        delete from config_supplier_contact where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="setAllContactN" parameterType="ConfigSupplierContact">
+        update config_supplier_contact set is_default = 'N' where supplier_id = #{supplierId}
+    </update>
+
+    <update id="setDefaultContact" parameterType="ConfigSupplierContact">
+        update config_supplier_contact set is_default = 'Y' where id = #{id}
+    </update>
+
+</mapper>

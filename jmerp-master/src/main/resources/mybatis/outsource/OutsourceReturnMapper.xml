@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.outsource.outsourceReturn.mapper.OutsourceReturnMapper">
+    
+    <resultMap type="OutsourceReturn" id="OutsourceReturnResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="contact"    column="contact"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="returnDate"    column="return_date"    />
+        <result property="supplierName"    column="supplier_name"    />
+    </resultMap>
+    <resultMap type="OutsourceReturnExport" id="OutsourceReturnExportResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="contact"    column="contact"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="returnDate"    column="return_date"    />
+        <result property="supplierName"    column="supplier_name"    />
+
+        <result property="outsourceReturnId"    column="outsource_return_id"    />
+        <result property="outsourceDeliveryId"    column="outsource_delivery_id"    />
+        <result property="outsourceDeliveryProcessId"    column="outsource_delivery_process_id"    />
+        <result property="outsourceOrderProcessId"    column="outsource_order_process_id"    />
+        <result property="outsourceOrderId"    column="outsource_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="produceOrderProcessId"    column="produce_order_process_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="productionTemplateId"    column="production_template_id"    />
+        <result property="productionTemplateProcessId"    column="production_template_process_id"    />
+        <result property="outsourceType"    column="outsource_type"    />
+        <result property="outsourceValuationType"    column="outsource_valuation_type"    />
+        <result property="qty"    column="qty"    />
+        <result property="price"    column="price"    />
+        <result property="returnType"    column="return_type"    />
+        <result property="returnRate"    column="return_rate"    />
+        <result property="outsourceReturnSN"    column="outsource_return_sn"    />
+        <result property="outsourceDeliverySN"    column="outsource_delivery_sn"    />
+        <result property="outsourceOrderSN"    column="outsource_order_sn"    />
+        <result property="produceOrderSN"    column="produce_order_sn"    />
+        <result property="productName"    column="product_name"    />
+        <result property="processName"    column="process_name"    />
+        <result property="deliveryQty"    column="delivery_qty"    />
+    </resultMap>
+
+    <sql id="selectOutsourceReturnVo">
+        select
+            s.supplier_name,
+            orx.id, orx.create_by, orx.create_time, orx.update_by, orx.update_time, orx.remark, orx.status, orx.approver, orx.approval_time, orx.approval_type, orx.serial_number, orx.supplier_id, orx.contact, orx.cell_phone, orx.tax_rate, orx.amount, orx.return_date
+        from outsource_return orx
+            left join config_supplier s on s.id = orx.supplier_id
+    </sql>
+
+    <select id="selectOutsourceReturnList" parameterType="OutsourceReturn" resultMap="OutsourceReturnResult">
+        <include refid="selectOutsourceReturnVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and orx.status = #{status}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and orx.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="supplierId != null "> and orx.supplier_id = #{supplierId}</if>
+            <if test="params.beginReturnDate != null and params.beginReturnDate != ''"><!-- 开始时间检索 -->
+                and date_format(orx.return_date,'%y%m%d') &gt;= date_format(#{params.beginReturnDate},'%y%m%d')
+            </if>
+            <if test="params.endReturnDate != null and params.endReturnDate != ''"><!-- 结束时间检索 -->
+                and date_format(orx.return_date,'%y%m%d') &lt;= date_format(#{params.endReturnDate},'%y%m%d')
+            </if>
+        </where>
+    </select>
+    <select id="selectOutsourceReturnExportList" parameterType="OutsourceReturn" resultMap="OutsourceReturnExportResult">
+        select
+            orx.status, orx.approver, orx.approval_time, orx.approval_type, orx.serial_number, orx.supplier_id, orx.contact, orx.cell_phone,
+            s.supplier_name,p.product_name,cp.process_name,od2.qty delivery_qty,
+            orx.serial_number outsource_return_sn,od1.serial_number outsource_delivery_sn,oo1.serial_number outsource_order_sn,pd1.serial_number produce_order_sn,
+            orp.id, orp.remark, orp.outsource_return_id, orp.outsource_delivery_id, orp.outsource_delivery_process_id, orp.outsource_order_process_id, orp.outsource_order_id, orp.sale_order_product_id, orp.sale_order_id, orp.produce_order_id, orp.produce_order_process_id, orp.product_id, orp.process_id, orp.production_template_id, orp.production_template_process_id, orp.outsource_type, orp.outsource_valuation_type, orp.qty, orp.price, orp.return_type, orp.return_rate, orp.tax_rate, orp.amount, orp.return_date
+        from outsource_return_process orp
+            left join config_supplier s on s.id = orp.supplier_id
+            left join config_product p on p.id = orp.product_id
+            left join config_process cp on cp.id = orp.process_id
+            left join outsource_return orx on orx.id = orp.outsource_return_id
+            left join outsource_delivery od1 on od1.id = orp.outsource_delivery_id
+            left join outsource_delivery_process od2 on od2.id = orp.outsource_delivery_process_id
+            left join outsource_order oo1 on oo1.id = orp.outsource_order_id
+            left join produce_order pd1 on pd1.id = orp.produce_order_id
+        <where>
+            <if test="status != null  and status != ''"> and orx.status = #{status}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and orx.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="supplierId != null "> and orx.supplier_id = #{supplierId}</if>
+            <if test="params.beginReturnDate != null and params.beginReturnDate != ''"><!-- 开始时间检索 -->
+                and date_format(orx.return_date,'%y%m%d') &gt;= date_format(#{params.beginReturnDate},'%y%m%d')
+            </if>
+            <if test="params.endReturnDate != null and params.endReturnDate != ''"><!-- 结束时间检索 -->
+                and date_format(orx.return_date,'%y%m%d') &lt;= date_format(#{params.endReturnDate},'%y%m%d')
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectOutsourceReturnById" parameterType="Long" resultMap="OutsourceReturnResult">
+        <include refid="selectOutsourceReturnVo"/>
+        where orx.id = #{id}
+    </select>
+        
+    <insert id="insertOutsourceReturn" parameterType="OutsourceReturn" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into outsource_return
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            serial_number,
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="approver != null">approver,</if>
+            <if test="approvalTime != null">approval_time,</if>
+            <if test="approvalType != null">approval_type,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="contact != null">contact,</if>
+            <if test="cellPhone != null">cell_phone,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="amount != null">amount,</if>
+            <if test="returnDate != null">return_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            seq_nextval('WTH'),
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="approvalTime != null">#{approvalTime},</if>
+            <if test="approvalType != null">#{approvalType},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="contact != null">#{contact},</if>
+            <if test="cellPhone != null">#{cellPhone},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="returnDate != null">#{returnDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOutsourceReturn" parameterType="OutsourceReturn">
+        update outsource_return
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="approvalTime != null">approval_time = #{approvalTime},</if>
+            <if test="approvalType != null">approval_type = #{approvalType},</if>
+            <if test="serialNumber != null and serialNumber != ''">serial_number = #{serialNumber},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="cellPhone != null">cell_phone = #{cellPhone},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="returnDate != null">return_date = #{returnDate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOutsourceReturnById" parameterType="Long">
+        delete from outsource_return where id = #{id}
+    </delete>
+
+    <delete id="deleteOutsourceReturnProcessById" parameterType="Long">
+        delete from outsource_return_process where outsource_return_id = #{id}
+    </delete>
+
+    <delete id="deleteOutsourceReturnByIds" parameterType="String">
+        delete from outsource_return where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

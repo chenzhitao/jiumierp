@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configCorrugated.mapper.ConfigCorrugatedMapper">
+    
+    <resultMap type="ConfigCorrugated" id="ConfigCorrugatedResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="corrugatedName"    column="corrugated_name"    />
+        <result property="corrugatedRate"    column="corrugated_rate"    />
+        <result property="corrugatedHigh"    column="corrugated_high"    />
+        <result property="boardLevel"    column="board_level"    />
+        <result property="priceCoefficient"    column="price_coefficient"    />
+        <result property="loadCoefficient"    column="load_coefficient"    />
+        <result property="freightCoefficient"    column="freight_coefficient"    />
+        <result property="corrugatedSeq"    column="corrugated_seq"    />
+    </resultMap>
+
+    <sql id="selectConfigCorrugatedVo">
+        select id, create_by, create_time, update_by, update_time, remark, status, corrugated_name, corrugated_rate, corrugated_high, board_level, price_coefficient, load_coefficient, freight_coefficient, corrugated_seq from config_corrugated
+    </sql>
+
+    <select id="selectConfigCorrugatedList" parameterType="ConfigCorrugated" resultMap="ConfigCorrugatedResult">
+        <include refid="selectConfigCorrugatedVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="corrugatedName != null  and corrugatedName != ''"> and corrugated_name like concat('%', #{corrugatedName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigCorrugatedById" parameterType="Long" resultMap="ConfigCorrugatedResult">
+        <include refid="selectConfigCorrugatedVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertConfigCorrugated" parameterType="ConfigCorrugated" useGeneratedKeys="true" keyProperty="id">
+        insert into config_corrugated
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="corrugatedName != null and corrugatedName != ''">corrugated_name,</if>
+            <if test="corrugatedRate != null">corrugated_rate,</if>
+            <if test="corrugatedHigh != null">corrugated_high,</if>
+            <if test="boardLevel != null">board_level,</if>
+            <if test="priceCoefficient != null">price_coefficient,</if>
+            <if test="loadCoefficient != null">load_coefficient,</if>
+            <if test="freightCoefficient != null">freight_coefficient,</if>
+            <if test="corrugatedSeq != null">corrugated_seq,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="corrugatedName != null and corrugatedName != ''">#{corrugatedName},</if>
+            <if test="corrugatedRate != null">#{corrugatedRate},</if>
+            <if test="corrugatedHigh != null">#{corrugatedHigh},</if>
+            <if test="boardLevel != null">#{boardLevel},</if>
+            <if test="priceCoefficient != null">#{priceCoefficient},</if>
+            <if test="loadCoefficient != null">#{loadCoefficient},</if>
+            <if test="freightCoefficient != null">#{freightCoefficient},</if>
+            <if test="corrugatedSeq != null">#{corrugatedSeq},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigCorrugated" parameterType="ConfigCorrugated">
+        update config_corrugated
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="corrugatedName != null and corrugatedName != ''">corrugated_name = #{corrugatedName},</if>
+            <if test="corrugatedRate != null">corrugated_rate = #{corrugatedRate},</if>
+            <if test="corrugatedHigh != null">corrugated_high = #{corrugatedHigh},</if>
+            <if test="boardLevel != null">board_level = #{boardLevel},</if>
+            <if test="priceCoefficient != null">price_coefficient = #{priceCoefficient},</if>
+            <if test="loadCoefficient != null">load_coefficient = #{loadCoefficient},</if>
+            <if test="freightCoefficient != null">freight_coefficient = #{freightCoefficient},</if>
+            <if test="corrugatedSeq != null">corrugated_seq = #{corrugatedSeq},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigCorrugatedById" parameterType="Long">
+        delete from config_corrugated where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigCorrugatedByIds" parameterType="String">
+        delete from config_corrugated where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

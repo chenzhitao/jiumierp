@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.outsource.outsourceOrder.mapper.OutsourceOrderMapper">
+    
+    <resultMap type="OutsourceOrder" id="OutsourceOrderResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="contact"    column="contact"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="outsourceType"    column="outsource_type"    />
+    </resultMap>
+    <resultMap type="OutsourceOrderExport" id="OutsourceOrderExportResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="contact"    column="contact"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="supplierName"    column="supplier_name"    />
+
+        <result property="outsourceOrderId"    column="outsource_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="produceOrderProductId"    column="produce_order_product_id"    />
+        <result property="produceOrderProcessId"    column="produce_order_process_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="productionTemplateId"    column="production_template_id"    />
+        <result property="productionTemplateProcessId"    column="production_template_process_id"    />
+        <result property="outsourceType"    column="outsource_type"    />
+        <result property="outsourceValuationType"    column="outsource_valuation_type"    />
+        <result property="qty"    column="qty"    />
+        <result property="price"    column="price"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="produceOrderSN"    column="produce_order_sn"    />
+        <result property="productName"    column="product_name"    />
+        <result property="processName"    column="process_name"    />
+        <result property="outsourceOrderSN"    column="outsource_order_sn"    />
+        <result property="leftQty"    column="left_qty"    />
+        <result property="outsourceType"    column="outsource_type"    />
+    </resultMap>
+
+    <sql id="selectOutsourceOrderVo">
+        select
+            s.supplier_name,oo.outsource_type,
+            oo.id, oo.create_by, oo.create_time, oo.update_by, oo.update_time, oo.remark, oo.status, oo.approver, oo.approval_time, oo.approval_type, oo.serial_number, oo.supplier_id, oo.contact, oo.cell_phone, oo.tax_rate, oo.amount, oo.delivery_date
+        from outsource_order oo
+            left join config_supplier s on s.id = oo.supplier_id
+    </sql>
+
+    <select id="selectOutsourceOrderList" parameterType="OutsourceOrder" resultMap="OutsourceOrderResult">
+        <include refid="selectOutsourceOrderVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and oo.status = #{status}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and oo.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="supplierId != null "> and oo.supplier_id = #{supplierId}</if>
+            <if test="params.beginDeliveryDate != null and params.beginDeliveryDate != ''"><!-- 开始时间检索 -->
+                and date_format(oo.delivery_date,'%y%m%d') &gt;= date_format(#{params.beginDeliveryDate},'%y%m%d')
+            </if>
+            <if test="params.endDeliveryDate != null and params.endDeliveryDate != ''"><!-- 结束时间检索 -->
+                and date_format(oo.delivery_date,'%y%m%d') &lt;= date_format(#{params.endDeliveryDate},'%y%m%d')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectOutsourceOrderExportList" parameterType="OutsourceOrder" resultMap="OutsourceOrderExportResult">
+        select
+            oo.status, oo.approver, oo.approval_time, oo.approval_type, oo.serial_number, oo.supplier_id, oo.contact, oo.cell_phone, oo.tax_rate, oo.delivery_date,
+            po.serial_number produce_order_sn,p.product_name,cp.process_name,s.supplier_name,oo.outsource_type,
+            oop.amount,oo.serial_number outsource_order_sn,
+            oop.qty - (select ifnull(sum(odp1.qty),0) from outsource_delivery_process odp1 where odp1.outsource_order_process_id = oop.id) left_qty,
+            oop.id, oop.remark, oop.outsource_order_id, oop.sale_order_product_id, oop.sale_order_id, oop.produce_order_id, oop.produce_order_process_id, oop.product_id, oop.process_id, oop.production_template_id, oop.production_template_process_id, oop.outsource_type, oop.outsource_valuation_type, oop.qty, oop.price
+        from outsource_order_process oop
+            left join produce_order po on po.id = oop.produce_order_id
+            left join outsource_order oo on oo.id = oop.outsource_order_id
+            left join config_product p on p.id = oop.product_id
+            left join config_process cp on cp.id = oop.process_id
+            left join config_supplier s on s.id = oop.supplier_id
+        <where>
+            <if test="status != null  and status != ''"> and oo.status = #{status}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and oo.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="supplierId != null "> and oo.supplier_id = #{supplierId}</if>
+            <if test="params.beginDeliveryDate != null and params.beginDeliveryDate != ''"><!-- 开始时间检索 -->
+                and date_format(oo.delivery_date,'%y%m%d') &gt;= date_format(#{params.beginDeliveryDate},'%y%m%d')
+            </if>
+            <if test="params.endDeliveryDate != null and params.endDeliveryDate != ''"><!-- 结束时间检索 -->
+                and date_format(oo.delivery_date,'%y%m%d') &lt;= date_format(#{params.endDeliveryDate},'%y%m%d')
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectOutsourceOrderById" parameterType="Long" resultMap="OutsourceOrderResult">
+        <include refid="selectOutsourceOrderVo"/>
+        where oo.id = #{id}
+    </select>
+        
+    <insert id="insertOutsourceOrder" parameterType="OutsourceOrder" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into outsource_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            serial_number,
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="approver != null">approver,</if>
+            <if test="approvalTime != null">approval_time,</if>
+            <if test="approvalType != null">approval_type,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="contact != null">contact,</if>
+            <if test="cellPhone != null">cell_phone,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="amount != null">amount,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+            <if test="outsourceType != null">outsource_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            seq_nextval('WJG'),
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="approvalTime != null">#{approvalTime},</if>
+            <if test="approvalType != null">#{approvalType},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="contact != null">#{contact},</if>
+            <if test="cellPhone != null">#{cellPhone},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+            <if test="outsourceType != null">#{outsourceType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOutsourceOrder" parameterType="OutsourceOrder">
+        update outsource_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="approvalTime != null">approval_time = #{approvalTime},</if>
+            <if test="approvalType != null">approval_type = #{approvalType},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="cellPhone != null">cell_phone = #{cellPhone},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="outsourceType != null">outsource_type = #{outsourceType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOutsourceOrderById" parameterType="Long">
+        delete from outsource_order where id = #{id}
+    </delete>
+
+    <delete id="deleteOutsourceOrderProcessById" parameterType="Long">
+        delete from outsource_order_process where outsource_order_id = #{id}
+    </delete>
+
+    <delete id="deleteOutsourceOrderMaterialsById" parameterType="Long">
+        delete from outsource_order_materials where outsource_order_id = #{id}
+    </delete>
+
+    <delete id="deleteOutsourceOrderByIds" parameterType="String">
+        delete from outsource_order where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

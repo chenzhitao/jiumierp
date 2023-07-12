@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.finance.financeDaily.mapper.FinanceDailyMapper">
+    
+    <resultMap type="FinanceDaily" id="FinanceDailyResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="dailyDate"    column="daily_date"    />
+        <result property="amount"    column="amount"    />
+        <result property="attachment"    column="attachment"    />
+        <result property="filePath"    column="file_path"    />
+        <result property="fileName"    column="file_name"    />
+    </resultMap>
+    <resultMap type="FinanceDailyExport" id="FinanceDailyExportResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="dailyDate"    column="daily_date"    />
+        <result property="attachment"    column="attachment"    />
+        <result property="filePath"    column="file_path"    />
+        <result property="fileName"    column="file_name"    />
+
+        <result property="financeDailyId"    column="finance_daily_id"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="produceScheduleId"    column="produce_schedule_id"    />
+        <result property="teamId"    column="team_id"    />
+        <result property="financeStandardId"    column="finance_standard_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="jobContent"    column="job_content"    />
+        <result property="allocationType"    column="allocation_type"    />
+        <result property="valuationType"    column="valuation_type"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="workTime"    column="work_time"    />
+        <result property="qty"    column="qty"    />
+        <result property="price"    column="price"    />
+        <result property="amount"    column="amount"    />
+        <result property="produceOrderSN"    column="produce_order_sn"    />
+        <result property="produceScheduleSN"    column="produce_schedule_sn"    />
+        <result property="teamName"    column="team_name"    />
+        <result property="processName"    column="process_name"    />
+        <result property="productName"    column="product_name"    />
+        <result property="financeDailySN"    column="finance_daily_sn"    />
+        <result property="financeStandardName"    column="job_content"    />
+        <result property="isSplit"    column="is_split"    />
+    </resultMap>
+
+    <sql id="selectFinanceDailyVo">
+        select
+        fd.id, fd.create_by, fd.create_time, fd.update_by, fd.update_time, fd.remark, fd.status, fd.approver, fd.approval_time, fd.approval_type, fd.serial_number, fd.daily_date, fd.amount, fd.attachment,file_path,file_name
+        from finance_daily fd
+    </sql>
+
+    <select id="selectFinanceDailyList" parameterType="FinanceDaily" resultMap="FinanceDailyResult">
+        <include refid="selectFinanceDailyVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and fd.status = #{status}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and fd.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="params.beginDailyDate != null and params.beginDailyDate != ''"><!-- 开始时间检索 -->
+                and date_format(fd.daily_date,'%y%m%d') &gt;= date_format(#{params.beginDailyDate},'%y%m%d')
+            </if>
+            <if test="params.endDailyDate != null and params.endDailyDate != ''"><!-- 结束时间检索 -->
+                and date_format(fd.daily_date,'%y%m%d') &lt;= date_format(#{params.endDailyDate},'%y%m%d')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectFinanceDailyExportList" parameterType="FinanceDaily" resultMap="FinanceDailyExportResult">
+        select
+            fd.status, fd.approver, fd.approval_time, fd.approval_type, fd.serial_number, fd.daily_date, fd.attachment,file_path,file_name,
+            pd1.serial_number produce_order_sn,ps.serial_number produce_schedule_sn,fd.serial_number finance_daily_sn,cp.product_name,co.process_name,t.team_name,fdd.job_content,
+            (select if(count(*)=0,'Y','N') from finance_daily_detail_employee fdde1 where fdde1.finance_daily_detail_id = fdd.id and fdde1.employee_price = 0) is_split,
+            fdd.id, fdd.remark, fdd.finance_daily_id, fdd.produce_order_id, fdd.produce_schedule_id, fdd.team_id, fdd.finance_standard_id, fdd.process_id, fdd.product_id, fdd.job_content, fdd.allocation_type, fdd.valuation_type, fdd.start_time, fdd.end_time, fdd.work_time, fdd.qty, fdd.price, fdd.amount
+        from finance_daily_detail fdd
+            left join config_product cp on cp.id = fdd.product_id
+            left join config_process co on co.id = fdd.process_id
+            left join produce_order pd1 on pd1.id = fdd.produce_order_id
+            left join produce_schedule ps on ps.id = fdd.produce_schedule_id
+            left join config_team t on t.id = fdd.team_id
+            left join finance_daily fd on fd.id = fdd.finance_daily_id
+            left join finance_standard fs on fs.id = fdd.finance_standard_id
+        <where>
+            <if test="status != null  and status != ''"> and fd.status = #{status}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and fd.serial_number like concat('%', #{serialNumber}, '%')</if>
+            <if test="params.beginDailyDate != null and params.beginDailyDate != ''"><!-- 开始时间检索 -->
+                and date_format(fd.daily_date,'%y%m%d') &gt;= date_format(#{params.beginDailyDate},'%y%m%d')
+            </if>
+            <if test="params.endDailyDate != null and params.endDailyDate != ''"><!-- 结束时间检索 -->
+                and date_format(fd.daily_date,'%y%m%d') &lt;= date_format(#{params.endDailyDate},'%y%m%d')
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectFinanceDailyById" parameterType="Long" resultMap="FinanceDailyResult">
+        <include refid="selectFinanceDailyVo"/>
+        where fd.id = #{id}
+    </select>
+        
+    <insert id="insertFinanceDaily" parameterType="FinanceDaily" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into finance_daily
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            serial_number,
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="approver != null">approver,</if>
+            <if test="approvalTime != null">approval_time,</if>
+            <if test="approvalType != null">approval_type,</if>
+            <if test="dailyDate != null">daily_date,</if>
+            <if test="amount != null">amount,</if>
+            <if test="attachment != null">attachment,</if>
+            <if test="filePath != null">file_path,</if>
+            <if test="fileName != null">file_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            seq_nextval('CRB'),
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="approvalTime != null">#{approvalTime},</if>
+            <if test="approvalType != null">#{approvalType},</if>
+            <if test="dailyDate != null">#{dailyDate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="attachment != null">#{attachment},</if>
+            <if test="filePath != null">#{filePath},</if>
+            <if test="fileName != null">#{fileName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFinanceDaily" parameterType="FinanceDaily">
+        update finance_daily
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="approvalTime != null">approval_time = #{approvalTime},</if>
+            <if test="approvalType != null">approval_type = #{approvalType},</if>
+            <if test="serialNumber != null and serialNumber != ''">serial_number = #{serialNumber},</if>
+            <if test="dailyDate != null">daily_date = #{dailyDate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="attachment != null">attachment = #{attachment},</if>
+            <if test="filePath != null">file_path = #{filePath},</if>
+            <if test="fileName != null">file_name = #{fileName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFinanceDailyById" parameterType="Long">
+        delete from finance_daily where id = #{id}
+    </delete>
+
+    <delete id="deleteFinanceDailyDetailById" parameterType="Long">
+        delete from finance_daily_detail where finance_daily_id = #{id}
+    </delete>
+
+    <delete id="deleteFinanceDailyEmployeeById" parameterType="Long">
+        delete from finance_daily_detail_employee where finance_daily_id = #{id}
+    </delete>
+
+    <delete id="deleteFinanceDailyByIds" parameterType="String">
+        delete from finance_daily where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

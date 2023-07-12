@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configEmployee.mapper.ConfigEmployeeMapper">
+    
+    <resultMap type="ConfigEmployee" id="ConfigEmployeeResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="employeeName"    column="employee_name"    />
+        <result property="photoImg"    column="photo_img"    />
+        <result property="employeeNo"    column="employee_no"    />
+        <result property="idNumber"    column="id_number"    />
+        <result property="pinyin"    column="pinyin"    />
+        <result property="gender"    column="gender"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="wechat"    column="wechat"    />
+        <result property="maritalStatus"    column="marital_status"    />
+        <result property="educationBackground"    column="education_background"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="jobPost"    column="job_post"    />
+        <result property="jobPosition"    column="job_position"    />
+        <result property="jobStatus"    column="job_status"    />
+        <result property="wage"    column="wage"    />
+        <result property="bankAccount"    column="bank_account"    />
+        <result property="isLaborContract"    column="is_labor_contract"    />
+        <result property="isSocialSecurity"    column="is_social_security"    />
+        <result property="laborContractStartDate"    column="labor_contract_start_date"    />
+        <result property="laborContractEndDate"    column="labor_contract_end_date"    />
+        <result property="socialSecurityStartDate"    column="social_security_start_date"    />
+        <result property="socialSecurityEndDate"    column="social_security_end_date"    />
+        <result property="entryDate"    column="entry_date"    />
+        <result property="dimissionDate"    column="dimission_date"    />
+        <result property="dorm"    column="dorm"    />
+    </resultMap>
+
+    <sql id="selectConfigEmployeeVo">
+        select
+            e.id, e.create_by, e.create_time, e.update_by, e.update_time, e.remark, e.status,
+            e.employee_name, e.photo_img, e.employee_no, e.id_number, e.pinyin, e.gender, e.cell_phone,
+            e.wechat, e.marital_status, e.education_background, e.dept_id, e.job_post, e.job_position, e.job_status,
+            e.wage, e.bank_account, e.is_labor_contract, e.is_social_security, e.labor_contract_start_date, e.labor_contract_end_date,
+            e.social_security_start_date, e.social_security_end_date,
+            e.entry_date, e.dimission_date, e.dorm,
+            d.dept_name dept_name
+        from config_employee e
+            left join sys_dept d on d.dept_id = e.dept_id
+    </sql>
+
+    <select id="selectConfigEmployeeList" parameterType="ConfigEmployee" resultMap="ConfigEmployeeResult">
+        <include refid="selectConfigEmployeeVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and e.status = #{status}</if>
+            <if test="employeeName != null  and employeeName != ''"> and e.employee_name like concat('%', #{employeeName}, '%')</if>
+            <if test="employeeNo != null  and employeeNo != ''"> and e.employee_no like concat('%', #{employeeNo}, '%')</if>
+            <if test="idNumber != null  and idNumber != ''"> and e.id_number like concat('%', #{idNumber}, '%')</if>
+            <if test="gender != null  and gender != ''"> and e.gender = #{gender}</if>
+            <if test="deptId != null "> and e.dept_id = #{deptId}</if>
+            <if test="jobPost != null  and jobPost != ''"> and e.job_post = #{jobPost}</if>
+            <if test="jobPosition != null  and jobPosition != ''"> and e.job_position = #{jobPosition}</if>
+            <if test="jobStatus != null  and jobStatus != ''"> and e.job_status = #{jobStatus}</if>
+            <if test="dorm != null  and dorm != ''"> and e.dorm = #{dorm}</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigEmployeeById" parameterType="Long" resultMap="ConfigEmployeeResult">
+        <include refid="selectConfigEmployeeVo"/>
+        where e.id = #{id}
+    </select>
+        
+    <insert id="insertConfigEmployee" parameterType="ConfigEmployee">
+        insert into config_employee
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="employeeName != null and employeeName != ''">employee_name,</if>
+            <if test="photoImg != null">photo_img,</if>
+            <if test="employeeNo != null and employeeNo != ''">employee_no,</if>
+            <if test="idNumber != null and idNumber != ''">id_number,</if>
+            <if test="pinyin != null">pinyin,</if>
+            <if test="gender != null">gender,</if>
+            <if test="cellPhone != null and cellPhone != ''">cell_phone,</if>
+            <if test="wechat != null">wechat,</if>
+            <if test="maritalStatus != null">marital_status,</if>
+            <if test="educationBackground != null">education_background,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="jobPost != null">job_post,</if>
+            <if test="jobPosition != null">job_position,</if>
+            <if test="jobStatus != null">job_status,</if>
+            <if test="wage != null">wage,</if>
+            <if test="bankAccount != null">bank_account,</if>
+            <if test="isLaborContract != null">is_labor_contract,</if>
+            <if test="isSocialSecurity != null">is_social_security,</if>
+            <if test="laborContractStartDate != null">labor_contract_start_date,</if>
+            <if test="laborContractEndDate != null">labor_contract_end_date,</if>
+            <if test="socialSecurityStartDate != null">social_security_start_date,</if>
+            <if test="socialSecurityEndDate != null">social_security_end_date,</if>
+            <if test="entryDate != null">entry_date,</if>
+            <if test="dimissionDate != null">dimission_date,</if>
+            <if test="dorm != null">dorm,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="employeeName != null and employeeName != ''">#{employeeName},</if>
+            <if test="photoImg != null">#{photoImg},</if>
+            <if test="employeeNo != null and employeeNo != ''">#{employeeNo},</if>
+            <if test="idNumber != null and idNumber != ''">#{idNumber},</if>
+            <if test="pinyin != null">#{pinyin},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="cellPhone != null and cellPhone != ''">#{cellPhone},</if>
+            <if test="wechat != null">#{wechat},</if>
+            <if test="maritalStatus != null">#{maritalStatus},</if>
+            <if test="educationBackground != null">#{educationBackground},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="jobPost != null">#{jobPost},</if>
+            <if test="jobPosition != null">#{jobPosition},</if>
+            <if test="jobStatus != null">#{jobStatus},</if>
+            <if test="wage != null">#{wage},</if>
+            <if test="bankAccount != null">#{bankAccount},</if>
+            <if test="isLaborContract != null">#{isLaborContract},</if>
+            <if test="isSocialSecurity != null">#{isSocialSecurity},</if>
+            <if test="laborContractStartDate != null">#{laborContractStartDate},</if>
+            <if test="laborContractEndDate != null">#{laborContractEndDate},</if>
+            <if test="socialSecurityStartDate != null">#{socialSecurityStartDate},</if>
+            <if test="socialSecurityEndDate != null">#{socialSecurityEndDate},</if>
+            <if test="entryDate != null">#{entryDate},</if>
+            <if test="dimissionDate != null">#{dimissionDate},</if>
+            <if test="dorm != null">#{dorm},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigEmployee" parameterType="ConfigEmployee">
+        update config_employee
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="employeeName != null and employeeName != ''">employee_name = #{employeeName},</if>
+            <if test="photoImg != null">photo_img = #{photoImg},</if>
+            <if test="employeeNo != null and employeeNo != ''">employee_no = #{employeeNo},</if>
+            <if test="idNumber != null and idNumber != ''">id_number = #{idNumber},</if>
+            <if test="pinyin != null">pinyin = #{pinyin},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="cellPhone != null and cellPhone != ''">cell_phone = #{cellPhone},</if>
+            <if test="wechat != null">wechat = #{wechat},</if>
+            <if test="maritalStatus != null">marital_status = #{maritalStatus},</if>
+            <if test="educationBackground != null">education_background = #{educationBackground},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="jobPost != null">job_post = #{jobPost},</if>
+            <if test="jobPosition != null">job_position = #{jobPosition},</if>
+            <if test="jobStatus != null">job_status = #{jobStatus},</if>
+            <if test="wage != null">wage = #{wage},</if>
+            <if test="bankAccount != null">bank_account = #{bankAccount},</if>
+            <if test="isLaborContract != null">is_labor_contract = #{isLaborContract},</if>
+            <if test="isSocialSecurity != null">is_social_security = #{isSocialSecurity},</if>
+            <if test="laborContractStartDate != null">labor_contract_start_date = #{laborContractStartDate},</if>
+            <if test="laborContractEndDate != null">labor_contract_end_date = #{laborContractEndDate},</if>
+            <if test="socialSecurityStartDate != null">social_security_start_date = #{socialSecurityStartDate},</if>
+            <if test="socialSecurityEndDate != null">social_security_end_date = #{socialSecurityEndDate},</if>
+            <if test="entryDate != null">entry_date = #{entryDate},</if>
+            <if test="dimissionDate != null">dimission_date = #{dimissionDate},</if>
+            <if test="dorm != null">dorm = #{dorm},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigEmployeeById" parameterType="Long">
+        delete from config_employee where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigEmployeeByIds" parameterType="String">
+        delete from config_employee where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

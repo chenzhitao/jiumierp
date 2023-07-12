@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configMaterials.mapper.ConfigMaterialsMapper">
+    
+    <resultMap type="ConfigMaterials" id="ConfigMaterialsResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="materialsName"    column="materials_name"    />
+        <result property="materialsType"    column="materials_type"    />
+        <result property="mainMaterialsType"    column="main_materials_type"    />
+        <result property="sizeLong"    column="size_long"    />
+        <result property="sizeWidth"    column="size_width"    />
+        <result property="width"    column="width"    />
+        <result property="isAreaCalculate"    column="is_area_calculate"    />
+        <result property="weight"    column="weight"    />
+        <result property="density"    column="density"    />
+        <result property="thickness"    column="thickness"    />
+        <result property="corrugatedId"    column="corrugated_id"    />
+        <result property="paperFormulaId"    column="paper_formula_id"    />
+        <result property="qualityDays"    column="quality_days"    />
+        <result property="purchaseCycle"    column="purchase_cycle"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="exemption"    column="exemption"    />
+        <result property="purchasePrice"    column="purchase_price"    />
+        <result property="salePrice"    column="sale_price"    />
+        <result property="purchaseUnit"    column="purchase_unit"    />
+        <result property="productionUnit"    column="production_unit"    />
+        <result property="saleUnit"    column="sale_unit"    />
+        <result property="widthUnit"    column="width_unit"    />
+        <result property="inventoryUnit"    column="inventory_unit"    />
+        <result property="requirements"    column="requirements"    />
+
+        <result property="corrugatedName"    column="corrugated_name"    />
+        <result property="paperFormulaName"    column="paper_formula_name"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="materialsName2"    column="materials_name2"    />
+    </resultMap>
+
+    <sql id="selectConfigMaterialsVo">
+        select
+            co.corrugated_name,pf.paper_formula_name,s.supplier_name,concat(m.materials_name,'(',m.size_long,'*', m.size_width,')') materials_name2,
+            m.id, m.create_by, m.create_time, m.update_by, m.update_time, m.remark, m.status,
+            m.materials_name, m.materials_type, m.main_materials_type, m.size_long, m.size_width, m.width, m.is_area_calculate, m.weight, m.density, m.thickness, m.corrugated_id, m.paper_formula_id, m.quality_days, m.purchase_cycle, m.supplier_id, m.exemption, m.purchase_price, m.sale_price, m.purchase_unit, m.production_unit, m.sale_unit, m.width_unit, m.inventory_unit, m.requirements
+        from config_materials m
+            left join config_corrugated co on co.id = m.corrugated_id
+            left join config_paper_formula pf on pf.id = m.paper_formula_id
+            left join config_supplier s on s.id = m.supplier_id
+    </sql>
+
+    <select id="selectConfigMaterialsList" parameterType="ConfigMaterials" resultMap="ConfigMaterialsResult">
+        <include refid="selectConfigMaterialsVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and m.status = #{status}</if>
+            <if test="materialsName != null  and materialsName != ''"> and m.materials_name like concat('%', #{materialsName}, '%')</if>
+            <if test="materialsName2 != null  and materialsName2 != ''"> and m.materials_name like concat('%', #{materialsName2}, '%')</if>
+            <if test="materialsType != null  and materialsType != ''"> and m.materials_type = #{materialsType}</if>
+            <if test="mainMaterialsType != null  and mainMaterialsType != ''"> and m.main_materials_type = #{mainMaterialsType}</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigMaterialsById" parameterType="Long" resultMap="ConfigMaterialsResult">
+        <include refid="selectConfigMaterialsVo"/>
+        where m.id = #{id}
+    </select>
+        
+    <insert id="insertConfigMaterials" parameterType="ConfigMaterials" useGeneratedKeys="true" keyProperty="id">
+        insert into config_materials
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="materialsName != null and materialsName != ''">materials_name,</if>
+            <if test="materialsType != null">materials_type,</if>
+            <if test="mainMaterialsType != null">main_materials_type,</if>
+            <if test="sizeLong != null">size_long,</if>
+            <if test="sizeWidth != null">size_width,</if>
+            <if test="width != null">width,</if>
+            <if test="isAreaCalculate != null">is_area_calculate,</if>
+            <if test="weight != null">weight,</if>
+            <if test="density != null">density,</if>
+            <if test="thickness != null">thickness,</if>
+            <if test="corrugatedId != null">corrugated_id,</if>
+            <if test="paperFormulaId != null">paper_formula_id,</if>
+            <if test="qualityDays != null">quality_days,</if>
+            <if test="purchaseCycle != null">purchase_cycle,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="exemption != null">exemption,</if>
+            <if test="purchasePrice != null">purchase_price,</if>
+            <if test="salePrice != null">sale_price,</if>
+            <if test="purchaseUnit != null">purchase_unit,</if>
+            <if test="productionUnit != null">production_unit,</if>
+            <if test="saleUnit != null">sale_unit,</if>
+            <if test="widthUnit != null">width_unit,</if>
+            <if test="inventoryUnit != null">inventory_unit,</if>
+            <if test="requirements != null">requirements,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="materialsName != null and materialsName != ''">#{materialsName},</if>
+            <if test="materialsType != null">#{materialsType},</if>
+            <if test="mainMaterialsType != null">#{mainMaterialsType},</if>
+            <if test="sizeLong != null">#{sizeLong},</if>
+            <if test="sizeWidth != null">#{sizeWidth},</if>
+            <if test="width != null">#{width},</if>
+            <if test="isAreaCalculate != null">#{isAreaCalculate},</if>
+            <if test="weight != null">#{weight},</if>
+            <if test="density != null">#{density},</if>
+            <if test="thickness != null">#{thickness},</if>
+            <if test="corrugatedId != null">#{corrugatedId},</if>
+            <if test="paperFormulaId != null">#{paperFormulaId},</if>
+            <if test="qualityDays != null">#{qualityDays},</if>
+            <if test="purchaseCycle != null">#{purchaseCycle},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="exemption != null">#{exemption},</if>
+            <if test="purchasePrice != null">#{purchasePrice},</if>
+            <if test="salePrice != null">#{salePrice},</if>
+            <if test="purchaseUnit != null">#{purchaseUnit},</if>
+            <if test="productionUnit != null">#{productionUnit},</if>
+            <if test="saleUnit != null">#{saleUnit},</if>
+            <if test="widthUnit != null">#{widthUnit},</if>
+            <if test="inventoryUnit != null">#{inventoryUnit},</if>
+            <if test="requirements != null">#{requirements},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigMaterials" parameterType="ConfigMaterials">
+        update config_materials
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="materialsName != null and materialsName != ''">materials_name = #{materialsName},</if>
+            <if test="materialsType != null">materials_type = #{materialsType},</if>
+            <if test="mainMaterialsType != null">main_materials_type = #{mainMaterialsType},</if>
+            <if test="sizeLong != null">size_long = #{sizeLong},</if>
+            <if test="sizeWidth != null">size_width = #{sizeWidth},</if>
+            <if test="width != null">width = #{width},</if>
+            <if test="isAreaCalculate != null">is_area_calculate = #{isAreaCalculate},</if>
+            <if test="weight != null">weight = #{weight},</if>
+            <if test="density != null">density = #{density},</if>
+            <if test="thickness != null">thickness = #{thickness},</if>
+            <if test="corrugatedId != null">corrugated_id = #{corrugatedId},</if>
+            <if test="paperFormulaId != null">paper_formula_id = #{paperFormulaId},</if>
+            <if test="qualityDays != null">quality_days = #{qualityDays},</if>
+            <if test="purchaseCycle != null">purchase_cycle = #{purchaseCycle},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="exemption != null">exemption = #{exemption},</if>
+            <if test="purchasePrice != null">purchase_price = #{purchasePrice},</if>
+            <if test="salePrice != null">sale_price = #{salePrice},</if>
+            <if test="purchaseUnit != null">purchase_unit = #{purchaseUnit},</if>
+            <if test="productionUnit != null">production_unit = #{productionUnit},</if>
+            <if test="saleUnit != null">sale_unit = #{saleUnit},</if>
+            <if test="widthUnit != null">width_unit = #{widthUnit},</if>
+            <if test="inventoryUnit != null">inventory_unit = #{inventoryUnit},</if>
+            <if test="requirements != null">requirements = #{requirements},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigMaterialsById" parameterType="Long">
+        delete from config_materials where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigMaterialsByIds" parameterType="String">
+        delete from config_materials where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

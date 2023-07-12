@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configTeamMember.mapper.ConfigTeamMemberMapper">
+    
+    <resultMap type="ConfigTeamMember" id="ConfigTeamMemberResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="teamId"    column="team_id"    />
+        <result property="employeeId"    column="employee_id"    />
+
+        <result property="employeeName"    column="employee_name"    />
+        <result property="employeeNo"    column="employee_no"    />
+        <result property="gender"    column="gender"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="jobPost"    column="job_post"    />
+        <result property="jobPosition"    column="job_position"    />
+    </resultMap>
+
+    <sql id="selectConfigTeamMemberVo">
+        select
+            e.employee_name,e.employee_no,e.gender,e.cell_phone,e.job_post,e.job_position,
+            d.dept_name,
+            tm.id, tm.remark, tm.team_id, tm.employee_id
+        from config_team_member tm
+            left join config_employee e on e.id = tm.employee_id
+            left join sys_dept d on d.dept_id = e.dept_id
+    </sql>
+
+    <select id="selectConfigTeamMemberList" parameterType="ConfigTeamMember" resultMap="ConfigTeamMemberResult">
+        <include refid="selectConfigTeamMemberVo"/>
+        <where>  
+            <if test="teamId != null "> and tm.team_id = #{teamId}</if>
+            <if test="employeeId != null "> and tm.employee_id = #{employeeId}</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigTeamMemberById" parameterType="Long" resultMap="ConfigTeamMemberResult">
+        <include refid="selectConfigTeamMemberVo"/>
+        where tm.id = #{id}
+    </select>
+        
+    <insert id="insertConfigTeamMember" parameterType="ConfigTeamMember" useGeneratedKeys="true" keyProperty="id">
+        insert into config_team_member
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="teamId != null">team_id,</if>
+            <if test="employeeId != null">employee_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="teamId != null">#{teamId},</if>
+            <if test="employeeId != null">#{employeeId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigTeamMember" parameterType="ConfigTeamMember">
+        update config_team_member
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="teamId != null">team_id = #{teamId},</if>
+            <if test="employeeId != null">employee_id = #{employeeId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigTeamMemberById" parameterType="Long">
+        delete from config_team_member where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigTeamMemberByIds" parameterType="String">
+        delete from config_team_member where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

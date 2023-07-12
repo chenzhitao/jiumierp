@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.config.configSupplier.mapper.ConfigSupplierMapper">
+    
+    <resultMap type="ConfigSupplier" id="ConfigSupplierResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="supplierType"    column="supplier_type"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="taxName"    column="tax_name"    />
+        <result property="buyerId"    column="buyer_id"    />
+        <result property="buyerName"    column="buyer_name"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="settlementType"    column="settlement_type"    />
+        <result property="deliveryType"    column="delivery_type"    />
+        <result property="address"    column="address"    />
+    </resultMap>
+
+    <sql id="selectConfigSupplierVo">
+        select
+            s.id, s.create_by, s.create_time, s.update_by, s.update_time, s.remark, s.status,
+            s.supplier_name, s.supplier_type, s.tax_rate, s.buyer_id, s.payment_type,
+            s.settlement_type, s.delivery_type, s.address,
+            t.tax_name ,
+            e.employee_name buyer_name
+        from config_supplier s
+            left join config_employee e on e.id = s.buyer_id
+            left join config_tax t on t.tax_rate = s.tax_rate
+    </sql>
+
+    <select id="selectConfigSupplierList" parameterType="ConfigSupplier" resultMap="ConfigSupplierResult">
+        <include refid="selectConfigSupplierVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and s.status = #{status}</if>
+            <if test="supplierName != null  and supplierName != ''"> and s.supplier_name like concat('%', #{supplierName}, '%')</if>
+            <if test="supplierType != null  and supplierType != ''"> and s.supplier_type = #{supplierType}</if>
+            <if test="buyerId != null "> and s.buyer_id = #{buyerId}</if>
+            <if test="paymentType != null  and paymentType != ''"> and s.payment_type = #{paymentType}</if>
+            <if test="settlementType != null  and settlementType != ''"> and s.settlement_type = #{settlementType}</if>
+            <if test="deliveryType != null  and deliveryType != ''"> and s.delivery_type = #{deliveryType}</if>
+        </where>
+    </select>
+    
+    <select id="selectConfigSupplierById" parameterType="Long" resultMap="ConfigSupplierResult">
+        <include refid="selectConfigSupplierVo"/>
+        where s.id = #{id}
+    </select>
+        
+    <insert id="insertConfigSupplier" parameterType="ConfigSupplier" useGeneratedKeys="true" keyProperty="id">
+        insert into config_supplier
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="supplierName != null and supplierName != ''">supplier_name,</if>
+            <if test="supplierType != null">supplier_type,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="buyerId != null">buyer_id,</if>
+            <if test="paymentType != null">payment_type,</if>
+            <if test="settlementType != null">settlement_type,</if>
+            <if test="deliveryType != null">delivery_type,</if>
+            <if test="address != null">address,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="supplierName != null and supplierName != ''">#{supplierName},</if>
+            <if test="supplierType != null">#{supplierType},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="buyerId != null">#{buyerId},</if>
+            <if test="paymentType != null">#{paymentType},</if>
+            <if test="settlementType != null">#{settlementType},</if>
+            <if test="deliveryType != null">#{deliveryType},</if>
+            <if test="address != null">#{address},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigSupplier" parameterType="ConfigSupplier">
+        update config_supplier
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="supplierName != null and supplierName != ''">supplier_name = #{supplierName},</if>
+            <if test="supplierType != null">supplier_type = #{supplierType},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="buyerId != null">buyer_id = #{buyerId},</if>
+            <if test="paymentType != null">payment_type = #{paymentType},</if>
+            <if test="settlementType != null">settlement_type = #{settlementType},</if>
+            <if test="deliveryType != null">delivery_type = #{deliveryType},</if>
+            <if test="address != null">address = #{address},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigSupplierById" parameterType="Long">
+        delete from config_supplier where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigSupplierContactById" parameterType="Long">
+        delete from config_supplier_contact where supplier_id = #{id}
+    </delete>
+
+    <delete id="deleteConfigSupplierByIds" parameterType="String">
+        delete from config_supplier where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteConfigSupplierContactByIds" parameterType="String">
+        delete from config_supplier_contact where supplier_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

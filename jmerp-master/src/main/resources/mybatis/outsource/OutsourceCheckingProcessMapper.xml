@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.outsource.outsourceCheckingProcess.mapper.OutsourceCheckingProcessMapper">
+    
+    <resultMap type="OutsourceCheckingProcess" id="OutsourceCheckingProcessResult">
+        <result property="id"    column="id"    />
+        <result property="remark"    column="remark"    />
+        <result property="outsourceCheckingId"    column="outsource_checking_id"    />
+        <result property="outsourceDeliveryId"    column="outsource_delivery_id"    />
+        <result property="outsourceDeliveryProcessId"    column="outsource_delivery_process_id"    />
+        <result property="outsourceOrderProcessId"    column="outsource_order_process_id"    />
+        <result property="outsourceOrderId"    column="outsource_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="produceOrderProductId"    column="produce_order_product_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="productionTemplateId"    column="production_template_id"    />
+        <result property="productionTemplateProcessId"    column="production_template_process_id"    />
+
+        <result property="outsourceType"    column="outsource_type"    />
+        <result property="outsourceValuationType"    column="outsource_valuation_type"    />
+        <result property="qty"    column="qty"    />
+        <result property="returnQty"    column="return_qty"    />
+        <result property="price"    column="price"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="amount"    column="amount"    />
+        <result property="outsourceOrderSN"    column="outsource_order_sn"    />
+        <result property="produceOrderSN"    column="produce_order_sn"    />
+        <result property="processName"    column="process_name"    />
+        <result property="leftQty"    column="left_qty"    />
+        <result property="outsourceDeliverySN"    column="outsource_delivery_sn"    />
+        <result property="productName"    column="product_name"    />
+        <result property="supplierName"    column="supplier_name"    />
+    </resultMap>
+
+    <sql id="selectOutsourceCheckingProcessVo">
+        select
+            p.product_name, cp.process_name,po.serial_number produce_order_sn,oo.serial_number outsource_order_sn,od1.serial_number outsource_delivery_sn,s.supplier_name,
+            odp.supplier_id, odp.amount, odp.id, odp.remark, odp.outsource_delivery_id, odp.outsource_order_process_id, odp.outsource_order_id, odp.sale_order_product_id, odp.sale_order_id, odp.produce_order_id, odp.produce_order_process_id, odp.product_id, odp.process_id, odp.production_template_id, odp.production_template_process_id, odp.outsource_type, odp.outsource_valuation_type, odp.qty, odp.return_qty, odp.price,
+            ocp.id, ocp.remark, ocp.outsource_checking_id, ocp.outsource_delivery_id, ocp.outsource_delivery_process_id, ocp.outsource_order_process_id, ocp.outsource_order_id, ocp.sale_order_product_id, ocp.sale_order_id, ocp.produce_order_id, ocp.produce_order_product_id, ocp.product_id, ocp.process_id, ocp.production_template_id, ocp.production_template_process_id
+        from outsource_checking_process ocp
+            left join outsource_delivery_process odp on odp.id = ocp.outsource_delivery_process_id
+            left join produce_order po on po.id = odp.produce_order_id
+            left join outsource_order oo on oo.id = odp.outsource_order_id
+            left join config_process cp on cp.id = odp.process_id
+            left join config_product p on p.id = odp.product_id
+            left join config_supplier s on s.id = odp.supplier_id
+            left join outsource_delivery od1 on od1.id = odp.outsource_delivery_id
+    </sql>
+
+    <select id="selectOutsourceCheckingProcessList" parameterType="OutsourceCheckingProcess" resultMap="OutsourceCheckingProcessResult">
+        <include refid="selectOutsourceCheckingProcessVo"/>
+        <where>  
+            <if test="outsourceCheckingId != null "> and ocp.outsource_checking_id = #{outsourceCheckingId}</if>
+            <if test="outsourceDeliveryId != null "> and ocp.outsource_delivery_id = #{outsourceDeliveryId}</if>
+            <if test="outsourceDeliveryProcessId != null "> and ocp.outsource_delivery_process_id = #{outsourceDeliveryProcessId}</if>
+            <if test="outsourceOrderProcessId != null "> and ocp.outsource_order_process_id = #{outsourceOrderProcessId}</if>
+            <if test="outsourceOrderId != null "> and ocp.outsource_order_id = #{outsourceOrderId}</if>
+            <if test="saleOrderProductId != null "> and ocp.sale_order_product_id = #{saleOrderProductId}</if>
+            <if test="saleOrderId != null "> and ocp.sale_order_id = #{saleOrderId}</if>
+            <if test="produceOrderId != null "> and ocp.produce_order_id = #{produceOrderId}</if>
+            <if test="produceOrderProductId != null "> and ocp.produce_order_product_id = #{produceOrderProductId}</if>
+            <if test="productId != null "> and ocp.product_id = #{productId}</if>
+            <if test="processId != null "> and ocp.process_id = #{processId}</if>
+            <if test="productionTemplateId != null "> and ocp.production_template_id = #{productionTemplateId}</if>
+            <if test="productionTemplateProcessId != null "> and ocp.production_template_process_id = #{productionTemplateProcessId}</if>
+        </where>
+    </select>
+    
+    <select id="selectOutsourceCheckingProcessById" parameterType="Long" resultMap="OutsourceCheckingProcessResult">
+        <include refid="selectOutsourceCheckingProcessVo"/>
+        where ocp.id = #{id}
+    </select>
+        
+    <insert id="insertOutsourceCheckingProcess" parameterType="OutsourceCheckingProcess" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into outsource_checking_process
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+            <if test="outsourceCheckingId != null">outsource_checking_id,</if>
+            <if test="outsourceDeliveryId != null">outsource_delivery_id,</if>
+            <if test="outsourceDeliveryProcessId != null">outsource_delivery_process_id,</if>
+            <if test="outsourceOrderProcessId != null">outsource_order_process_id,</if>
+            <if test="outsourceOrderId != null">outsource_order_id,</if>
+            <if test="saleOrderProductId != null">sale_order_product_id,</if>
+            <if test="saleOrderId != null">sale_order_id,</if>
+            <if test="produceOrderId != null">produce_order_id,</if>
+            <if test="produceOrderProductId != null">produce_order_product_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="productionTemplateId != null">production_template_id,</if>
+            <if test="productionTemplateProcessId != null">production_template_process_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+            <if test="outsourceCheckingId != null">#{outsourceCheckingId},</if>
+            <if test="outsourceDeliveryId != null">#{outsourceDeliveryId},</if>
+            <if test="outsourceDeliveryProcessId != null">#{outsourceDeliveryProcessId},</if>
+            <if test="outsourceOrderProcessId != null">#{outsourceOrderProcessId},</if>
+            <if test="outsourceOrderId != null">#{outsourceOrderId},</if>
+            <if test="saleOrderProductId != null">#{saleOrderProductId},</if>
+            <if test="saleOrderId != null">#{saleOrderId},</if>
+            <if test="produceOrderId != null">#{produceOrderId},</if>
+            <if test="produceOrderProductId != null">#{produceOrderProductId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="productionTemplateId != null">#{productionTemplateId},</if>
+            <if test="productionTemplateProcessId != null">#{productionTemplateProcessId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOutsourceCheckingProcess" parameterType="OutsourceCheckingProcess">
+        update outsource_checking_process
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="outsourceCheckingId != null">outsource_checking_id = #{outsourceCheckingId},</if>
+            <if test="outsourceDeliveryId != null">outsource_delivery_id = #{outsourceDeliveryId},</if>
+            <if test="outsourceDeliveryProcessId != null">outsource_delivery_process_id = #{outsourceDeliveryProcessId},</if>
+            <if test="outsourceOrderProcessId != null">outsource_order_process_id = #{outsourceOrderProcessId},</if>
+            <if test="outsourceOrderId != null">outsource_order_id = #{outsourceOrderId},</if>
+            <if test="saleOrderProductId != null">sale_order_product_id = #{saleOrderProductId},</if>
+            <if test="saleOrderId != null">sale_order_id = #{saleOrderId},</if>
+            <if test="produceOrderId != null">produce_order_id = #{produceOrderId},</if>
+            <if test="produceOrderProductId != null">produce_order_product_id = #{produceOrderProductId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="productionTemplateId != null">production_template_id = #{productionTemplateId},</if>
+            <if test="productionTemplateProcessId != null">production_template_process_id = #{productionTemplateProcessId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOutsourceCheckingProcessById" parameterType="Long">
+        delete from outsource_checking_process where id = #{id}
+    </delete>
+
+    <delete id="deleteOutsourceCheckingProcessByIds" parameterType="String">
+        delete from outsource_checking_process where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

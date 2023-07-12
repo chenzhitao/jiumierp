@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.produce.produceReport.mapper.ProduceReportMapper">
+    
+    <resultMap type="ProduceReport" id="ProduceReportResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="produceScheduleProcessId"    column="produce_schedule_process_id"    />
+        <result property="produceScheduleId"    column="produce_schedule_id"    />
+        <result property="produceOrderProcessId"    column="produce_order_process_id"    />
+        <result property="produceOrderProductId"    column="produce_order_product_id"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="qty"    column="qty"    />
+        <result property="reportDate"    column="report_date"    />
+    </resultMap>
+
+    <sql id="selectProduceReportVo">
+        select id, create_by, create_time, update_by, update_time, remark, status, produce_schedule_process_id, produce_schedule_id, produce_order_process_id, produce_order_product_id, produce_order_id, sale_order_product_id, sale_order_id, product_id, process_id, qty, report_date from produce_report
+    </sql>
+
+    <select id="selectProduceReportList" parameterType="ProduceReport" resultMap="ProduceReportResult">
+        <include refid="selectProduceReportVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="produceScheduleProcessId != null "> and produce_schedule_process_id = #{produceScheduleProcessId}</if>
+            <if test="produceScheduleId != null "> and produce_schedule_id = #{produceScheduleId}</if>
+            <if test="produceOrderProcessId != null "> and produce_order_process_id = #{produceOrderProcessId}</if>
+            <if test="produceOrderProductId != null "> and produce_order_product_id = #{produceOrderProductId}</if>
+            <if test="produceOrderId != null "> and produce_order_id = #{produceOrderId}</if>
+            <if test="saleOrderProductId != null "> and sale_order_product_id = #{saleOrderProductId}</if>
+            <if test="saleOrderId != null "> and sale_order_id = #{saleOrderId}</if>
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="processId != null "> and process_id = #{processId}</if>
+            <if test="qty != null "> and qty = #{qty}</if>
+            <if test="reportDate != null "> and report_date = #{reportDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectProduceReportById" parameterType="Long" resultMap="ProduceReportResult">
+        <include refid="selectProduceReportVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProduceReport" parameterType="ProduceReport" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into produce_report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="produceScheduleProcessId != null">produce_schedule_process_id,</if>
+            <if test="produceScheduleId != null">produce_schedule_id,</if>
+            <if test="produceOrderProcessId != null">produce_order_process_id,</if>
+            <if test="produceOrderProductId != null">produce_order_product_id,</if>
+            <if test="produceOrderId != null">produce_order_id,</if>
+            <if test="saleOrderProductId != null">sale_order_product_id,</if>
+            <if test="saleOrderId != null">sale_order_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="qty != null">qty,</if>
+            <if test="reportDate != null">report_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="produceScheduleProcessId != null">#{produceScheduleProcessId},</if>
+            <if test="produceScheduleId != null">#{produceScheduleId},</if>
+            <if test="produceOrderProcessId != null">#{produceOrderProcessId},</if>
+            <if test="produceOrderProductId != null">#{produceOrderProductId},</if>
+            <if test="produceOrderId != null">#{produceOrderId},</if>
+            <if test="saleOrderProductId != null">#{saleOrderProductId},</if>
+            <if test="saleOrderId != null">#{saleOrderId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="processId != null">#{processId},</if>
+            <if test="qty != null">#{qty},</if>
+            <if test="reportDate != null">#{reportDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProduceReport" parameterType="ProduceReport">
+        update produce_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="produceScheduleProcessId != null">produce_schedule_process_id = #{produceScheduleProcessId},</if>
+            <if test="produceScheduleId != null">produce_schedule_id = #{produceScheduleId},</if>
+            <if test="produceOrderProcessId != null">produce_order_process_id = #{produceOrderProcessId},</if>
+            <if test="produceOrderProductId != null">produce_order_product_id = #{produceOrderProductId},</if>
+            <if test="produceOrderId != null">produce_order_id = #{produceOrderId},</if>
+            <if test="saleOrderProductId != null">sale_order_product_id = #{saleOrderProductId},</if>
+            <if test="saleOrderId != null">sale_order_id = #{saleOrderId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="processId != null">process_id = #{processId},</if>
+            <if test="qty != null">qty = #{qty},</if>
+            <if test="reportDate != null">report_date = #{reportDate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProduceReportById" parameterType="Long">
+        delete from produce_report where id = #{id}
+    </delete>
+
+    <delete id="deleteProduceReportByIds" parameterType="String">
+        delete from produce_report where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.produce.produceSchedule.mapper.ProduceScheduleMapper">
+    
+    <resultMap type="ProduceSchedule" id="ProduceScheduleResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="produceStatus"    column="produce_status"    />
+        <result property="workCenter"    column="work_center"    />
+        <result property="equipmentId"    column="equipment_id"    />
+        <result property="teamId"    column="team_id"    />
+        <result property="produceDate"    column="produce_date"    />
+
+        <result property="equipmentName"    column="equipment_name"    />
+        <result property="teamName"    column="team_name"    />
+        <result property="pauseInfo"    column="pause_info"    />
+        <result property="printType"    column="print_type"    />
+    </resultMap>
+
+    <resultMap type="ProduceScheduleExport" id="ProduceScheduleExportResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="approver"    column="approver"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="produceStatus"    column="produce_status"    />
+        <result property="workCenter"    column="work_center"    />
+        <result property="equipmentId"    column="equipment_id"    />
+        <result property="teamId"    column="team_id"    />
+        <result property="produceDate"    column="produce_date"    />
+
+        <result property="equipmentName"    column="equipment_name"    />
+        <result property="teamName"    column="team_name"    />
+
+        <result property="produceScheduleId"    column="produce_schedule_id"    />
+        <result property="produceOrderProcessId"    column="produce_order_process_id"    />
+        <result property="produceOrderProductId"    column="produce_order_product_id"    />
+        <result property="produceOrderId"    column="produce_order_id"    />
+        <result property="saleOrderProductId"    column="sale_order_product_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="productionTemplateId"    column="production_template_id"    />
+        <result property="productionTemplateProcessId"    column="production_template_process_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="produceStatus"    column="produce_status"    />
+        <result property="produceQty"    column="produce_qty"    />
+        <result property="qty"    column="qty"    />
+        <result property="productName"    column="product_name"    />
+        <result property="processName"    column="process_name"    />
+        <result property="produceOrderSN"    column="produce_order_sn"    />
+        <result property="sizeLong"    column="size_long"    />
+        <result property="sizeWidth"    column="size_width"    />
+        <result property="sizeHeight"    column="size_height"    />
+        <result property="productSize"    column="product_size"    />
+        <result property="produceScheduleSN"    column="produce_schedule_sn"    />
+
+        <result property="saleOrderSN"    column="sale_order_sn"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="colorRequire"    column="color_require"    />
+        <result property="materialsQty"    column="materials_qty"    />
+        <result property="frontColor"    column="front_color"    />
+        <result property="backColor"    column="back_color"    />
+        <result property="frontSpot"    column="front_spot"    />
+        <result property="backSpot"    column="back_spot"    />
+        <result property="printType"    column="print_type"    />
+    </resultMap>
+
+    <sql id="selectProduceScheduleVo">
+        select
+            t.team_name,e.equipment_name,ps.pause_info,
+            ps.id, ps.create_by, ps.create_time, ps.update_by, ps.update_time, ps.remark, ps.status, ps.approver, ps.approval_time, ps.approval_type, ps.serial_number, ps.produce_status, ps.work_center, ps.equipment_id, ps.team_id, produce_date
+        from produce_schedule ps
+            left join config_team t on t.id = ps.team_id
+            left join config_equipment e on e.id = ps.equipment_id
+    </sql>
+
+    <select id="selectProduceScheduleList" parameterType="ProduceSchedule" resultMap="ProduceScheduleResult">
+        <include refid="selectProduceScheduleVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and ps.status = #{status}</if>
+            <if test="status == null  or status == ''"> and ps.status != 'delete'</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and ps.serial_number like concat('%', ps.#{serialNumber}, '%')</if>
+            <if test="produceStatus != null  and produceStatus != ''"> and ps.produce_status = #{produceStatus}</if>
+            <if test="workCenter != null  and workCenter != ''"> and ps.work_center = #{workCenter}</if>
+            <if test="equipmentId != null "> and ps.equipment_id = #{equipmentId}</if>
+            <if test="teamId != null "> and ps.team_id = #{teamId}</if>
+            <if test="params.beginProduceDate != null and params.beginProduceDate != '' ">
+                and date_sub(ps.produce_date,interval -1 day) <![CDATA[ > ]]> #{params.beginProduceDate}
+            </if>
+            <if test="params.endProduceDate != null and params.endProduceDate != ''">
+                and date_sub(ps.produce_date,interval 1 day) <![CDATA[ < ]]> #{params.endProduceDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectProduceScheduleExportList" parameterType="ProduceSchedule" resultMap="ProduceScheduleExportResult">
+        SELECT
+            psp.produce_qty,
+            psp.process_id,
+            psp.produce_order_id,
+            ps.serial_number produce_schedule_sn,
+            ps. STATUS,
+            ps.serial_number,
+            ps.produce_status,
+            ps.work_center,
+            ps.equipment_id,
+            ps.team_id,
+            ps.produce_date,
+            t.team_name,
+            e.equipment_name,
+            po.serial_number produce_order_sn,
+            cc.customer_name,
+            cp.product_name,
+            po.color_require,
+            po.front_color,
+            po.back_color,
+            po.front_spot,
+            po.back_spot,
+            psp.remark,
+            pop.print_type
+        FROM produce_schedule_process psp
+            LEFT JOIN produce_schedule ps ON ps.id = psp.produce_schedule_id
+            LEFT JOIN config_equipment e ON e.id = ps.equipment_id
+            LEFT JOIN config_team t ON t.id = ps.team_id
+            LEFT JOIN produce_order po ON po.id = psp.produce_order_id
+            LEFT JOIN produce_order_process pop ON pop.id = psp.produce_order_process_id
+            LEFT JOIN sale_order so ON so.id = psp.sale_order_id
+            LEFT JOIN config_customer cc ON cc.id = so.customer_id
+            LEFT JOIN config_product cp ON cp.id = psp.product_id
+        <where>
+            <if test="id != null "> and psp.produce_schedule_id = #{id}</if>
+            <if test="status != null  and status != ''"> and ps.status = #{status}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and ps.serial_number like concat('%', ps.#{serialNumber}, '%')</if>
+            <if test="produceStatus != null  and produceStatus != ''"> and ps.produce_status = #{produceStatus}</if>
+            <if test="workCenter != null  and workCenter != ''"> and ps.work_center = #{workCenter}</if>
+            <if test="equipmentId != null "> and ps.equipment_id = #{equipmentId}</if>
+            <if test="teamId != null "> and ps.team_id = #{teamId}</if>
+            <if test="params.beginProduceDate != null and params.beginProduceDate != '' ">
+                and date_sub(ps.produce_date,interval -1 day) <![CDATA[ > ]]> #{params.beginProduceDate}
+            </if>
+            <if test="params.endProduceDate != null and params.endProduceDate != ''">
+                and date_sub(ps.produce_date,interval 1 day) <![CDATA[ < ]]> #{params.endProduceDate}
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectProduceScheduleById" parameterType="Long" resultMap="ProduceScheduleResult">
+        <include refid="selectProduceScheduleVo"/>
+        where ps.id = #{id}
+    </select>
+        
+    <insert id="insertProduceSchedule" parameterType="ProduceSchedule" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into produce_schedule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            serial_number,
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="approver != null">approver,</if>
+            <if test="approvalTime != null">approval_time,</if>
+            <if test="approvalType != null">approval_type,</if>
+            <if test="produceStatus != null">produce_status,</if>
+            <if test="workCenter != null">work_center,</if>
+            <if test="equipmentId != null">equipment_id,</if>
+            <if test="teamId != null">team_id,</if>
+            <if test="produceDate != null">produce_date,</if>
+            <if test="pauseInfo != null">pause_info,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            seq_nextval('SPC'),
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="approvalTime != null">#{approvalTime},</if>
+            <if test="approvalType != null">#{approvalType},</if>
+            <if test="produceStatus != null">#{produceStatus},</if>
+            <if test="workCenter != null">#{workCenter},</if>
+            <if test="equipmentId != null">#{equipmentId},</if>
+            <if test="teamId != null">#{teamId},</if>
+            <if test="produceDate != null">#{produceDate},</if>
+            <if test="pauseInfo != null">#{pauseInfo},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProduceSchedule" parameterType="ProduceSchedule">
+        update produce_schedule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="approvalTime != null">approval_time = #{approvalTime},</if>
+            <if test="approvalType != null">approval_type = #{approvalType},</if>
+            <if test="produceStatus != null">produce_status = #{produceStatus},</if>
+            <if test="workCenter != null">work_center = #{workCenter},</if>
+            <if test="equipmentId != null">equipment_id = #{equipmentId},</if>
+            <if test="teamId != null">team_id = #{teamId},</if>
+            <if test="produceDate != null">produce_date = #{produceDate},</if>
+            <if test="pauseInfo != null">pause_info = #{pauseInfo},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProduceScheduleById" parameterType="Long">
+        delete from produce_schedule where id = #{id}
+    </delete>
+
+    <delete id="deleteProduceScheduleProcessById" parameterType="Long">
+        delete from produce_schedule_process where produce_schedule_id = #{id}
+    </delete>
+
+    <delete id="deleteProduceScheduleByIds" parameterType="String">
+        delete from produce_schedule where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
